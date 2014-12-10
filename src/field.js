@@ -84,4 +84,33 @@ ScapeField.prototype._addGround = function(x, y, z, d) {
 // ------------------------------------------------------------------
 ScapeField.prototype.getColumn = function(x, y) {
     // return the ground column that includes  x,y
+    var gx = (x - this._minX) / this._bX;
+    var gy = (y - this._minY) / this._bY;
+    return (this._g[gx][gy]);
 }
+// ------------------------------------------------------------------
+// invoke the callback each column in turn
+// callback should look like: function(err, column)
+// if err is null everything is fine. if err is not null, there
+// was an error.
+ScapeField.prototype.eachColumn = function(callback, thisArg, order) {
+
+    if (order == undefined) {
+        order = 'xup-yup';
+    }
+    if (thisArg == undefined) {
+        thisArg = this;
+    }
+    if (order == 'xup-yup') {
+        for (var gx = 0; gx < this._g.length; gx++) {
+            for (var gy = 0; gy < this._g[0].length; gy++) {
+                callback.call(thisArg, null, this._g[gx][gy]);
+            }
+        }
+    }
+}
+
+
+
+
+
