@@ -14,7 +14,7 @@ var defaultOptions = {
 };
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
-function ScapeField(domElement, options) {
+function ScapeField(options) {
     // invoke our super constructor
     ScapeObject.call(this, options, defaultOptions);
 
@@ -58,15 +58,16 @@ ScapeField.prototype._makeGrid = function() {
     for (var gx = 0; gx < this._blocksX; gx++) {
         var col = [];
         for (var gy = 0; gy < this._blocksY; gy++) {
+            var material = new THREE.MeshLambertMaterial();
             var square = {
                 x: this._minX + (this._bX * gx),
-                dx: this._bX,
+                dx: this._bX * 0.9,
                 y: this._minY + (this._bY * gy),
-                dy: this._bY,
+                dy: this._bY * 0.9,
                 g: [{
                     z: this._maxZ,
                     dz: this._minZ,
-                    material: new THREE.MeshLambertMaterial({ color: 0x999999, transparent: true, opacity: 0.2 })
+                    m: material
                 }]
             }
             col.push(square);

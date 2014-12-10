@@ -24,9 +24,49 @@
 
         var f = new ScapeField();
 
-        f.eachColumn( function(c) {
-            console.log(c);
+        var scene = new THREE.Scene();
+
+        var elem = document.getElementById('container');
+        var camera = new THREE.PerspectiveCamera( 75, elem.clientWidth / elem.clientHeight, 0.1, 1000 );
+        camera.position.set(10, 5, 20);
+
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize( elem.clientWidth, elem.clientHeight );
+        document.getElementById('container').appendChild( renderer.domElement );
+
+        var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+        var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+        // var material = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
+        // var material = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
+        var material = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading } )
+
+        var cube = new THREE.Mesh( geometry, material );
+        scene.add( cube );
+
+        var light = new THREE.PointLight(0xffffff, 1, 0);
+        light.position.set(300,300,300)
+        scene.add( light );
+
+        f.eachColumn( function(err, c) {
+            for (var block = 0; block < c.g.length; block++) {
+                scene.add( new THREE.Mesh(
+                    new THREE.BoxGeometry(c.dx, c.dy, c.g[block].dz),
+                    c.g[block].m
+                    // new THREE.MeshBasicMaterial({ color: 0xff0000 })
+                    // new THREE.MeshBasicMaterial( { color: 0xffff00 } )
+                ));
+            }
+            // console.log(c);
         });
+
+
+
+        function render() {
+            requestAnimationFrame( render );
+            renderer.render( scene, camera );
+        }
+        render();
+
 
     </script>
 </body>
