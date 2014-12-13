@@ -66,7 +66,11 @@ ScapeField.prototype._makeGrid = function() {
                 g: [{
                     z: this._maxZ,
                     dz: this._minZ,
-                    material: new THREE.MeshLambertMaterial({ color: 0x999999, transparent: true, opacity: 0.2 })
+                    material: new THREE.MeshLambertMaterial({
+                        color: 0x999999,
+                        transparent: true,
+                        opacity: 0.2
+                    })
                 }]
             }
             col.push(square);
