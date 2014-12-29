@@ -29,12 +29,18 @@ function ScapeField(options) {
     this.blocksX = this._opts.blocksX;
     this.blocksY = this._opts.blocksY;
 
+    this.wX = this.maxX - this.minX;
+    this.wY = this.maxY - this.minY;
+    this.wZ = this.maxZ - this.minZ;
+
     // DEBUG
     // this.blocksX = 1;
     // this.blocksY = 1;
 
-    this._bX = (this.maxX - this.minX) / this.blocksX;
-    this._bY = (this.maxY - this.minY) / this.blocksY;
+    this._bX = this.wX / this.blocksX;
+    this._bY = this.wY / this.blocksY;
+
+    this._calcCenter();
 
     this._makeGrid();
 
@@ -86,6 +92,16 @@ ScapeField.prototype._makeGrid = function() {
 ScapeField.prototype._addGround = function(x, y, z, d) {
     // add a square of depth d, side length w.
     // the cuboid will go from x to x+w, y to y+w, and z to z-d.
+    // TODO
+}
+// ------------------------------------------------------------------
+ScapeField.prototype._calcCenter = function() {
+    // calculate the centre of the field and record it as .center
+    this.center = new THREE.Vector3(
+        (this.minX + this.maxX) / 2,
+        (this.minY + this.maxY) / 2,
+        (this.minZ + this.maxZ) / 2
+    );
 }
 // ------------------------------------------------------------------
 ScapeField.prototype.getColumn = function(x, y) {
