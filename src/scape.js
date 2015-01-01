@@ -34,8 +34,6 @@ function Scape(field, dom, options) {
     // create renderer
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setClearColor( 0xffffff, 1);
-
-    // var renderer = new THREE.WebGLRenderer();
     renderer.setSize(containerWidth, containerHeight);
     $container.append(renderer.domElement);
 
@@ -64,6 +62,10 @@ function Scape(field, dom, options) {
 
     // add the camera to the scene
     this.scene.add(camera);
+
+    var controls = new THREE.OrbitZControls(camera, renderer.domElement);
+    controls.center = this.f.center.clone();
+
 
     // create a 10x cube
     var geometry = new THREE.BoxGeometry( 5, 5, 5 );
@@ -126,6 +128,7 @@ function Scape(field, dom, options) {
         }
         requestAnimationFrame( render );
         renderer.render( this.scene, camera );
+        controls.update();
     }).bind(this);
 
     render(0);
