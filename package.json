@@ -4,7 +4,8 @@
   "description": "ScapeJS makes landscapes / seascapes / spacescapes in browser using three.js.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "jsdoc --help"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/DanielBaird/scapejs/issues"
   },
-  "homepage": "https://github.com/DanielBaird/scapejs"
+  "homepage": "https://github.com/DanielBaird/scapejs",
+  "devDependencies": {
+    "jsdoc": "^3.3.0-alpha13"
+  }
 }

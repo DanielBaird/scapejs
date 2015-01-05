@@ -21,27 +21,24 @@ function Scape(field, dom, options) {
     // save the field
     this.f = field;
 
-    // DOM element
-    this.e = document.getElementById(dom);
-
-    // DEBUG
-
-    // discover container
-    var $container = $(this.e);
-    var containerWidth = $container.width();
-    var containerHeight = $container.height();
+    // discover DOM container
+    this.element = document.getElementById(dom);
+    var $elem = $(this.element);
+    var containerWidth = $elem.width();
+    var containerHeight = $elem.height();
 
     // create renderer
-    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    var renderer = this._makeRenderer();
+    new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setClearColor( 0xffffff, 1);
     renderer.setSize(containerWidth, containerHeight);
-    $container.append(renderer.domElement);
+    $elem.append(renderer.domElement);
 
     // create scene
     this.scene = new THREE.Scene();
 
     // add fog
-    this.scene.fog = new THREE.Fog('#ddeeff', 1, 1000);
+    // this.scene.fog = new THREE.Fog('#ddeeff', 1, 1000);
 
     // create camera
     var viewAngle = 45;
@@ -50,6 +47,8 @@ function Scape(field, dom, options) {
 
     // set up camera
     var camera = new THREE.PerspectiveCamera( viewAngle, viewAspect, near, far);
+    // "up" is positive Z
+    camera.up.set(0,0,1);
     // the camera defaults to position (0,0,0)
     // set the cam position to a certain offset from field-center
     camera.position.addVectors(
@@ -63,7 +62,8 @@ function Scape(field, dom, options) {
     // add the camera to the scene
     this.scene.add(camera);
 
-    var controls = new THREE.OrbitZControls(camera, renderer.domElement);
+    // var controls = new THREE.OrbitZControls(camera, renderer.domElement);
+    var controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.center = this.f.center.clone();
 
 
@@ -133,10 +133,6 @@ function Scape(field, dom, options) {
 
     render(0);
 
-
-
-
-
 };
 // ------------------------------------------------------------------
 // inheritance
@@ -167,6 +163,31 @@ Scape.prototype.groundGrid = function(topOrBottom) {
 
     // TODO: draw the grid from minX to maxX etc at top or bottom
 }
+// ------------------------------------------------------------------
+/**
+ * Create and return a renderer.
+ *
+ */
+
+// create and return a renderer
+// options can include: {
+//     dom: <a dom element>
+//     width: the width in pixels
+//     height: the height in pixels
+// }
+Scape.prototype.makeRenderer = function(options) {
+    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setClearColor( 0xffffff, 1);
+    if (options && options.dom) {
+        var $dom = $(options.dom);
+        renderer.setSize($dom.width(), $dom.height());
+        $dom.append(renderer.domElement);
+    }
+    if (options && options.width && options.height) {
+        renderer.setSize(options.width, options.height);
+    }
+    return renderer;
+
 // ------------------------------------------------------------------
 Scape.prototype.print = function() {
     console.log(

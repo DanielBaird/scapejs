@@ -41,7 +41,6 @@ function ScapeField(options) {
     this._bY = this.wY / this.blocksY;
 
     this._calcCenter();
-
     this._makeGrid();
 
 };
@@ -85,8 +84,6 @@ ScapeField.prototype._makeGrid = function() {
         }
         this._g.push(col);
     }
-    // DEBUG
-    console.log(this._g);
 }
 // ------------------------------------------------------------------
 ScapeField.prototype._addGround = function(x, y, z, d) {
@@ -112,7 +109,7 @@ ScapeField.prototype.getColumn = function(x, y) {
 }
 // ------------------------------------------------------------------
 // invoke the callback each column in turn
-// callback should look like: function(err, column)
+// callback should look like: function(err, column) { ... }
 // if err is null everything is fine. if err is not null, there
 // was an error.
 ScapeField.prototype.eachColumn = function(callback, thisArg, order) {
