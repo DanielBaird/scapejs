@@ -57,8 +57,8 @@ function Scape(field, dom, options) {
     // });
 
     // add grids and helper cubes
-    this.addGroundGrid();
-    this.addGroundGrid('top');
+    // this.addHelperGrid();
+    // this.addHelperGrid('top');
     this.addHelperShapes();
 
     var lastLogAt = 0; // DEBUG
@@ -119,7 +119,7 @@ Scape.prototype.addHelperShapes = function() {
     this.scene.add(cubeXY0);
 }
 // ------------------------------------------------------------------
-Scape.prototype.addGroundGrid = function(topOrBottom) {
+Scape.prototype.addHelperGrid = function(topOrBottom) {
     var gz = 0;
     var gc = 0x444444;
     if (topOrBottom == 'top') {
