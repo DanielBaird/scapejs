@@ -14,6 +14,12 @@ var defaultOptions = {
 };
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
+/**
+ * Represents a rendering of a landscape / moonscape / whatever
+ * @param {ScapeField} field  the field being rendered
+ * @param {string} dom        DOM element the scape should be rendered info.
+ * @param {object} options    collection of options.
+ */
 function Scape(field, dom, options) {
     // invoke our super constructor
     ScapeObject.call(this, options, defaultOptions);
@@ -23,73 +29,12 @@ function Scape(field, dom, options) {
 
     // discover DOM container
     this.element = document.getElementById(dom);
-    var $elem = $(this.element);
-    var containerWidth = $elem.width();
-    var containerHeight = $elem.height();
 
-    // create renderer
-    var renderer = this._makeRenderer();
-    new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setClearColor( 0xffffff, 1);
-    renderer.setSize(containerWidth, containerHeight);
-    $elem.append(renderer.domElement);
-
-    // create scene
-    this.scene = new THREE.Scene();
-
-    // add fog
-    // this.scene.fog = new THREE.Fog('#ddeeff', 1, 1000);
-
-    // create camera
-    var viewAngle = 45;
-    var viewAspect = containerWidth / containerHeight;
-    var near = 0.1, far = 20000;
-
-    // set up camera
-    var camera = new THREE.PerspectiveCamera( viewAngle, viewAspect, near, far);
-    // "up" is positive Z
-    camera.up.set(0,0,1);
-    // the camera defaults to position (0,0,0)
-    // set the cam position to a certain offset from field-center
-    camera.position.addVectors(
-        this.f.center,
-        new THREE.Vector3(0, -1.1 * this.f.wY, 3 * this.f.wZ)
-    );
-
-    console.log(camera.position, this.f.center, this.f.center.clone());
-    camera.lookAt(this.f.center);
-
-    // add the camera to the scene
-    this.scene.add(camera);
-
-    // var controls = new THREE.OrbitZControls(camera, renderer.domElement);
-    var controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.center = this.f.center.clone();
-
-
-    // create a 10x cube
-    var geometry = new THREE.BoxGeometry( 5, 5, 5 );
-    // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    // var material = new THREE.MeshLambertMaterial( { color: 0x00ff00 } );
-    var material = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading } )
-
-    var cube00 = new THREE.Mesh( geometry, material );
-    this.scene.add(cube00);
-
-    var cube10 = new THREE.Mesh( geometry, material );
-    cube10.position.copy(new THREE.Vector3(100, 0, 0));
-    this.scene.add(cube10);
-    var cubeh0 = new THREE.Mesh( geometry, material );
-    cubeh0.position.copy(new THREE.Vector3(50, 0, 0));
-    this.scene.add(cubeh0);
-
-    var cube01 = new THREE.Mesh( geometry, material );
-    cube01.position.copy(new THREE.Vector3(0, 100, 0));
-    this.scene.add(cube01);
-
-    var cube11 = new THREE.Mesh( geometry, material );
-    cube11.position.copy(new THREE.Vector3(100, 100, 0));
-    this.scene.add(cube11);
+    // create and save all the bits we need
+    this.renderer = this._makeRenderer({ dom: this.element });
+    this.scene = this._makeScene();
+    this.camera = this._makeCamera();
+    this.controls = this._makeControls();
 
 
     var light = new THREE.PointLight(0xffffff, 1, 0);
@@ -98,11 +43,6 @@ function Scape(field, dom, options) {
 
     // var ambientLight = new THREE.AmbientLight(0x111111);
     // this.scene.add(ambientLight);
-
-
-    var axes = new THREE.AxisHelper(50);
-    this.scene.add(axes);
-
 
     // f.eachColumn( function(err, c) {
     //     for (var block = 0; block < c.g.length; block++) {
@@ -116,19 +56,23 @@ function Scape(field, dom, options) {
     //     // console.log(c);
     // });
 
-    this.groundGrid();
-    this.groundGrid('top');
+    // add grids and helper cubes
+    this.addGroundGrid();
+    this.addGroundGrid('top');
+    this.addHelperShapes();
 
-    var lastLogAt = 0;
-
+    var lastLogAt = 0; // DEBUG
     render = (function unboundRender(ts) {
+
+        // DEBUG
         if (lastLogAt + 500 < ts) {
             console.log('rendering...');
             lastLogAt = ts;
         }
+
         requestAnimationFrame( render );
-        renderer.render( this.scene, camera );
-        controls.update();
+        this.renderer.render( this.scene, this.camera );
+        this.controls.update();
     }).bind(this);
 
     render(0);
@@ -139,7 +83,43 @@ function Scape(field, dom, options) {
 Scape.prototype = Object.create(ScapeObject.prototype);
 Scape.prototype.constructor = Scape;
 // ------------------------------------------------------------------
-Scape.prototype.groundGrid = function(topOrBottom) {
+Scape.prototype.addHelperShapes = function() {
+
+    var size = (this.f.wX + this.f.wY + this.f.wZ) / 50;
+
+    // cubic geometry
+    var cubeGeom = new THREE.BoxGeometry( size, size, size );
+
+    var white = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var red = new THREE.MeshLambertMaterial({   color: 0xff0000 });
+    var green = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+    var blue = new THREE.MeshLambertMaterial({  color: 0x0000ff });
+    // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    // var material = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading } )
+
+    var cube000 = new THREE.Mesh(cubeGeom, white);
+    var cubeX00 = new THREE.Mesh(cubeGeom, red);
+    var cubex00 = new THREE.Mesh(cubeGeom, red);
+    var cube0Y0 = new THREE.Mesh(cubeGeom, green);
+    var cube00Z = new THREE.Mesh(cubeGeom, blue);
+    var cubeXY0 = new THREE.Mesh(cubeGeom, white);
+
+    cube000.position.copy(new THREE.Vector3(this.f.minX, this.f.minY, this.f.minZ));
+    cubeX00.position.copy(new THREE.Vector3(this.f.maxX, this.f.minY, this.f.minZ));
+    cubex00.position.copy(new THREE.Vector3((this.f.minX + this.f.maxX) / 2, this.f.minY, this.f.minZ));
+    cube0Y0.position.copy(new THREE.Vector3(this.f.minX, this.f.maxY, this.f.minZ));
+    cube00Z.position.copy(new THREE.Vector3(this.f.minX, this.f.minY, this.f.maxZ));
+    cubeXY0.position.copy(new THREE.Vector3(this.f.maxX, this.f.maxY, this.f.minZ));
+
+    this.scene.add(cube000);
+    this.scene.add(cubeX00);
+    this.scene.add(cubex00);
+    this.scene.add(cube0Y0);
+    this.scene.add(cube00Z);
+    this.scene.add(cubeXY0);
+}
+// ------------------------------------------------------------------
+Scape.prototype.addGroundGrid = function(topOrBottom) {
     var gz = 0;
     var gc = 0x444444;
     if (topOrBottom == 'top') {
@@ -157,7 +137,7 @@ Scape.prototype.groundGrid = function(topOrBottom) {
     var gridXY = new THREE.GridHelper(gridW/2, gridW/10);
     gridXY.setColors(gc, gc);
     gridXY.rotation.x = Math.PI/2;
-    gridXY.position.set(gridW/2, gridW/2, gz);
+    gridXY.position.set(this.f.minX + gridW/2, this.f.minY + gridW/2, gz);
     this.scene.add(gridXY);
 
 
@@ -165,19 +145,15 @@ Scape.prototype.groundGrid = function(topOrBottom) {
 }
 // ------------------------------------------------------------------
 /**
- * Create and return a renderer.
- *
+ * Create and return a THREE.Renderer.
+ * @param {object} various options
+ * @param {DOMElement|jQueryElem} options.dom a dom element
+ * @param {integer} options.width renderer width (in pixels)
+ * @param {integer} options.height renderer height (in pixels)
  */
-
-// create and return a renderer
-// options can include: {
-//     dom: <a dom element>
-//     width: the width in pixels
-//     height: the height in pixels
-// }
-Scape.prototype.makeRenderer = function(options) {
+Scape.prototype._makeRenderer = function(options) {
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    renderer.setClearColor( 0xffffff, 1);
+    renderer.setClearColor( 0x000000, 0);
     if (options && options.dom) {
         var $dom = $(options.dom);
         renderer.setSize($dom.width(), $dom.height());
@@ -187,7 +163,80 @@ Scape.prototype.makeRenderer = function(options) {
         renderer.setSize(options.width, options.height);
     }
     return renderer;
+}
+// ------------------------------------------------------------------
+/**
+ * Create and return a THREE.Scene
+ */
+Scape.prototype._makeScene = function() {
+    var scene = new THREE.Scene();
+    // add fog
+    // scene.fog = new THREE.Fog('#f0f8ff', 100, 150);
+    return scene;
+}
+// ------------------------------------------------------------------
+/**
+ * [viewAngle description]
+ * @type {Number}
+ */
+Scape.prototype._makeCamera = function(options) {
 
+    // viewing angle
+    // i think this is the vertical view angle.  horizontal angle is
+    // derived from this and the aspect ratio.
+    var viewAngle = 45;
+    viewAngle = (options && options.viewAngle) || viewAngle;
+
+    // aspect
+    var viewAspect = 16/9;
+    if (this.renderer && this.renderer.domElement) {
+        var $elem = $(this.renderer.domElement);
+        viewAspect = $elem.width() / $elem.height();
+    }
+
+    // near and far clipping
+    var nearClip = 0.1;
+    var farClip = 10000;
+    if (this.f) {
+        nearClip = Math.min(this.f.wX, this.f.wY, this.f.wZ) / 1000;
+        farClip = Math.max(this.f.wX, this.f.wY, this.f.wZ) * 10;
+    }
+
+    // camera position and looking direction
+    var lookHere = new THREE.Vector3(0, 0, 0);
+    var camPos = new THREE.Vector3(0, -10, 5);
+    if (this.f) {
+        lookHere = this.f.center;
+        camPos = lookHere.clone().add(new THREE.Vector3(0, -1.1 * this.f.wY, 3 * this.f.wZ));
+    }
+
+    // set up camera
+    var camera = new THREE.PerspectiveCamera( viewAngle, viewAspect, nearClip, farClip);
+    // "up" is positive Z
+    camera.up.set(0,0,1);
+    camera.position.copy(camPos);
+    camera.lookAt(lookHere);
+
+    // add the camera to the scene
+    if (this.scene) {
+        this.scene.add(camera);
+    }
+
+    return camera;
+}
+// ------------------------------------------------------------------
+Scape.prototype._makeControls = function() {
+
+    var center = new THREE.Vector3(0,0,0);
+    if (this.f && this.f.center) {
+        center = this.f.center.clone();
+    }
+    if (this.camera && this.renderer && this.renderer.domElement) {
+        var controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        controls.center = center;
+        return controls;
+    }
+}
 // ------------------------------------------------------------------
 Scape.prototype.print = function() {
     console.log(

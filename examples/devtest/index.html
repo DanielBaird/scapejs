@@ -7,8 +7,8 @@
             background: #333;
         }
         #container {
-            width: 700;
-            height: 380;
+            width: 95%;
+            height: 95%;
             margin: 1em auto;
         }
     </style>
@@ -23,7 +23,10 @@
     <script src="../../src/field.js"></script>
     <script src="../../src/scape.js"></script>
     <script>
-        var f = new ScapeField();
+        var f = new ScapeField({
+            minX: 200,
+            maxX: 300
+        });
         var s = new Scape(f, 'container');
 
     </script>

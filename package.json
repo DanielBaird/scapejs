@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "jsdoc --help"
+    "docs": "jsdoc --configure ./devconfig/jsdoc.conf.json"
   },
   "repository": {
     "type": "git",
@@ -16,7 +16,7 @@
   "bugs": {
     "url": "https://github.com/DanielBaird/scapejs/issues"
   },
-  "homepage": "https://github.com/DanielBaird/scapejs",
+  "homepage": "http://scapejs.rocks",
   "devDependencies": {
     "jsdoc": "^3.3.0-alpha13"
   }
