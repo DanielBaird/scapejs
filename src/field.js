@@ -1,20 +1,20 @@
 
 // ------------------------------------------------------------------
-var defaultOptions = {
-    minX: 0,
-    minY: 0,
-    minZ: 0,
-
-    maxX: 100,
-    maxY: 100,
-    maxZ: 20,
-
-    blocksX: 10,
-    blocksY: 10
-};
-// ------------------------------------------------------------------
 // ------------------------------------------------------------------
 function ScapeField(options) {
+
+    var defaultOptions = {
+        minX: 0,
+        minY: 0,
+        minZ: 0,
+
+        maxX: 100,
+        maxY: 100,
+        maxZ: 20,
+
+        blocksX: 10,
+        blocksY: 10
+    };
     // invoke our super constructor
     ScapeObject.call(this, options, defaultOptions);
 
@@ -71,14 +71,15 @@ ScapeField.prototype._makeGrid = function() {
 
             var square = {
                 x: this.minX + (this._bX * gx),
-                dx: this._bX * 0.9,
+                dx: this._bX * 0.95,
                 y: this.minY + (this._bY * gy),
-                dy: this._bY * 0.9,
+                dy: this._bY * 0.95,
                 g: [{
                     z: this.maxZ,
-                    dz: this.minZ,
+                    dz: this.wZ,
                     m: material
-                }]
+                }],
+                object: null
             }
             col.push(square);
         }
@@ -86,10 +87,24 @@ ScapeField.prototype._makeGrid = function() {
     }
 }
 // ------------------------------------------------------------------
-ScapeField.prototype._addGround = function(x, y, z, d) {
-    // add a square of depth d, side length w.
-    // the cuboid will go from x to x+w, y to y+w, and z to z-d.
-    // TODO
+/**
+ * Add a ground stack at x,y, starting at height z.
+ * The stack is an array of two-element arrays, like this:
+ * [
+ *     ['leaflitter', 0.3],
+ *     ['dirt', 3.5],
+ *     ['stone', 4]
+ * ]
+ * which puts a leaflitter layer 0.3 units deep on a 3.5-unit
+ * deep dirt layer, which is on a stone layer.  If the final
+ * layer's depth is zero, that layer is assumed to go all the
+ * way to minZ.
+ */
+ScapeField.prototype.addGround = function(x, y, z, stack) {
+
+}
+// ------------------------------------------------------------------
+ScapeField.prototype._calcGround = function() {
 }
 // ------------------------------------------------------------------
 ScapeField.prototype._calcCenter = function() {
@@ -113,7 +128,6 @@ ScapeField.prototype.getColumn = function(x, y) {
 // if err is null everything is fine. if err is not null, there
 // was an error.
 ScapeField.prototype.eachColumn = function(callback, thisArg, order) {
-
     if (order == undefined) {
         order = 'xup-yup';
     }

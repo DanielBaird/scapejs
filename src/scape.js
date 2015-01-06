@@ -1,16 +1,7 @@
 
 // ------------------------------------------------------------------
 var defaultOptions = {
-    minX: 0,
-    minY: 0,
-    minZ: 0,
-
-    maxX: 100,
-    maxY: 100,
-    maxZ: 20,
-
-    blocksX: 10,
-    blocksY: 10
+    lights: ['ambient', 'sun']
 };
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
@@ -35,26 +26,9 @@ function Scape(field, dom, options) {
     this.scene = this._makeScene();
     this.camera = this._makeCamera();
     this.controls = this._makeControls();
+    this.lights = this._makeLights(this._opts.lights);
 
-
-    var light = new THREE.PointLight(0xffffff, 1, 0);
-    light.position.set(100,300,300)
-    this.scene.add(light);
-
-    var ambientLight = new THREE.AmbientLight(0x222222);
-    this.scene.add(ambientLight);
-
-    // f.eachColumn( function(err, c) {
-    //     for (var block = 0; block < c.g.length; block++) {
-    //         scene.add( new THREE.Mesh(
-    //             new THREE.BoxGeometry(c.dx, c.dy, c.g[block].dz),
-    //             c.g[block].m
-    //             // new THREE.MeshBasicMaterial({ color: 0xff0000 })
-    //             // new THREE.MeshBasicMaterial( { color: 0xffff00 } )
-    //         ));
-    //     }
-    //     // console.log(c);
-    // });
+    this.addColumns();
 
     // add grids and helper cubes
     // this.addHelperGrid();
@@ -65,7 +39,7 @@ function Scape(field, dom, options) {
     render = (function unboundRender(ts) {
 
         // DEBUG
-        if (lastLogAt + 500 < ts) {
+        if (lastLogAt + 1000 < ts) {
             console.log('rendering...');
             lastLogAt = ts;
         }
@@ -82,6 +56,20 @@ function Scape(field, dom, options) {
 // inheritance
 Scape.prototype = Object.create(ScapeObject.prototype);
 Scape.prototype.constructor = Scape;
+// ------------------------------------------------------------------
+Scape.prototype.addColumns = function() {
+    var theScene = this.scene;
+    this.f.eachColumn( function(err, c) {
+        for (var block = 0; block < c.g.length; block++) {
+            c.object = new THREE.Mesh(
+                new THREE.BoxGeometry(c.dx, c.dy, c.g[block].dz),
+                c.g[block].m
+            );
+            c.object.position.set(c.x + c.dx/2, c.y + c.dy/2, c.g[block].z - c.g[block].dz/2);
+            theScene.add(c.object);
+        }
+    });
+}
 // ------------------------------------------------------------------
 Scape.prototype.addHelperShapes = function() {
 
@@ -132,16 +120,14 @@ Scape.prototype.addHelperGrid = function(topOrBottom) {
 
     var gridW = Math.max(this.f.maxX - this.f.minX, this.f.maxY - this.f.minY);
 
-    // Grid "size" is the distance EACH WAY the grid should span.
-    // So for a grid W units across, specify the size as W/2.
+    // Grid "size" is the distance in each of the four directions,
+    // the grid should span.  So for a grid W units across, specify
+    // the size as W/2.
     var gridXY = new THREE.GridHelper(gridW/2, gridW/10);
     gridXY.setColors(gc, gc);
     gridXY.rotation.x = Math.PI/2;
     gridXY.position.set(this.f.minX + gridW/2, this.f.minY + gridW/2, gz);
     this.scene.add(gridXY);
-
-
-    // TODO: draw the grid from minX to maxX etc at top or bottom
 }
 // ------------------------------------------------------------------
 /**
@@ -163,6 +149,27 @@ Scape.prototype._makeRenderer = function(options) {
         renderer.setSize(options.width, options.height);
     }
     return renderer;
+}
+// ------------------------------------------------------------------
+Scape.prototype._makeLights = function(lights) {
+
+    var lightList = [];
+    if (lights.indexOf('ambient') != -1) {
+        // add an ambient list
+        lightList.push(new THREE.AmbientLight(0x222233));
+    }
+    if (lights.indexOf('sun') != -1) {
+        var sun = new THREE.PointLight(0xffffee, 1, 0);
+        // TODO: fix sun position
+        sun.position.set(-100,-100,300);
+        lightList.push(sun);
+    }
+
+    for (var i = 0; i < lightList.length; i++) {
+        this.scene.add(lightList[i]);
+    }
+
+    return lightList;
 }
 // ------------------------------------------------------------------
 /**
