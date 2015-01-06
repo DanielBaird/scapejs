@@ -41,8 +41,8 @@ function Scape(field, dom, options) {
     light.position.set(100,300,300)
     this.scene.add(light);
 
-    // var ambientLight = new THREE.AmbientLight(0x111111);
-    // this.scene.add(ambientLight);
+    var ambientLight = new THREE.AmbientLight(0x222222);
+    this.scene.add(ambientLight);
 
     // f.eachColumn( function(err, c) {
     //     for (var block = 0; block < c.g.length; block++) {
