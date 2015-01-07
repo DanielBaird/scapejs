@@ -10,14 +10,17 @@ function ScapeField(options) {
 
         maxX: 100,
         maxY: 100,
-        maxZ: 20,
+        maxZ: 40,
 
         blocksX: 10,
-        blocksY: 10
+        blocksY: 10,
+        blocksZ: 100
     };
+
     // invoke our super constructor
     ScapeObject.call(this, options, defaultOptions);
 
+    // min and max values for x y and z
     this.minX = this._opts.minX;
     this.minY = this._opts.minY;
     this.minZ = this._opts.minZ;
@@ -26,20 +29,24 @@ function ScapeField(options) {
     this.maxY = this._opts.maxY;
     this.maxZ = this._opts.maxZ;
 
-    this.blocksX = this._opts.blocksX;
-    this.blocksY = this._opts.blocksY;
-
+    // convenient "widths"
     this.wX = this.maxX - this.minX;
     this.wY = this.maxY - this.minY;
     this.wZ = this.maxZ - this.minZ;
 
-    // DEBUG
-    // this.blocksX = 1;
-    // this.blocksY = 1;
+    // how many blocks across x and y?
+    this.blocksX = this._opts.blocksX;
+    this.blocksY = this._opts.blocksY;
+    this.blocksZ = this._opts.blocksZ;
 
+    // how wide is each block
     this._bX = this.wX / this.blocksX;
     this._bY = this.wY / this.blocksY;
+    this._bZ = this.wZ / this.blocksZ;
 
+    // housekeeping
+    this._groundStacks = [];
+    this._groundHeights = [];
     this._calcCenter();
     this._makeGrid();
 
@@ -69,42 +76,129 @@ ScapeField.prototype._makeGrid = function() {
                 opacity: 0.2
             });
 
-            var square = {
+            var block = {
                 x: this.minX + (this._bX * gx),
                 dx: this._bX * 0.95,
                 y: this.minY + (this._bY * gy),
                 dy: this._bY * 0.95,
                 g: [{
                     z: this.maxZ,
-                    dz: this.wZ,
-                    m: material
+                    dz: 0, // 0 means "stretch to minZ"
+                    m: material,
+                    object: null
                 }],
-                object: null
             }
-            col.push(square);
+            col.push(block);
         }
         this._g.push(col);
     }
 }
 // ------------------------------------------------------------------
 /**
+ * Add additional ground heights to the field's ground heights.
+ * The heightList is an array of data objects.  Each object needs x,
+ * y and z properties.
+ * @param {boolean} replace if replace is truthy, discard existing
+ *                          ground heights first.
+ */
+ScapeField.prototype.addGroundHeights = function(heightList, replace) {
+    if (replace) {
+        this._groundHeights = [];
+    }
+    // loop through the list adding each one.
+    for (var s = 0; s < heightList.length; s++) {
+        var pt = heightList[s];
+        this.addGroundHeight(pt.x, pt.y, pt.z);
+    }
+    this.calcGroundHeights();
+}
+// ------------------------------------------------------------------
+/**
+ * Add a ground height of z at x,y.
+ * If you call this, remember to calcGround() after.
+ */
+ScapeField.prototype.addGroundHeight = function(x, y, z) {
+    this._groundHeights.push({ x: x, y: y, z: z });
+}
+// ------------------------------------------------------------------
+/**
+ * Add additional ground stacks to the field's ground stacks.
+ * The groundList is an array of data objects.  Each object needs x,
+ * y and z properties, and a 'stack' property, each matching the
+ * corresponding arg to addGroundStack.
+ * @param {boolean} replace if replace is truthy, discard existing
+ *                          ground points first.
+ */
+ScapeField.prototype.addGroundStacks = function(groundList, replace) {
+    if (replace) {
+        this._groundStacks = [];
+    }
+    // loop through the list adding each one.
+    for (var s = 0; s < groundList.length; s++) {
+        var pt = groundList[s];
+        this.addGroundStack(pt.x, pt.y, pt.stack);
+    }
+    this.calcGroundStacks();
+}
+// ------------------------------------------------------------------
+/**
  * Add a ground stack at x,y, starting at height z.
- * The stack is an array of two-element arrays, like this:
+ * The stack is an array of two-element arrays with a Material
+ * and a depth number, like this:
  * [
- *     ['leaflitter', 0.3],
- *     ['dirt', 3.5],
- *     ['stone', 4]
+ *     [Material.leafLitter, 0.3],
+ *     [Material.dirt, 3.5],
+ *     [Material.stone, 4]
  * ]
- * which puts a leaflitter layer 0.3 units deep on a 3.5-unit
+ * That puts a leaflitter layer 0.3 units deep on a 3.5-unit
  * deep dirt layer, which is on a stone layer.  If the final
  * layer's depth is zero, that layer is assumed to go all the
  * way to minZ.
+ * If you call this, remember to calcGround() after.
  */
-ScapeField.prototype.addGround = function(x, y, z, stack) {
-
+ScapeField.prototype.addGroundStack = function(x, y, stack) {
+    // TODO: check for validity
+    this._groundStacks.push({
+        x: x,
+        y: y,
+        stack: stack
+    })
 }
 // ------------------------------------------------------------------
-ScapeField.prototype._calcGround = function() {
+/**
+ * (re)calculate the ground height.
+ */
+ScapeField.prototype.calcGroundHeights = function() {
+
+    this.eachBlock( function(err, block) {
+        // TODO: check err
+
+        // find height for this ground block by allowing each
+        // known ground height to "vote" using the inverse of
+        // it's squared distance from the centre of the block.
+        var h, dx, dy, dist, voteSize;
+        var bZ = 0;
+        var votes = 0;
+        for (var gh=0; gh < this._groundHeights.length; gh++) {
+            h = this._groundHeights[gh];
+            dx = block.x + (0.5 * this._bX) - h.x;
+            dy = block.y + (0.5 * this._bY) - h.y;
+            dist = 1 + dx*dx + dy*dy;
+            voteSize = 1 / dist;
+            bZ += h.z * voteSize;
+            votes += voteSize;
+        }
+        // now divide to find the average
+        bZ = bZ / votes;
+
+        // block-ish heights: round to the nearest _bZ
+        var diffZ = bZ - this.minZ;
+        bZ = this.minZ + Math.round(diffZ / this._bZ) * this._bZ;
+
+        // okay now we know a height!  set it
+        this.setBlockHeight(block, bZ);
+
+    }, this);
 }
 // ------------------------------------------------------------------
 ScapeField.prototype._calcCenter = function() {
@@ -116,18 +210,64 @@ ScapeField.prototype._calcCenter = function() {
     );
 }
 // ------------------------------------------------------------------
-ScapeField.prototype.getColumn = function(x, y) {
-    // return the ground column that includes  x,y
+ScapeField.prototype.setBlockHeight = function(block, z) {
+    // to set the block ground height, we need to find the block's
+    // current ground height (the z of the top layer), work out a
+    // diff between that and the new height, and add that diff to
+    // all the layers.
+    var dZ = z - block.g[0].z;
+    var depth;
+    // do all the layers except the last one
+    for (var l = 0; l < block.g.length; l++) {
+        block.g[l].z += dZ;
+        // if it's the last layer, it might have a 0 depth, which
+        // means stretch to minZ.
+        depth = block.g[l].dz;
+        if (depth == 0) {
+            depth = dZ - this.minZ;
+        }
+        // redraw the object..
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        block.g[l].object.position.add(new THREE.Vector3(0, 0, dZ));
+    }
+}
+// ------------------------------------------------------------------
+ScapeField.prototype.getBlock = function(x, y) {
+    // return the block that includes  x,y
     var gx = (x - this.minX) / this._bX;
     var gy = (y - this.minY) / this._bY;
     return (this._g[gx][gy]);
 }
 // ------------------------------------------------------------------
-// invoke the callback each column in turn
-// callback should look like: function(err, column) { ... }
+// invoke the callback each block in turn
+// callback should look like: function(err, block) { ... }
 // if err is null everything is fine. if err is not null, there
 // was an error.
-ScapeField.prototype.eachColumn = function(callback, thisArg, order) {
+ScapeField.prototype.eachBlock = function(callback, thisArg, order) {
     if (order == undefined) {
         order = 'xup-yup';
     }

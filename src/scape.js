@@ -28,7 +28,7 @@ function Scape(field, dom, options) {
     this.controls = this._makeControls();
     this.lights = this._makeLights(this._opts.lights);
 
-    this.addColumns();
+    this.addBlocks();
 
     // add grids and helper cubes
     // this.addHelperGrid();
@@ -57,16 +57,22 @@ function Scape(field, dom, options) {
 Scape.prototype = Object.create(ScapeObject.prototype);
 Scape.prototype.constructor = Scape;
 // ------------------------------------------------------------------
-Scape.prototype.addColumns = function() {
+Scape.prototype.addBlocks = function() {
     var theScene = this.scene;
-    this.f.eachColumn( function(err, c) {
-        for (var block = 0; block < c.g.length; block++) {
-            c.object = new THREE.Mesh(
-                new THREE.BoxGeometry(c.dx, c.dy, c.g[block].dz),
-                c.g[block].m
+    var depth, layer;
+    this.f.eachBlock( function(err, b) {
+        for (var layerIndex = 0; layerIndex < b.g.length; layerIndex++) {
+            layer = b.g[layerIndex];
+            depth = layer.dz;
+            if (depth == 0) {
+                depth = layer.z - this.minZ;
+            }
+            layer.object = new THREE.Mesh(
+                new THREE.BoxGeometry(b.dx, b.dy, depth),
+                layer.m
             );
-            c.object.position.set(c.x + c.dx/2, c.y + c.dy/2, c.g[block].z - c.g[block].dz/2);
-            theScene.add(c.object);
+            layer.object.position.set(b.x + b.dx/2, b.y + b.dy/2, layer.z - depth/2);
+            theScene.add(layer.object);
         }
     });
 }
@@ -79,9 +85,9 @@ Scape.prototype.addHelperShapes = function() {
     var cubeGeom = new THREE.BoxGeometry( size, size, size );
 
     var white = new THREE.MeshLambertMaterial({ color: 0xffffff });
-    var red = new THREE.MeshLambertMaterial({   color: 0xff0000 });
+    var red   = new THREE.MeshLambertMaterial({ color: 0xff0000 });
     var green = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-    var blue = new THREE.MeshLambertMaterial({  color: 0x0000ff });
+    var blue  = new THREE.MeshLambertMaterial({ color: 0x0000ff });
     // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
     // var material = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading } )
 
