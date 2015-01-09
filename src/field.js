@@ -8,17 +8,9 @@
 function ScapeField(options) {
 
     var defaultOptions = {
-        minX: 0,
-        minY: 0,
-        minZ: 0,
-
-        maxX: 100,
-        maxY: 100,
-        maxZ: 40,
-
-        blocksX: 10,
-        blocksY: 10,
-        blocksZ: 100
+        minX: 0,        maxX: 100,          blocksX: 10,
+        minY: 0,        maxY: 100,          blocksY: 10,
+        minZ: 0,        maxZ: 40,           blocksZ: 80
     };
 
     // invoke our super constructor
