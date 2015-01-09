@@ -1,4 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: field.js</title>
 
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: field.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 /**
@@ -71,9 +99,9 @@ ScapeField.prototype.print = function() {
 // ------------------------------------------------------------------
 ScapeField.prototype._makeGrid = function() {
     this._g = [];
-    for (var gx = 0; gx < this.blocksX; gx++) {
+    for (var gx = 0; gx &lt; this.blocksX; gx++) {
         var col = [];
-        for (var gy = 0; gy < this.blocksY; gy++) {
+        for (var gy = 0; gy &lt; this.blocksY; gy++) {
             var material = new THREE.MeshLambertMaterial({
                 color: 0x999999,
                 transparent: true,
@@ -89,7 +117,7 @@ ScapeField.prototype._makeGrid = function() {
                     z: this.maxZ,
                     dz: 0, // 0 means "stretch to minZ"
                     m: material,
-                    chunk: null
+                    object: null
                 }],
             }
             col.push(block);
@@ -110,7 +138,7 @@ ScapeField.prototype.addGroundHeights = function(heightList, replace) {
         this._groundHeights = [];
     }
     // loop through the list adding each one.
-    for (var s = 0; s < heightList.length; s++) {
+    for (var s = 0; s &lt; heightList.length; s++) {
         var pt = heightList[s];
         this.addGroundHeight(pt.x, pt.y, pt.z);
     }
@@ -138,7 +166,7 @@ ScapeField.prototype.addGroundStacks = function(groundList, replace) {
         this._groundStacks = [];
     }
     // loop through the list adding each one.
-    for (var s = 0; s < groundList.length; s++) {
+    for (var s = 0; s &lt; groundList.length; s++) {
         var pt = groundList[s];
         this.addGroundStack(pt.x, pt.y, pt.stack);
     }
@@ -183,7 +211,7 @@ ScapeField.prototype.calcGroundHeights = function() {
         var h, dx, dy, dist, voteSize;
         var bZ = 0;
         var votes = 0;
-        for (var gh=0; gh < this._groundHeights.length; gh++) {
+        for (var gh=0; gh &lt; this._groundHeights.length; gh++) {
             h = this._groundHeights[gh];
             dx = block.x + (0.5 * this._bX) - h.x;
             dy = block.y + (0.5 * this._bY) - h.y;
@@ -222,9 +250,41 @@ ScapeField.prototype.setBlockHeight = function(block, z) {
     var dZ = z - block.g[0].z;
     var depth;
     // do all the layers except the last one
-    for (var l = 0; l < block.g.length; l++) {
+    for (var l = 0; l &lt; block.g.length; l++) {
         block.g[l].z += dZ;
-        block.g[l].chunk.rebuild();
+        // if it's the last layer, it might have a 0 depth, which
+        // means stretch to minZ.
+        depth = block.g[l].dz;
+        if (depth == 0) {
+            depth = dZ - this.minZ;
+        }
+        // redraw the object..
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        // TODO: make the object a ScapeChunk or something so we can re-size it here.
+        block.g[l].object.position.add(new THREE.Vector3(0, 0, dZ));
     }
 }
 // ------------------------------------------------------------------
@@ -247,8 +307,8 @@ ScapeField.prototype.eachBlock = function(callback, thisArg, order) {
         thisArg = this;
     }
     if (order == 'xup-yup') {
-        for (var gx = 0; gx < this._g.length; gx++) {
-            for (var gy = 0; gy < this._g[0].length; gy++) {
+        for (var gx = 0; gx &lt; this._g.length; gx++) {
+            for (var gy = 0; gy &lt; this._g[0].length; gy++) {
                 callback.call(thisArg, null, this._g[gx][gy]);
             }
         }
@@ -259,3 +319,26 @@ ScapeField.prototype.eachBlock = function(callback, thisArg, order) {
 
 
 
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Scape.html">Scape</a></li><li><a href="ScapeChunk.html">ScapeChunk</a></li><li><a href="ScapeField.html">ScapeField</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha13</a> on Fri Jan 09 2015 15:01:39 GMT+1000 (AEST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

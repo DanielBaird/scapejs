@@ -1,17 +1,19 @@
 
 // ------------------------------------------------------------------
-var defaultOptions = {
-    lights: ['ambient', 'sun']
-};
-// ------------------------------------------------------------------
 // ------------------------------------------------------------------
 /**
  * Represents a rendering of a landscape / moonscape / whatever
  * @param {ScapeField} field  the field being rendered
  * @param {string} dom        DOM element the scape should be rendered info.
  * @param {object} options    collection of options.
+ * @class
  */
 function Scape(field, dom, options) {
+
+    var defaultOptions = {
+        lights: ['ambient', 'sun']
+    };
+
     // invoke our super constructor
     ScapeObject.call(this, options, defaultOptions);
 
@@ -59,20 +61,27 @@ Scape.prototype.constructor = Scape;
 // ------------------------------------------------------------------
 Scape.prototype.addBlocks = function() {
     var theScene = this.scene;
+    var minZ = this.f.minZ;
     var depth, layer;
     this.f.eachBlock( function(err, b) {
         for (var layerIndex = 0; layerIndex < b.g.length; layerIndex++) {
-            layer = b.g[layerIndex];
-            depth = layer.dz;
-            if (depth == 0) {
-                depth = layer.z - this.minZ;
-            }
-            layer.object = new THREE.Mesh(
-                new THREE.BoxGeometry(b.dx, b.dy, depth),
-                layer.m
+
+            b.g[layerIndex].chunk = new ScapeChunk(
+                theScene, b, layerIndex, minZ
             );
-            layer.object.position.set(b.x + b.dx/2, b.y + b.dy/2, layer.z - depth/2);
-            theScene.add(layer.object);
+
+            console.log(b.g[layerIndex].chunk);
+            // layer = b.g[layerIndex];
+            // depth = layer.dz;
+            // if (depth == 0) {
+            //     depth = layer.z - this.minZ;
+            // }
+            // layer.object = new THREE.Mesh(
+            //     new THREE.BoxGeometry(b.dx, b.dy, depth),
+            //     layer.m
+            // );
+            // layer.object.position.set(b.x + b.dx/2, b.y + b.dy/2, layer.z - depth/2);
+            // theScene.add(layer.object);
         }
     });
 }
