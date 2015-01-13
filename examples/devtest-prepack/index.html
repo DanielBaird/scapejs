@@ -17,11 +17,15 @@
     <div id="container"></div>
 
     <script src="../lib/jquery-2.1.1.min.js"></script>
-    <script src="../lib/three.min.js"></script>
+    <script src="../lib/three.js"></script>
     <script src="../lib/OrbitControls.js"></script>
-    <script src="../../dist/scape.js"></script>
+    <script src="../../src/baseobject.js"></script>
+    <script src="../../src/field.js"></script>
+    <script src="../../src/chunk.js"></script>
+    <script src="../../src/materials.js"></script>
+    <script src="../../src/scape.js"></script>
     <script>
-        var f = new Scape.Field({
+        var f = new ScapeField({
             // minX:  0, maxX: 100,
             // minY:  0, maxY: 100,
             // minZ:  0, maxZ: 40
@@ -34,7 +38,7 @@
             blocksZ: 20
         });
 
-        var s = new Scape.Scene(f, 'container');
+        var s = new Scape(f, 'container');
 
         f.addGroundHeights([
             { x: 210, y: -40, z: -90 },

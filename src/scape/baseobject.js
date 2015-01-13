@@ -15,3 +15,5 @@ ScapeObject.prototype.mergeOptions = function(extraOpts) {
         this._opts[opt] = extraOpts[opt];
     }
 }
+
+module.exports = ScapeObject;

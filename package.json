@@ -1,11 +1,12 @@
 {
-  "name": "scapejs",
+  "name": "scape",
   "version": "0.0.1",
-  "description": "ScapeJS makes landscapes / seascapes / spacescapes in browser using three.js.",
-  "main": "index.js",
+  "description": "Scape JS makes landscapes / seascapes / spacescapes in browser using three.js.",
+  "main": "dist/scape.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docs": "jsdoc --configure ./devconfig/jsdoc.conf.json"
+    "docs": "jsdoc --configure ./devconfig/jsdoc.conf.json",
+    "build": "browserify src/scape.js -o dist/scape.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +19,9 @@
   },
   "homepage": "http://scapejs.rocks",
   "devDependencies": {
+    "browserify": "^8.1.0",
     "jsdoc": "^3.3.0-alpha13"
-  }
+  },
+  "browserify": { "transform": [ "browserify-shim" ] },
+  "browserify-shim": "./devconfig/browserify-shim-config.js"
 }

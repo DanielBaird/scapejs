@@ -1,5 +1,7 @@
 
 // ------------------------------------------------------------------
+THREE = require('three');
+ScapeObject = require('./baseobject');
 // ------------------------------------------------------------------
 /**
  * Represents a rectangular prism of scape material -- dirt or
@@ -64,3 +66,4 @@ ScapeChunk.prototype._updateMesh = function() {
     this._addMesh();
 }
 // ------------------------------------------------------------------
+module.exports = ScapeChunk;

@@ -1,5 +1,6 @@
-
 // ------------------------------------------------------------------
+THREE = require('three');
+ScapeObject = require('./baseobject');
 // ------------------------------------------------------------------
 /**
  * Holds information about an area.
@@ -246,7 +247,9 @@ ScapeField.prototype.eachBlock = function(callback, thisArg, order) {
         }
     }
 }
-
+// ------------------------------------------------------------------
+// ------------------------------------------------------------------
+module.exports = ScapeField;
 
 
 
