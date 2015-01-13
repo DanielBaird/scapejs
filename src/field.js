@@ -69,7 +69,7 @@ ScapeField.prototype._makeGrid = function() {
             var material = new THREE.MeshLambertMaterial({
                 color: 0x999999,
                 transparent: true,
-                opacity: 0.2
+                opacity: 0.8
             });
 
             var block = {

@@ -31,21 +31,13 @@ ScapeChunk.prototype.rebuild = function() {
 }
 // ------------------------------------------------------------------
 ScapeChunk.prototype._createNewMesh = function() {
-            // layer = b.g[layerIndex];
-            // depth = layer.dz;
-            // if (depth == 0) {
-            //     depth = layer.z - this.minZ;
-            // }
-            // layer.object = new THREE.Mesh(
-            //     new THREE.BoxGeometry(b.dx, b.dy, depth),
-            //     layer.m
-            // );
-            // layer.object.position.set(b.x + b.dx/2, b.y + b.dy/2, layer.z - depth/2);
-            // theScene.add(layer.object);
+    // the chunk will be as deep as the layer says
     var depth = this._layer.dz;
     if (depth == 0) {
+        // ..unless that's 0, in which case go to the bottom
         depth = this._layer.z - this._minZ;
     }
+    // make a geometry for the chunk
     var geom = new THREE.BoxGeometry(
         this._block.dx, this._block.dy, depth
     );
