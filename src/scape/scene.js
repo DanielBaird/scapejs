@@ -13,7 +13,7 @@ ScapeChunk = require('./chunk');
 function ScapeScene(field, dom, options) {
 
     var defaultOptions = {
-        lights: ['ambient', 'sun']
+        lights: ['ambient', 'topleft']
     };
 
     // invoke our super constructor
@@ -43,7 +43,7 @@ function ScapeScene(field, dom, options) {
     render = (function unboundRender(ts) {
 
         // DEBUG
-        if (lastLogAt + 1000 < ts) {
+        if (lastLogAt + 2000 < ts) {
             console.log('rendering...');
             lastLogAt = ts;
         }
@@ -67,25 +67,12 @@ ScapeScene.prototype.addBlocks = function() {
     var depth, layer;
     this.f.eachBlock( function(err, b) {
         for (var layerIndex = 0; layerIndex < b.g.length; layerIndex++) {
-
             b.g[layerIndex].chunk = new ScapeChunk(
                 theScene, b, layerIndex, minZ
             );
-
-            console.log(b.g[layerIndex].chunk);
-            // layer = b.g[layerIndex];
-            // depth = layer.dz;
-            // if (depth == 0) {
-            //     depth = layer.z - this.minZ;
-            // }
-            // layer.object = new THREE.Mesh(
-            //     new THREE.BoxGeometry(b.dx, b.dy, depth),
-            //     layer.m
-            // );
-            // layer.object.position.set(b.x + b.dx/2, b.y + b.dy/2, layer.z - depth/2);
-            // theScene.add(layer.object);
         }
     });
+    this.f.calcGroundHeights();
 }
 // ------------------------------------------------------------------
 ScapeScene.prototype.addHelperShapes = function() {
@@ -175,11 +162,36 @@ ScapeScene.prototype._makeLights = function(lights) {
         // add an ambient list
         lightList.push(new THREE.AmbientLight(0x222233));
     }
+    if (lights.indexOf('topleft') != -1) {
+        var left = new THREE.PointLight(0xffffff, 1, 0);
+        // TODO: supposed to be over the viewer's left shoulder
+        // TODO: derive position from the camera's position
+        left.position.set(-25, -100, 300);
+        lightList.push(left);
+    }
     if (lights.indexOf('sun') != -1) {
-        var sun = new THREE.PointLight(0xffffee, 1, 0);
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        var sun = new THREE.SpotLight(0xffffee);
         // TODO: fix sun position
-        sun.position.set(-100,-100,300);
-        lightList.push(sun);
+        sun.position.set(-25, -100, 200);
+        sun.castShadow = true;
+        sun.shadowMapWidth = 1024;
+        sun.shadowMapHeight = 1024;
+        sun.shadowCameraNear = 500;
+        sun.shadowCameraFar = 4000;
+        sun.shadowCameraFov = 30;
+        if (this.f) {
+            sun.target = this.f.center;
+        }
+        // lightList.push(sun);
     }
 
     for (var i = 0; i < lightList.length; i++) {

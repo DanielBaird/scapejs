@@ -1,6 +1,7 @@
 // ------------------------------------------------------------------
 THREE = require('three');
 ScapeObject = require('./baseobject');
+ScapeStuff = require('./stuff');
 // ------------------------------------------------------------------
 /**
  * Holds information about an area.
@@ -63,15 +64,25 @@ ScapeField.prototype.print = function() {
 }
 // ------------------------------------------------------------------
 ScapeField.prototype._makeGrid = function() {
+
+    var stuffs = [
+          ScapeStuff.dirt1
+        , ScapeStuff.dirt5
+        , ScapeStuff.dirt9
+        , ScapeStuff.water
+        , ScapeStuff.water
+        , ScapeStuff.water
+        , ScapeStuff.leaflitter
+        , ScapeStuff.leaflitter
+    ]
+
     this._g = [];
     for (var gx = 0; gx < this.blocksX; gx++) {
         var col = [];
         for (var gy = 0; gy < this.blocksY; gy++) {
-            var material = new THREE.MeshLambertMaterial({
-                color: 0x999999,
-                transparent: true,
-                opacity: 0.8
-            });
+
+            // TODO: just user generic material here.
+            var material = stuffs[Math.floor(Math.random() * (stuffs.length))]
 
             var block = {
                 x: this.minX + (this._bX * gx),
@@ -217,7 +228,9 @@ ScapeField.prototype.setBlockHeight = function(block, z) {
     // do all the layers except the last one
     for (var l = 0; l < block.g.length; l++) {
         block.g[l].z += dZ;
-        block.g[l].chunk.rebuild();
+        if (block.g[l].chunk) {
+            block.g[l].chunk.rebuild();
+        }
     }
 }
 // ------------------------------------------------------------------

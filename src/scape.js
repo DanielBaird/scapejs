@@ -1,13 +1,15 @@
 
 THREE = require('three');
 
-base = require('./scape/baseobject');
+base  = require('./scape/baseobject');
+stuff = require('./scape/stuff');
 field = require('./scape/field');
 scene = require('./scape/scene');
 chunk = require('./scape/chunk');
 
 Scape = {
     BaseObject: base,
+    Stuff: stuff,
     Chunk: chunk,
     Field: field,
     Scene: scene

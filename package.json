@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "jsdoc --configure ./devconfig/jsdoc.conf.json",
-    "build": "browserify src/scape.js -o dist/scape.js"
+    "build": "browserify src/scape.js -o dist/scape.js",
+    "build:watch": "watchify src/scape.js -o dist/scape.js -v"
   },
   "repository": {
     "type": "git",
@@ -20,8 +21,13 @@
   "homepage": "http://scapejs.rocks",
   "devDependencies": {
     "browserify": "^8.1.0",
-    "jsdoc": "^3.3.0-alpha13"
+    "jsdoc": "^3.3.0-alpha13",
+    "watchify": "^2.2.1"
   },
-  "browserify": { "transform": [ "browserify-shim" ] },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  },
   "browserify-shim": "./devconfig/browserify-shim-config.js"
 }

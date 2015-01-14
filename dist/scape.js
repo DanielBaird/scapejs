@@ -1,15 +1,17 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({"/Users/pvrdwb/jcu/scapejs/src/scape.js":[function(require,module,exports){
 (function (global){
 
 THREE = (typeof window !== "undefined" ? window.THREE : typeof global !== "undefined" ? global.THREE : null);
 
-base = require('./scape/baseobject');
+base  = require('./scape/baseobject');
+stuff = require('./scape/stuff');
 field = require('./scape/field');
 scene = require('./scape/scene');
 chunk = require('./scape/chunk');
 
 Scape = {
     BaseObject: base,
+    Stuff: stuff,
     Chunk: chunk,
     Field: field,
     Scene: scene
@@ -22,7 +24,7 @@ if (typeof module !== 'undefined') {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./scape/baseobject":2,"./scape/chunk":3,"./scape/field":4,"./scape/scene":5}],2:[function(require,module,exports){
+},{"./scape/baseobject":"/Users/pvrdwb/jcu/scapejs/src/scape/baseobject.js","./scape/chunk":"/Users/pvrdwb/jcu/scapejs/src/scape/chunk.js","./scape/field":"/Users/pvrdwb/jcu/scapejs/src/scape/field.js","./scape/scene":"/Users/pvrdwb/jcu/scapejs/src/scape/scene.js","./scape/stuff":"/Users/pvrdwb/jcu/scapejs/src/scape/stuff.js"}],"/Users/pvrdwb/jcu/scapejs/src/scape/baseobject.js":[function(require,module,exports){
 
 //
 // this "base" object has a few convenience functions for handling
@@ -42,7 +44,7 @@ ScapeObject.prototype.mergeOptions = function(extraOpts) {
 }
 
 module.exports = ScapeObject;
-},{}],3:[function(require,module,exports){
+},{}],"/Users/pvrdwb/jcu/scapejs/src/scape/chunk.js":[function(require,module,exports){
 (function (global){
 
 // ------------------------------------------------------------------
@@ -114,11 +116,12 @@ ScapeChunk.prototype._updateMesh = function() {
 // ------------------------------------------------------------------
 module.exports = ScapeChunk;
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./baseobject":2}],4:[function(require,module,exports){
+},{"./baseobject":"/Users/pvrdwb/jcu/scapejs/src/scape/baseobject.js"}],"/Users/pvrdwb/jcu/scapejs/src/scape/field.js":[function(require,module,exports){
 (function (global){
 // ------------------------------------------------------------------
 THREE = (typeof window !== "undefined" ? window.THREE : typeof global !== "undefined" ? global.THREE : null);
 ScapeObject = require('./baseobject');
+ScapeStuff = require('./stuff');
 // ------------------------------------------------------------------
 /**
  * Holds information about an area.
@@ -181,15 +184,25 @@ ScapeField.prototype.print = function() {
 }
 // ------------------------------------------------------------------
 ScapeField.prototype._makeGrid = function() {
+
+    var stuffs = [
+          ScapeStuff.dirt1
+        , ScapeStuff.dirt5
+        , ScapeStuff.dirt9
+        , ScapeStuff.water
+        , ScapeStuff.water
+        , ScapeStuff.water
+        , ScapeStuff.leaflitter
+        , ScapeStuff.leaflitter
+    ]
+
     this._g = [];
     for (var gx = 0; gx < this.blocksX; gx++) {
         var col = [];
         for (var gy = 0; gy < this.blocksY; gy++) {
-            var material = new THREE.MeshLambertMaterial({
-                color: 0x999999,
-                transparent: true,
-                opacity: 0.8
-            });
+
+            // TODO: just user generic material here.
+            var material = stuffs[Math.floor(Math.random() * (stuffs.length))]
 
             var block = {
                 x: this.minX + (this._bX * gx),
@@ -335,7 +348,9 @@ ScapeField.prototype.setBlockHeight = function(block, z) {
     // do all the layers except the last one
     for (var l = 0; l < block.g.length; l++) {
         block.g[l].z += dZ;
-        block.g[l].chunk.rebuild();
+        if (block.g[l].chunk) {
+            block.g[l].chunk.rebuild();
+        }
     }
 }
 // ------------------------------------------------------------------
@@ -374,7 +389,7 @@ module.exports = ScapeField;
 
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./baseobject":2}],5:[function(require,module,exports){
+},{"./baseobject":"/Users/pvrdwb/jcu/scapejs/src/scape/baseobject.js","./stuff":"/Users/pvrdwb/jcu/scapejs/src/scape/stuff.js"}],"/Users/pvrdwb/jcu/scapejs/src/scape/scene.js":[function(require,module,exports){
 (function (global){
 // ------------------------------------------------------------------
 THREE = (typeof window !== "undefined" ? window.THREE : typeof global !== "undefined" ? global.THREE : null);
@@ -391,7 +406,7 @@ ScapeChunk = require('./chunk');
 function ScapeScene(field, dom, options) {
 
     var defaultOptions = {
-        lights: ['ambient', 'sun']
+        lights: ['ambient', 'topleft']
     };
 
     // invoke our super constructor
@@ -421,7 +436,7 @@ function ScapeScene(field, dom, options) {
     render = (function unboundRender(ts) {
 
         // DEBUG
-        if (lastLogAt + 1000 < ts) {
+        if (lastLogAt + 2000 < ts) {
             console.log('rendering...');
             lastLogAt = ts;
         }
@@ -445,25 +460,12 @@ ScapeScene.prototype.addBlocks = function() {
     var depth, layer;
     this.f.eachBlock( function(err, b) {
         for (var layerIndex = 0; layerIndex < b.g.length; layerIndex++) {
-
             b.g[layerIndex].chunk = new ScapeChunk(
                 theScene, b, layerIndex, minZ
             );
-
-            console.log(b.g[layerIndex].chunk);
-            // layer = b.g[layerIndex];
-            // depth = layer.dz;
-            // if (depth == 0) {
-            //     depth = layer.z - this.minZ;
-            // }
-            // layer.object = new THREE.Mesh(
-            //     new THREE.BoxGeometry(b.dx, b.dy, depth),
-            //     layer.m
-            // );
-            // layer.object.position.set(b.x + b.dx/2, b.y + b.dy/2, layer.z - depth/2);
-            // theScene.add(layer.object);
         }
     });
+    this.f.calcGroundHeights();
 }
 // ------------------------------------------------------------------
 ScapeScene.prototype.addHelperShapes = function() {
@@ -553,11 +555,36 @@ ScapeScene.prototype._makeLights = function(lights) {
         // add an ambient list
         lightList.push(new THREE.AmbientLight(0x222233));
     }
+    if (lights.indexOf('topleft') != -1) {
+        var left = new THREE.PointLight(0xffffff, 1, 0);
+        // TODO: supposed to be over the viewer's left shoulder
+        // TODO: derive position from the camera's position
+        left.position.set(-25, -100, 300);
+        lightList.push(left);
+    }
     if (lights.indexOf('sun') != -1) {
-        var sun = new THREE.PointLight(0xffffee, 1, 0);
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        // TODO: this whole light doesn't work.
+        var sun = new THREE.SpotLight(0xffffee);
         // TODO: fix sun position
-        sun.position.set(-100,-100,300);
-        lightList.push(sun);
+        sun.position.set(-25, -100, 200);
+        sun.castShadow = true;
+        sun.shadowMapWidth = 1024;
+        sun.shadowMapHeight = 1024;
+        sun.shadowCameraNear = 500;
+        sun.shadowCameraFar = 4000;
+        sun.shadowCameraFov = 30;
+        if (this.f) {
+            sun.target = this.f.center;
+        }
+        // lightList.push(sun);
     }
 
     for (var i = 0; i < lightList.length; i++) {
@@ -649,4 +676,53 @@ ScapeScene.prototype.print = function() {
 module.exports = ScapeScene;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./baseobject":2,"./chunk":3}]},{},[1]);
+},{"./baseobject":"/Users/pvrdwb/jcu/scapejs/src/scape/baseobject.js","./chunk":"/Users/pvrdwb/jcu/scapejs/src/scape/chunk.js"}],"/Users/pvrdwb/jcu/scapejs/src/scape/stuff.js":[function(require,module,exports){
+(function (global){
+// ------------------------------------------------------------------
+THREE = (typeof window !== "undefined" ? window.THREE : typeof global !== "undefined" ? global.THREE : null);
+// ------------------------------------------------------------------
+/**
+ * A bag of stuff that things can be made out of.
+ */
+var ScapeStuff = {};
+var Lambert = THREE.MeshLambertMaterial;
+
+// "generic" stuff for when nothing else is specified
+ScapeStuff.generic = new Lambert({ color: 0x999999,
+                     transparent: true, opacity: 0.50 });
+
+// water is blue and a bit transparent
+ScapeStuff.water = new Lambert({ color: 0x3399ff,
+                     transparent: true, opacity: 0.75 });
+
+// dirt for general use
+ScapeStuff.dirt = new Lambert({ color: 0xa0522d });
+// Nine dirt colours for varying moisture levels.  Start by defining
+// the driest and wettest colours, and use .lerp() to get a linear
+// interpolated colour for each of the in-between dirts.
+var dry = new THREE.Color(0xbb8855); // dry
+var wet = new THREE.Color(0x882200); // moist
+
+ScapeStuff.dirt1 = new Lambert({ color: dry });
+ScapeStuff.dirt2 = new Lambert({ color: dry.clone().lerp(wet, 1/8) });
+ScapeStuff.dirt3 = new Lambert({ color: dry.clone().lerp(wet, 2/8) });
+ScapeStuff.dirt4 = new Lambert({ color: dry.clone().lerp(wet, 3/8) });
+ScapeStuff.dirt5 = new Lambert({ color: dry.clone().lerp(wet, 4/8) });
+ScapeStuff.dirt6 = new Lambert({ color: dry.clone().lerp(wet, 5/8) });
+ScapeStuff.dirt7 = new Lambert({ color: dry.clone().lerp(wet, 6/8) });
+ScapeStuff.dirt8 = new Lambert({ color: dry.clone().lerp(wet, 7/8) });
+ScapeStuff.dirt9 = new Lambert({ color: wet });
+
+// leaf litter (in reality leaf litter is brown, but use a slightly
+// greenish tone here so it doesn't just look like more dirt)
+ScapeStuff.leaflitter = new Lambert({ color: 0x556b2f });
+
+// ------------------------------------------------------------------
+module.exports = ScapeStuff;
+
+
+
+
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},["/Users/pvrdwb/jcu/scapejs/src/scape.js"]);

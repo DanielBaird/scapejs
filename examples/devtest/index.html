@@ -4,7 +4,7 @@
     <style>
         body {
             margin: 0;
-            background: #333;
+            background: #fff;
         }
         #container {
             width: 95%;
@@ -34,8 +34,6 @@
             blocksZ: 20
         });
 
-        var s = new Scape.Scene(f, 'container');
-
         f.addGroundHeights([
             { x: 210, y: -40, z: -90 },
             { x: 210, y:  40, z: -60 },
@@ -45,6 +43,8 @@
             { x: 299, y: -49, z: -80 },
             { x: 290, y:  40, z: -70 }
         ]);
+
+        var s = new Scape.Scene(f, 'container');
 
     </script>
 </body>
