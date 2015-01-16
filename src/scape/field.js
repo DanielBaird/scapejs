@@ -106,8 +106,8 @@ ScapeField.prototype._makeGrid = function() {
  * Add additional ground heights to the field's ground heights.
  * The heightList is an array of data objects.  Each object needs x,
  * y and z properties.
- * @param {boolean} replace if replace is truthy, discard existing
- *                          ground heights first.
+ * @param {boolean} replace  if replace is truthy, discard existing
+ *                           ground heights first.
  */
 ScapeField.prototype.addGroundHeights = function(heightList, replace) {
     if (replace) {
@@ -205,6 +205,33 @@ ScapeField.prototype.calcGroundHeights = function() {
 
         // okay now we know a height!  set it
         this.setBlockHeight(block, bZ);
+
+    }, this);
+}
+// ------------------------------------------------------------------
+/**
+ * (re)calculate the ground stacks.
+ */
+ScapeField.prototype.calcGroundStacks = function() {
+
+    this.eachBlock( function(err, block) {
+        // TODO: check err
+
+        // make the stack for this ground block by copying the
+        // nearest defined stack.
+        var s, dx, dy, dist;
+        for (var gs=0; gs < this._groundStacks.length; gs++) {
+            s = this._groundStacks[gs];
+            dx = block.x + (0.5 * this._bX) - s.x;
+            dy = block.y + (0.5 * this._bY) - s.y;
+            dist = 1 + dx*dx + dy*dy;
+            // .. TODO
+        }
+
+        // TODO
+        // TODO
+        // TODO
+        // TODO
 
     }, this);
 }
