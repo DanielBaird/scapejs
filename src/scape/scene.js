@@ -13,7 +13,8 @@ ScapeChunk = require('./chunk');
 function ScapeScene(field, dom, options) {
 
     var defaultOptions = {
-        lights: ['ambient', 'topleft']
+        // lights: ['ambient', 'topleft']
+        lights: ['ambient', 'sun']
     };
 
     // invoke our super constructor
@@ -75,40 +76,55 @@ ScapeScene.prototype.addBlocks = function() {
     this.f.calcGroundHeights();
 }
 // ------------------------------------------------------------------
+/**
+ * add position/axis helper cubes.
+ */
 ScapeScene.prototype.addHelperShapes = function() {
+    var white = 0xffffff;
+    var red   = 0xff0000;
+    var green = 0x00ff00;
+    var blue  = 0x0000ff;
 
+    this.addHelperCube(this.f.minX, this.f.minY, this.f.minZ, white);
+    this.addHelperCube(this.f.maxX, this.f.minY, this.f.minZ, red);
+    this.addHelperCube((this.f.minX + this.f.maxX) / 2, this.f.minY, this.f.minZ, red);
+    this.addHelperCube(this.f.minX, this.f.maxY, this.f.minZ, green);
+    this.addHelperCube(this.f.minX, this.f.minY, this.f.maxZ, blue);
+    this.addHelperCube(this.f.maxX, this.f.maxY, this.f.minZ, white);
+}
+// ------------------------------------------------------------------
+/**
+ * add a cube at x, y, z to confirm where that is, exactly.
+ * Either supply three coordinates, or a THREE.Vector3.  Optionally
+ * supply a color.
+ */
+ScapeScene.prototype.addHelperCube = function(x, y, z, color) {
+    // first, set the color to something
+    if (typeof color == 'undefined') {
+        // default to light grey.
+        color = new THREE.Color(0xcccccc);
+    }
+    var pos; // the position to draw the cube
+    if (typeof x.x != 'undefined') {
+        // then it's a vector, and y might be the color
+        pos = x;
+        if (typeof y != 'undefined') {
+            color = y;
+        }
+    } else {
+        // x isn't a vector, so assume separate x y and z
+        pos = new THREE.Vector3(x, y, z);
+        // we caught color already.
+    }
+    // about a fiftieth of the field's summed dimensions
     var size = (this.f.wX + this.f.wY + this.f.wZ) / 50;
 
-    // cubic geometry
-    var cubeGeom = new THREE.BoxGeometry( size, size, size );
-
-    var white = new THREE.MeshLambertMaterial({ color: 0xffffff });
-    var red   = new THREE.MeshLambertMaterial({ color: 0xff0000 });
-    var green = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
-    var blue  = new THREE.MeshLambertMaterial({ color: 0x0000ff });
-    // var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    // var material = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0xdddddd, specular: 0x009900, shininess: 30, shading: THREE.FlatShading } )
-
-    var cube000 = new THREE.Mesh(cubeGeom, white);
-    var cubeX00 = new THREE.Mesh(cubeGeom, red);
-    var cubex00 = new THREE.Mesh(cubeGeom, red);
-    var cube0Y0 = new THREE.Mesh(cubeGeom, green);
-    var cube00Z = new THREE.Mesh(cubeGeom, blue);
-    var cubeXY0 = new THREE.Mesh(cubeGeom, white);
-
-    cube000.position.copy(new THREE.Vector3(this.f.minX, this.f.minY, this.f.minZ));
-    cubeX00.position.copy(new THREE.Vector3(this.f.maxX, this.f.minY, this.f.minZ));
-    cubex00.position.copy(new THREE.Vector3((this.f.minX + this.f.maxX) / 2, this.f.minY, this.f.minZ));
-    cube0Y0.position.copy(new THREE.Vector3(this.f.minX, this.f.maxY, this.f.minZ));
-    cube00Z.position.copy(new THREE.Vector3(this.f.minX, this.f.minY, this.f.maxZ));
-    cubeXY0.position.copy(new THREE.Vector3(this.f.maxX, this.f.maxY, this.f.minZ));
-
-    this.scene.add(cube000);
-    this.scene.add(cubeX00);
-    this.scene.add(cubex00);
-    this.scene.add(cube0Y0);
-    this.scene.add(cube00Z);
-    this.scene.add(cubeXY0);
+    // okay.. ready to draw
+    var geom = new THREE.BoxGeometry( size, size, size );
+    var material = new THREE.MeshLambertMaterial({ color: color });
+    var cube = new THREE.Mesh(geom, material);
+    cube.position.copy(pos);
+    this.scene.add(cube);
 }
 // ------------------------------------------------------------------
 ScapeScene.prototype.addHelperGrid = function(topOrBottom) {
@@ -144,6 +160,7 @@ ScapeScene.prototype.addHelperGrid = function(topOrBottom) {
 ScapeScene.prototype._makeRenderer = function(options) {
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setClearColor( 0x000000, 0);
+    renderer.shadowMapEnabled = true;
     if (options && options.dom) {
         var $dom = $(options.dom);
         renderer.setSize($dom.width(), $dom.height());
@@ -158,40 +175,56 @@ ScapeScene.prototype._makeRenderer = function(options) {
 ScapeScene.prototype._makeLights = function(lights) {
 
     var lightList = [];
+    var f = this.f;  // convenient reference to the field
+
     if (lights.indexOf('ambient') != -1) {
         // add an ambient list
         lightList.push(new THREE.AmbientLight(0x222233));
     }
     if (lights.indexOf('topleft') != -1) {
         var left = new THREE.PointLight(0xffffff, 1, 0);
-        // TODO: supposed to be over the viewer's left shoulder
-        // TODO: derive position from the camera's position
-        left.position.set(-25, -100, 300);
+        // position light over the viewer's left shoulder..
+        // - LEFT of the camera by 50% of the field's x width
+        // - BEHIND the camera by 50% of the field's y width
+        // - ABOVE the camera by the field's height
+        left.position.addVectors(
+            this.camera.position,
+            new THREE.Vector3(-0.5 * f.wX, -0.5 * f.wY, 1 * f.wZ)
+        );
         lightList.push(left);
     }
     if (lights.indexOf('sun') != -1) {
-        // TODO: this whole light doesn't work.
-        // TODO: this whole light doesn't work.
-        // TODO: this whole light doesn't work.
-        // TODO: this whole light doesn't work.
-        // TODO: this whole light doesn't work.
-        // TODO: this whole light doesn't work.
-        // TODO: this whole light doesn't work.
-        // TODO: this whole light doesn't work.
-        // TODO: this whole light doesn't work.
-        var sun = new THREE.SpotLight(0xffffee);
-        // TODO: fix sun position
-        sun.position.set(-25, -100, 200);
+        var sun = new THREE.DirectionalLight(0xffffff);
+        sun.intensity = 1.0;
+
+        // position of sun
+        var sunHeight = 5 * f.wZ;
+        sun.position.set(f.minX - f.wX, f.minY - f.wY, f.maxZ + sunHeight);
+        // sun.shadowCameraVisible = true;  // DEBUG
+
+        // direction of sunlight
+        var target = new THREE.Object3D();
+        target.position.copy(f.center);
+        this.scene.add(target);
+        sun.target = target;
+
+        // sun distance, lol
+        var sunDistance = sun.position.distanceTo(sun.target.position);
+        // longest diagonal from field-center
+        var maxFieldDiagonal = f.center.distanceTo(new THREE.Vector3(f.minX, f.minY, f.minZ));
+
+        // shadow settings
         sun.castShadow = true;
-        sun.shadowMapWidth = 1024;
-        sun.shadowMapHeight = 1024;
-        sun.shadowCameraNear = 500;
-        sun.shadowCameraFar = 4000;
-        sun.shadowCameraFov = 30;
-        if (this.f) {
-            sun.target = this.f.center;
-        }
-        // lightList.push(sun);
+        sun.shadowDarkness = 0.66;
+
+        sun.shadowCameraNear = sunDistance - maxFieldDiagonal;
+        sun.shadowCameraFar = sunDistance + maxFieldDiagonal;
+        sun.shadowCameraTop = maxFieldDiagonal;
+        sun.shadowCameraRight = maxFieldDiagonal;
+        sun.shadowCameraBottom = -1 * maxFieldDiagonal;
+        sun.shadowCameraLeft = -1 * maxFieldDiagonal;
+
+        lightList.push(sun);
     }
 
     for (var i = 0; i < lightList.length; i++) {

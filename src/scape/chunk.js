@@ -49,6 +49,8 @@ ScapeChunk.prototype._createNewMesh = function() {
         this._block.y + this._block.dy/2,
         this._layer.z - depth/2
     );
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
     return mesh;
 }
 // ------------------------------------------------------------------
