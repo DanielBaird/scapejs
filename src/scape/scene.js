@@ -14,7 +14,7 @@ function ScapeScene(field, dom, options) {
 
     var defaultOptions = {
         // lights: ['ambient', 'topleft']
-        lights: ['ambient', 'sun']
+        lights: ['ambient', 'sun', 'sky']
     };
 
     // invoke our super constructor
@@ -41,7 +41,10 @@ function ScapeScene(field, dom, options) {
     this.addHelperShapes();
 
     // TODO: handle sun's movement better
-    sunRotationAxis = new THREE.Vector3(0, 1, 0);
+    var sunRotationAxis = new THREE.Vector3(0, 1, 0);
+    var day = true;
+    var wasDay = false;
+
     var lastLogAt = 0; // DEBUG
     render = (function unboundRender(ts) {
 
@@ -55,6 +58,14 @@ function ScapeScene(field, dom, options) {
             .sub(this.f.center)
             .applyAxisAngle(sunRotationAxis, 0.01)
             .add(this.f.center);
+
+        day = (this.lights.sun.position.z > this.f.center.z);
+        if (day && !wasDay) {
+            this.lights.sun.shadowDarkness = 0.33;
+        } else if (!day && wasDay) {
+            this.lights.sun.shadowDarkness = 0;
+        }
+        wasDay = day;
 
         requestAnimationFrame( render );
         this.renderer.render( this.scene, this.camera );
@@ -200,13 +211,13 @@ ScapeScene.prototype._makeLights = function(lightsToInclude) {
         );
     }
     if (lightsToInclude.indexOf('sun') != -1) {
-        lights.sun = new THREE.DirectionalLight(0xffffff);
+        lights.sun = new THREE.DirectionalLight(0xffffee);
         lights.sun.intensity = 1.0;
 
         // position of sun
         var sunHeight = 5 * f.wZ;
         lights.sun.position.set(f.minX - f.wX, f.minY - f.wY, f.maxZ + sunHeight);
-        // lights.sun.shadowCameraVisible = true;  // DEBUG
+        lights.sun.shadowCameraVisible = true;  // DEBUG
 
         // direction of sunlight
         var target = new THREE.Object3D();
@@ -221,7 +232,7 @@ ScapeScene.prototype._makeLights = function(lightsToInclude) {
 
         // shadow settings
         lights.sun.castShadow = true;
-        lights.sun.shadowDarkness = 0.5;
+        lights.sun.shadowDarkness = 0.33;
 
         lights.sun.shadowCameraNear = sunDistance - maxFieldDiagonal;
         lights.sun.shadowCameraFar = sunDistance + maxFieldDiagonal;
@@ -229,6 +240,21 @@ ScapeScene.prototype._makeLights = function(lightsToInclude) {
         lights.sun.shadowCameraRight = maxFieldDiagonal;
         lights.sun.shadowCameraBottom = -1 * maxFieldDiagonal;
         lights.sun.shadowCameraLeft = -1 * maxFieldDiagonal;
+    }
+    if (lightsToInclude.indexOf('sky') != -1) {
+        lights.sky = new THREE.DirectionalLight(0x666677);
+        lights.sky.intensity = 1.0;
+
+        // sky is directly above
+        var skyHeight = 5 * f.wZ;
+        lights.sky.position.copy(f.center);
+        lights.sky.position.setZ(f.maxZ + skyHeight);
+        lights.sky.shadowCameraVisible = true;  // DEBUG
+
+        var target = new THREE.Object3D();
+        target.position.copy(f.center);
+        this.scene.add(target);
+        lights.sky.target = target;
     }
 
     for (var light in lights) {
