@@ -6,9 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "jsdoc --configure ./devconfig/jsdoc.conf.json",
-    "build": "browserify --debug src/scape.js -o dist/scape.js",
+    "build": "browserify --debug src/scape.js | smart-tee --s dist/scape.js --s examples/lib/scape.js",
     "watch": "watchify --debug src/scape.js -o dist/scape.js -v",
-    "build:prod": "browserify src/scape.js -o dist/scape.js"
+    "build:prod": "browserify src/scape.js | smart-tee --s dist/scape.js --s examples/lib/scape.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "devDependencies": {
     "browserify": "^8.1.0",
     "jsdoc": "^3.3.0-alpha13",
+    "smart-tee": "^1.0.2",
     "watchify": "^2.2.1"
   },
   "browserify": {

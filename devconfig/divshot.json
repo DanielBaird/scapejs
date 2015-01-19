@@ -1,0 +1,6 @@
+{
+  "name": "scape",
+  "root": "examples",
+  "clean_urls": true,
+  "error_page": "error.html"
+}
