@@ -40,8 +40,8 @@ function ScapeScene(field, dom, options) {
     // this.addHelperGrid('top');
     this.addHelperShapes();
 
+    // TODO: handle sun's movement better
     sunRotationAxis = new THREE.Vector3(0, 1, 0);
-
     var lastLogAt = 0; // DEBUG
     render = (function unboundRender(ts) {
 
@@ -50,10 +50,12 @@ function ScapeScene(field, dom, options) {
             console.log('rendering...');
             lastLogAt = ts;
         }
+        // TODO: handle sun's movement better
         this.lights.sun.position
             .sub(this.f.center)
             .applyAxisAngle(sunRotationAxis, 0.01)
             .add(this.f.center);
+
         requestAnimationFrame( render );
         this.renderer.render( this.scene, this.camera );
         this.controls.update();
