@@ -16,6 +16,7 @@ function ScapeChunk(scene, parentBlock, layerIndex, minZ, options) {
 
     this._scene = scene;
     this._block = parentBlock;
+    this._isSurface = (layerIndex == 0);
     this._layer = parentBlock.g[layerIndex];
     this._minZ = minZ;
     this._mesh = this._createNewMesh();
@@ -50,7 +51,10 @@ ScapeChunk.prototype._createNewMesh = function() {
         this._layer.z - depth/2
     );
     mesh.castShadow = true;
-    mesh.receiveShadow = true;
+    // only the surface chunks receive shadow
+    if (this._isSurface) {
+        mesh.receiveShadow = true;
+    }
     return mesh;
 }
 // ------------------------------------------------------------------

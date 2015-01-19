@@ -12,7 +12,8 @@ function ScapeField(options) {
     var defaultOptions = {
         minX: 0,        maxX: 100,          blocksX: 10,
         minY: 0,        maxY: 100,          blocksY: 10,
-        minZ: 0,        maxZ: 40,           blocksZ: 80
+        minZ: 0,        maxZ: 40,           blocksZ: 80,
+        stackGap: 0.04
     };
 
     // invoke our super constructor
@@ -64,35 +65,21 @@ ScapeField.prototype.print = function() {
 }
 // ------------------------------------------------------------------
 ScapeField.prototype._makeGrid = function() {
-
-    var stuffs = [
-          ScapeStuff.dirt1
-        , ScapeStuff.dirt5
-        , ScapeStuff.dirt9
-        , ScapeStuff.water
-        , ScapeStuff.water
-        , ScapeStuff.water
-        , ScapeStuff.leaflitter
-        , ScapeStuff.leaflitter
-    ]
-
     this._g = [];
     for (var gx = 0; gx < this.blocksX; gx++) {
         var col = [];
         for (var gy = 0; gy < this.blocksY; gy++) {
-
-            // TODO: just user generic material here.
-            var material = stuffs[Math.floor(Math.random() * (stuffs.length))]
-
+            var xGap = this._bX * this._opts.stackGap / 2;
+            var yGap = this._bY * this._opts.stackGap / 2;
             var block = {
-                x: this.minX + (this._bX * gx),
-                dx: this._bX * 0.95,
-                y: this.minY + (this._bY * gy),
-                dy: this._bY * 0.95,
+                x: this.minX + (this._bX * gx) + xGap,
+                dx: this._bX - xGap - xGap,
+                y: this.minY + (this._bY * gy) + yGap,
+                dy: this._bY - yGap - yGap,
                 g: [{
                     z: this.maxZ,
                     dz: 0, // 0 means "stretch to minZ"
-                    m: material,
+                    m: ScapeStuff.generic,
                     chunk: null
                 }],
             }
@@ -166,11 +153,7 @@ ScapeField.prototype.addGroundStacks = function(groundList, replace) {
  */
 ScapeField.prototype.addGroundStack = function(x, y, stack) {
     // TODO: check for validity
-    this._groundStacks.push({
-        x: x,
-        y: y,
-        stack: stack
-    })
+    this._groundStacks.push({ x: x,  y: y,  stack: stack });
 }
 // ------------------------------------------------------------------
 /**
@@ -219,19 +202,21 @@ ScapeField.prototype.calcGroundStacks = function() {
 
         // make the stack for this ground block by copying the
         // nearest defined stack.
-        var s, dx, dy, dist;
+        var s, dx, dy, thisDist, bestStack;
+        var bestDist = this.wX + this.wY + this.wZ;
         for (var gs=0; gs < this._groundStacks.length; gs++) {
             s = this._groundStacks[gs];
             dx = block.x + (0.5 * this._bX) - s.x;
             dy = block.y + (0.5 * this._bY) - s.y;
-            dist = 1 + dx*dx + dy*dy;
-            // .. TODO
+            thisDist = 1 + dx*dx + dy*dy;
+            if (thisDist < bestDist) {
+                bestStack = s;
+                bestDist = thisDist;
+            }
         }
 
-        // TODO
-        // TODO
-        // TODO
-        // TODO
+        // okay we got a stack.
+        this.setGroundStack(block, s.stack);
 
     }, this);
 }
@@ -245,6 +230,28 @@ ScapeField.prototype._calcCenter = function() {
     );
 }
 // ------------------------------------------------------------------
+ScapeField.prototype.setGroundStack = function(block, stack) {
+    var layerLevel = block.g[0].z;
+    for (var layer = 0; layer < stack.length; layer++) {
+        block.g[layer] = {
+            z: layerLevel,
+            dz: stack[layer][1],
+            m: stack[layer][0],
+            chunk: null
+        };
+        layerLevel -= stack[layer][1];
+    }
+    this.rebuildChunks(block);
+}
+// ------------------------------------------------------------------
+ScapeField.prototype.rebuildChunks = function(block) {
+    for (var l = 0; l < block.g.length; l++) {
+        if (block.g[l].chunk) {
+            block.g[l].chunk.rebuild();
+        }
+    }
+}
+// ------------------------------------------------------------------
 ScapeField.prototype.setBlockHeight = function(block, z) {
     // to set the block ground height, we need to find the block's
     // current ground height (the z of the top layer), work out a
@@ -252,13 +259,10 @@ ScapeField.prototype.setBlockHeight = function(block, z) {
     // all the layers.
     var dZ = z - block.g[0].z;
     var depth;
-    // do all the layers except the last one
     for (var l = 0; l < block.g.length; l++) {
         block.g[l].z += dZ;
-        if (block.g[l].chunk) {
-            block.g[l].chunk.rebuild();
-        }
     }
+    this.rebuildChunks(block);
 }
 // ------------------------------------------------------------------
 ScapeField.prototype.getBlock = function(x, y) {

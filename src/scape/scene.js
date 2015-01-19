@@ -40,6 +40,8 @@ function ScapeScene(field, dom, options) {
     // this.addHelperGrid('top');
     this.addHelperShapes();
 
+    sunRotationAxis = new THREE.Vector3(0, 1, 0);
+
     var lastLogAt = 0; // DEBUG
     render = (function unboundRender(ts) {
 
@@ -48,7 +50,10 @@ function ScapeScene(field, dom, options) {
             console.log('rendering...');
             lastLogAt = ts;
         }
-
+        this.lights.sun.position
+            .sub(this.f.center)
+            .applyAxisAngle(sunRotationAxis, 0.01)
+            .add(this.f.center);
         requestAnimationFrame( render );
         this.renderer.render( this.scene, this.camera );
         this.controls.update();
@@ -172,66 +177,65 @@ ScapeScene.prototype._makeRenderer = function(options) {
     return renderer;
 }
 // ------------------------------------------------------------------
-ScapeScene.prototype._makeLights = function(lights) {
+ScapeScene.prototype._makeLights = function(lightsToInclude) {
 
-    var lightList = [];
+    var lights = {};
     var f = this.f;  // convenient reference to the field
 
-    if (lights.indexOf('ambient') != -1) {
+    if (lightsToInclude.indexOf('ambient') != -1) {
         // add an ambient list
-        lightList.push(new THREE.AmbientLight(0x222233));
+        lights.ambient = new THREE.AmbientLight(0x222233);
     }
-    if (lights.indexOf('topleft') != -1) {
-        var left = new THREE.PointLight(0xffffff, 1, 0);
+    if (lightsToInclude.indexOf('topleft') != -1) {
+        lights.left = new THREE.PointLight(0xffffff, 1, 0);
         // position light over the viewer's left shoulder..
         // - LEFT of the camera by 50% of the field's x width
         // - BEHIND the camera by 50% of the field's y width
         // - ABOVE the camera by the field's height
-        left.position.addVectors(
+        lights.left.position.addVectors(
             this.camera.position,
             new THREE.Vector3(-0.5 * f.wX, -0.5 * f.wY, 1 * f.wZ)
         );
-        lightList.push(left);
     }
-    if (lights.indexOf('sun') != -1) {
-        var sun = new THREE.DirectionalLight(0xffffff);
-        sun.intensity = 1.0;
+    if (lightsToInclude.indexOf('sun') != -1) {
+        lights.sun = new THREE.DirectionalLight(0xffffff);
+        lights.sun.intensity = 1.0;
 
         // position of sun
         var sunHeight = 5 * f.wZ;
-        sun.position.set(f.minX - f.wX, f.minY - f.wY, f.maxZ + sunHeight);
-        // sun.shadowCameraVisible = true;  // DEBUG
+        lights.sun.position.set(f.minX - f.wX, f.minY - f.wY, f.maxZ + sunHeight);
+        // lights.sun.shadowCameraVisible = true;  // DEBUG
 
         // direction of sunlight
         var target = new THREE.Object3D();
         target.position.copy(f.center);
         this.scene.add(target);
-        sun.target = target;
+        lights.sun.target = target;
 
         // sun distance, lol
-        var sunDistance = sun.position.distanceTo(sun.target.position);
+        var sunDistance = lights.sun.position.distanceTo(lights.sun.target.position);
         // longest diagonal from field-center
         var maxFieldDiagonal = f.center.distanceTo(new THREE.Vector3(f.minX, f.minY, f.minZ));
 
         // shadow settings
-        sun.castShadow = true;
-        sun.shadowDarkness = 0.66;
+        lights.sun.castShadow = true;
+        lights.sun.shadowDarkness = 0.5;
 
-        sun.shadowCameraNear = sunDistance - maxFieldDiagonal;
-        sun.shadowCameraFar = sunDistance + maxFieldDiagonal;
-        sun.shadowCameraTop = maxFieldDiagonal;
-        sun.shadowCameraRight = maxFieldDiagonal;
-        sun.shadowCameraBottom = -1 * maxFieldDiagonal;
-        sun.shadowCameraLeft = -1 * maxFieldDiagonal;
-
-        lightList.push(sun);
+        lights.sun.shadowCameraNear = sunDistance - maxFieldDiagonal;
+        lights.sun.shadowCameraFar = sunDistance + maxFieldDiagonal;
+        lights.sun.shadowCameraTop = maxFieldDiagonal;
+        lights.sun.shadowCameraRight = maxFieldDiagonal;
+        lights.sun.shadowCameraBottom = -1 * maxFieldDiagonal;
+        lights.sun.shadowCameraLeft = -1 * maxFieldDiagonal;
     }
 
-    for (var i = 0; i < lightList.length; i++) {
-        this.scene.add(lightList[i]);
+    for (var light in lights) {
+        if (lights.hasOwnProperty(light)) {
+            this.scene.add(lights[light]);
+        }
     }
 
-    return lightList;
+    return lights;
 }
 // ------------------------------------------------------------------
 /**

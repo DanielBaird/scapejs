@@ -29,8 +29,8 @@
             minY:  -50, maxY:  50,
             minZ: -100, maxZ: -60,
 
-            blocksX: 11,
-            blocksY: 11,
+            blocksX: 9,
+            blocksY: 9,
             blocksZ: 20
         });
 
@@ -44,11 +44,20 @@
             { x: 290, y:  40, z: -70 }
         ]);
 
-        f.addGroundStacks([
-            {    x: 210, y: -40, stack:[
+        f.addGroundStacks([{
+                x: 210, y: -40, stack:[
                     [Scape.Stuff.leaflitter, 0.3],
-                    [Scape.Stuff.dirt, 3.5],
-                    [Scape.Stuff.stone, 4]
+                    [Scape.Stuff.dirt1, 3.5],
+                    [Scape.Stuff.dirt3, 2],
+                    [Scape.Stuff.dirt5, 2],
+                    [Scape.Stuff.water, 0]
+                ]
+            },{
+                x: 290, y: -40, stack:[
+                    [Scape.Stuff.leaflitter, 0.1],
+                    [Scape.Stuff.dirt1, 1],
+                    [Scape.Stuff.dirt3, 4],
+                    [Scape.Stuff.dirt5, 0]
                 ]
             }
         ]);
