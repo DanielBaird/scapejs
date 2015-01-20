@@ -6,10 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "jsdoc --configure ./devconfig/jsdoc.conf.json",
-    "watch": "watchify --debug src/scape.js -o dist/scape.js -v",
-    "build": "browserify --debug src/scape.js -o dist/scape.js",
+    "watch": "watch 'npm run build' src",
+    "build": "browserify --debug src/scape.js -o dist/scape.js && cp dist/scape.js examples/lib",
     "build:prod": "browserify src/scape.js -o dist/scape.js",
-    "postbuild": "cp dist/scape.js examples/lib/scape.js",
+    "xpostbuild": "cp dist/scape.js examples/lib/scape.js",
     "postbuild:prod": "cp dist/scape.js examples/lib/scape.js"
   },
   "repository": {
@@ -26,6 +26,7 @@
     "browserify": "^8.1.0",
     "browserify-shim": "^3.8.2",
     "jsdoc": "^3.3.0-alpha13",
+    "watch": "^0.13.0",
     "watchify": "^2.2.1"
   },
   "browserify": {
