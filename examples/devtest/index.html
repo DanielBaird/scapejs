@@ -5,15 +5,22 @@
         body {
             margin: 0;
             background: #fff;
+            font: 500 14px/21px 'Helvetica Neue', sans-serif;
+        }
+        #time {
+            text-align: center;
+            padding: 0.5em;
+            background: #eee;
         }
         #container {
             width: 95%;
-            height: 95%;
+            height: 90%;
             margin: 1em auto;
         }
     </style>
 </head>
 <body>
+    <div id="time"></div>
     <div id="container"></div>
 
     <script src="../lib/jquery-2.1.1.min.js"></script>
@@ -29,8 +36,8 @@
             minY:  -50, maxY:  50,
             minZ: -100, maxZ: -60,
 
-            blocksX: 9,
-            blocksY: 9,
+            blocksX: 11,
+            blocksY: 4,
             blocksZ: 20
         });
 
@@ -46,23 +53,39 @@
 
         f.addGroundStacks([{
                 x: 210, y: -40, stack:[
-                    [Scape.Stuff.leaflitter, 0.3],
-                    [Scape.Stuff.dirt1, 3.5],
-                    [Scape.Stuff.dirt3, 2],
-                    [Scape.Stuff.dirt5, 2],
+                    [Scape.Stuff.leaflitter, 3],
+                    [Scape.Stuff.dirt0, 3.5],
+                    [Scape.Stuff.dirt4, 2],
+                    [Scape.Stuff.dirt9, 2],
                     [Scape.Stuff.water, 0]
                 ]
             },{
                 x: 290, y: -40, stack:[
                     [Scape.Stuff.leaflitter, 0.1],
-                    [Scape.Stuff.dirt1, 1],
-                    [Scape.Stuff.dirt3, 4],
-                    [Scape.Stuff.dirt5, 0]
+                    [Scape.Stuff.dirt2, 1],
+                    [Scape.Stuff.dirt6, 4],
+                    [Scape.Stuff.dirt8, 0]
                 ]
             }
         ]);
 
-        var s = new Scape.Scene(f, 'container');
+        // update the time div when the hour changes
+        var currentHour = '';
+        var timeStr = '';
+
+        var s = new Scape.Scene(f, 'container', {
+            dateUpdate: function(date) {
+                // update the time display
+                var hr = date.getHours();
+                if (hr != currentHour) {
+                    timeStr = ((hr - 1) % 12 + 1) + (hr > 12 ? 'pm' : 'am');
+                    if (timeStr == '0am') timeStr = 'midnight'
+                    if (timeStr == '12am') timeStr = 'noon'
+                    $('#time').text(timeStr);
+                    currentHour = hr;
+                }
+            }
+        });
 
     </script>
 </body>
