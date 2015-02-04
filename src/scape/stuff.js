@@ -23,14 +23,15 @@ ScapeStuff.dirt = new Lambert({ color: 0xa0522d });
 var dry = new THREE.Color(0xbb8855); // dry
 var wet = new THREE.Color(0x882200); // moist
 
-ScapeStuff.dirt1 = new Lambert({ color: dry });
-ScapeStuff.dirt2 = new Lambert({ color: dry.clone().lerp(wet, 1/8) });
-ScapeStuff.dirt3 = new Lambert({ color: dry.clone().lerp(wet, 2/8) });
-ScapeStuff.dirt4 = new Lambert({ color: dry.clone().lerp(wet, 3/8) });
-ScapeStuff.dirt5 = new Lambert({ color: dry.clone().lerp(wet, 4/8) });
-ScapeStuff.dirt6 = new Lambert({ color: dry.clone().lerp(wet, 5/8) });
-ScapeStuff.dirt7 = new Lambert({ color: dry.clone().lerp(wet, 6/8) });
-ScapeStuff.dirt8 = new Lambert({ color: dry.clone().lerp(wet, 7/8) });
+ScapeStuff.dirt0 = new Lambert({ color: dry });
+ScapeStuff.dirt1 = new Lambert({ color: dry.clone().lerp(wet, 1/9) });
+ScapeStuff.dirt2 = new Lambert({ color: dry.clone().lerp(wet, 2/9) });
+ScapeStuff.dirt3 = new Lambert({ color: dry.clone().lerp(wet, 3/9) });
+ScapeStuff.dirt4 = new Lambert({ color: dry.clone().lerp(wet, 4/9) });
+ScapeStuff.dirt5 = new Lambert({ color: dry.clone().lerp(wet, 5/9) });
+ScapeStuff.dirt6 = new Lambert({ color: dry.clone().lerp(wet, 6/9) });
+ScapeStuff.dirt7 = new Lambert({ color: dry.clone().lerp(wet, 7/9) });
+ScapeStuff.dirt8 = new Lambert({ color: dry.clone().lerp(wet, 8/9) });
 ScapeStuff.dirt9 = new Lambert({ color: wet });
 
 // leaf litter (in reality leaf litter is brown, but use a slightly

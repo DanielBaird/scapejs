@@ -14,7 +14,9 @@ function ScapeScene(field, dom, options) {
 
     var defaultOptions = {
         // lights: ['ambient', 'topleft']
-        lights: ['ambient', 'sun', 'sky']
+        lights: ['ambient', 'sun', 'sky'],
+        currentDate: 'now',  // either string 'now' or a Date object
+        timeRatio: 1000
     };
 
     // invoke our super constructor
@@ -25,6 +27,13 @@ function ScapeScene(field, dom, options) {
 
     // discover DOM container
     this.element = document.getElementById(dom);
+
+    this.date = this._opts.currentDate;
+    if (this.date === 'now') {
+        this.date = new Date();
+    }
+    this.startDate = this.date;
+    this.firstRender = new Date().getTime();
 
     // create and save all the bits we need
     this.renderer = this._makeRenderer({ dom: this.element });
@@ -40,10 +49,6 @@ function ScapeScene(field, dom, options) {
     // this.addHelperGrid('top');
     this.addHelperShapes();
 
-    // TODO: handle sun's movement better
-    var sunRotationAxis = new THREE.Vector3(0, 1, 0);
-    var day = true;
-    var wasDay = false;
 
     var lastLogAt = 0; // DEBUG
     render = (function unboundRender(ts) {
@@ -53,20 +58,8 @@ function ScapeScene(field, dom, options) {
             console.log('rendering...');
             lastLogAt = ts;
         }
-        // TODO: handle sun's movement better
-        this.lights.sun.position
-            .sub(this.f.center)
-            .applyAxisAngle(sunRotationAxis, 0.01)
-            .add(this.f.center);
 
-        day = (this.lights.sun.position.z > this.f.center.z);
-        if (day && !wasDay) {
-            this.lights.sun.shadowDarkness = 0.33;
-        } else if (!day && wasDay) {
-            this.lights.sun.shadowDarkness = 0;
-        }
-        wasDay = day;
-
+        this._updateTime();
         requestAnimationFrame( render );
         this.renderer.render( this.scene, this.camera );
         this.controls.update();
@@ -190,6 +183,34 @@ ScapeScene.prototype._makeRenderer = function(options) {
     return renderer;
 }
 // ------------------------------------------------------------------
+ScapeScene.prototype._updateTime = function() {
+    var now = new Date();
+    var elapsed = now.getTime() - this.firstRender;
+    this.date = new Date(this.firstRender + (elapsed * this._opts.timeRatio));
+    this._updateSun();
+}
+// ------------------------------------------------------------------
+ScapeScene.prototype._updateSun = function(sun) {
+
+    if (typeof sun == 'undefined') {
+        sun = this.lights.sun;
+    }
+
+    var sunRotationAxis = new THREE.Vector3(0, 1, 0);
+    var sunAngle = (this.date.getHours()*60 + this.date.getMinutes()) / 1440 * 2 * Math.PI;
+
+    sun.position
+        .set(-1 * this.f.wX, -1 * this.f.wY, -20 * this.f.wZ)
+        .applyAxisAngle(sunRotationAxis, sunAngle)
+        .add(this.f.center);
+
+    var sunZ = sun.position.z;
+
+    if (sunZ >= this.f.center.z && sunZ <= this.f.maxZ) {
+        sun.shadowDarkness = 0.66 * Math.max(0, (sunZ - this.f.center.z) / this.f.wZ);
+    }
+}
+// ------------------------------------------------------------------
 ScapeScene.prototype._makeLights = function(lightsToInclude) {
 
     var lights = {};
@@ -214,9 +235,8 @@ ScapeScene.prototype._makeLights = function(lightsToInclude) {
         lights.sun = new THREE.DirectionalLight(0xffffee);
         lights.sun.intensity = 1.0;
 
-        // position of sun
-        var sunHeight = 5 * f.wZ;
-        lights.sun.position.set(f.minX - f.wX, f.minY - f.wY, f.maxZ + sunHeight);
+        this._updateSun(lights.sun);
+
         lights.sun.shadowCameraVisible = true;  // DEBUG
 
         // direction of sunlight
