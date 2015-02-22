@@ -4,8 +4,19 @@ THREE = require('three');
 ScapeObject = require('./baseobject');
 // ------------------------------------------------------------------
 /**
- * Represents a rectangular prism of scape material -- dirt or
- * whatever.
+ * Represents a rectangular prism of material that the solid "ground"
+ * portion of a 'scape is make up of, e.g. dirt, leaf litter, water.
+ *
+ * This will create (and internally cache) a mesh based on the linked
+ * chunk information to make rendering in WebGL faster.
+ *
+ * @param {ScapeScene} scene The ScapeScene the chunk will be added into
+ * @param {Object} parentBlock The block (vertical column within the
+ *                             scape) that owns this chunk
+ * @param {Integer} layerIndex Index into parentBlock.g this chunk is at
+ * @param {Number} minZ lowest Z value any chunk should have
+ * @param {Object} options Various options, not currently used
+ *
  * @class
  */
 function ScapeChunk(scene, parentBlock, layerIndex, minZ, options) {
@@ -28,8 +39,15 @@ function ScapeChunk(scene, parentBlock, layerIndex, minZ, options) {
 ScapeChunk.prototype = Object.create(ScapeObject.prototype);
 ScapeChunk.prototype.constructor = ScapeChunk;
 // ------------------------------------------------------------------
+/**
+ * Invoke a rebuild of this chunk.
+ *
+ * Discards existing cached mesh and builds a new mesh based on the
+ * currently linked chunk information.
+ *
+ * @return none
+ */
 ScapeChunk.prototype.rebuild = function() {
-    console.log('update')
     this._updateMesh();
 }
 // ------------------------------------------------------------------

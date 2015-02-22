@@ -9,17 +9,31 @@
         "excludePattern": "(^|\\/|\\\\)_"
     },
 
-    "plugins": [],
+    "plugins": ["plugins/markdown"],
+
+    "markdown": {
+        "parser": "gfm",
+        "hardwrap": true
+    },
 
     "templates": {
         "cleverLinks": false,
         "monospaceLinks": false,
         "default": {
             "outputSourceFiles": true
-        }
+        },
+        "systemName": "ScapeJS",
+        "footer": "",
+        "copyright": "copyright © 2014-2015 Daniel Baird",
+        "navType": "vertical",
+        "theme": "oblivion",
+        "linenums": true,
+        "collapseSymbols": false,
+        "inverseNav": true
     },
 
     "opts": {
+        "template": "node_modules/jsdoc-oblivion/template",
         "destination": "./docs",
         "recurse": true,
         "encoding": "utf8"

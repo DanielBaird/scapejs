@@ -1,37 +1,74 @@
-// ------------------------------------------------------------------
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>ScapeJS Source: scene.js</title>
+
+	<!--[if lt IE 9]>
+	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+
+	<link type="text/css" rel="stylesheet" href="styles/site.flatly.css">
+
+</head>
+
+<body>
+
+<div class="navbar navbar-default navbar-fixed-top navbar-inverse">
+<div class="container">
+	<div class="navbar-header">
+		<a class="navbar-brand" href="index.html">ScapeJS</a>
+	</div>
+	<div class="navbar-collapse">
+		<ul class="nav navbar-nav">
+			
+			<li class="dropdown">
+				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="ScapeChunk.html">ScapeChunk</a></li><li><a href="ScapeField.html">ScapeField</a></li><li><a href="ScapeScene.html">ScapeScene</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="global.html#ScapeStuff">ScapeStuff</a></li>
+				</ul>
+			</li>
+			
+		</ul>
+	</div>
+</div>
+</div>
+
+
+<div class="container">
+<div class="row">
+
+	
+	<div class="col-md-12">
+	
+		<div id="main">
+    		<h1 class="page-title">Source: scene.js</h1>
+			
+
+		<h1 class="page-title">Source: scene.js</h1>
+    
+<section>
+	<article>
+		<pre
+			class="sunlight-highlight-javascript linenums">// ------------------------------------------------------------------
 THREE = require('three');
 ScapeObject = require('./baseobject');
 ScapeChunk = require('./chunk');
 // ------------------------------------------------------------------
 /**
- * @callback ScapeScene~dateChange
- * @param {string} error Description of error, otherwise null
- * @param {date} date Date the scape is now displaying
- */
-/**
  * Represents a rendering of a landscape / moonscape / whatever
  * @param {ScapeField} field  the field being rendered
- * @param {string} dom        DOM element the scape should be
- *                            rendered into.
- * @param {object} options    collection of options.  All are optional.
- * @param {String[]} options.lights='sun','sky' - array of strings
- * naming lights to include in this scene.  Choose from:
- *
- * string    | light type
- * ----------|-----------
- * `topleft` | a light from above the camera's left shoulder
- * `ambient` | a dim ambient light
- * `sun`     | a directional light that orbits the scene once per day
- * `sky`     | a directional light that shines from above the scene
- * @param {Date|"now"} options.currentDate='now' - The time and date
- * inside the scape.  The string "now" means set currentDate to the
- * present.
- * @param {number} options.timeRatio=1 The rate time should pass in
- * the scape, relative to normal.  0.1 means ten times slower.  60
- * means one minute real time = one hour scape time.
- * @param {ScapeScene~dateChange} options.dateUpdate callback for
- * when the scene time changes (which is a lot).
- *
+ * @param {string} dom        DOM element the scape should be rendered info.
+ * @param {object} options    collection of options.
  * @class
  */
 function ScapeScene(field, dom, options) {
@@ -79,7 +116,7 @@ function ScapeScene(field, dom, options) {
     render = (function unboundRender(ts) {
 
         // DEBUG
-        if (lastLogAt + 2000 < ts) {
+        if (lastLogAt + 2000 &lt; ts) {
             // console.log('rendering...');
             lastLogAt = ts;
         }
@@ -98,17 +135,12 @@ function ScapeScene(field, dom, options) {
 ScapeScene.prototype = Object.create(ScapeObject.prototype);
 ScapeScene.prototype.constructor = ScapeScene;
 // ------------------------------------------------------------------
-/**
- * add blocks from the attached ScapeField into the scene.
- *
- * You will probably only need to call this once.
- */
 ScapeScene.prototype.addBlocks = function() {
     var theScene = this.scene;
     var minZ = this.f.minZ;
     var depth, layer;
     this.f.eachBlock( function(err, b) {
-        for (var layerIndex = 0; layerIndex < b.g.length; layerIndex++) {
+        for (var layerIndex = 0; layerIndex &lt; b.g.length; layerIndex++) {
             b.g[layerIndex].chunk = new ScapeChunk(
                 theScene, b, layerIndex, minZ
             );
@@ -118,8 +150,7 @@ ScapeScene.prototype.addBlocks = function() {
 }
 // ------------------------------------------------------------------
 /**
- * add helper cubes at some of the corners of your scape, so you can
- * see where they are in space.
+ * add position/axis helper cubes.
  */
 ScapeScene.prototype.addHelperShapes = function() {
     var white = 0xffffff;
@@ -136,16 +167,9 @@ ScapeScene.prototype.addHelperShapes = function() {
 }
 // ------------------------------------------------------------------
 /**
- * add a cube at position `x`, `y`, `z` to confirm where that is,
- * exactly.  Great for trying to work out if your scape is being
- * rendered where you think it should be rendered.
- *
- * @param {(Number|Vector3)} x X coordinate, or a {@link http://threejs.org/docs/#Reference/Math/Vector3 THREE.Vector3} containing x, y and z coords
- * @param {Number} [y] Y coordinate
- * @param {Number} [z] Z coordinate
- * @param {Color|String|Integer} color='#cccccc' Color of cube.
- * Can be a {@link http://threejs.org/docs/#Reference/Math/Color THREE.Color}, a color-parseable string like
- * `'#3366cc'`, or a number like `0x3366cc`.
+ * add a cube at x, y, z to confirm where that is, exactly.
+ * Either supply three coordinates, or a THREE.Vector3.  Optionally
+ * supply a color.
  */
 ScapeScene.prototype.addHelperCube = function(x, y, z, color) {
     // first, set the color to something
@@ -201,35 +225,26 @@ ScapeScene.prototype.addHelperGrid = function(topOrBottom) {
 // ------------------------------------------------------------------
 /**
  * Create and return a THREE.Renderer.
- *
  * @param {object} various options
  * @param {DOMElement|jQueryElem} options.dom a dom element
  * @param {integer} options.width renderer width (in pixels)
  * @param {integer} options.height renderer height (in pixels)
- *
- * @private
  */
 ScapeScene.prototype._makeRenderer = function(options) {
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setClearColor( 0x000000, 0);
     renderer.shadowMapEnabled = true;
-    if (options && options.dom) {
+    if (options &amp;&amp; options.dom) {
         var $dom = $(options.dom);
         renderer.setSize($dom.width(), $dom.height());
         $dom.append(renderer.domElement);
     }
-    if (options && options.width && options.height) {
+    if (options &amp;&amp; options.width &amp;&amp; options.height) {
         renderer.setSize(options.width, options.height);
     }
     return renderer;
 }
 // ------------------------------------------------------------------
-/**
- * updates the scape time to match the current time (taking into
- * account the timeRatio etc).
- *
- * @private
- */
 ScapeScene.prototype._updateTime = function() {
     var now = new Date();
     var elapsed = now.getTime() - this.firstRender;
@@ -244,14 +259,6 @@ ScapeScene.prototype._updateTime = function() {
     this._updateSun();
 }
 // ------------------------------------------------------------------
-/**
- * updates the position of the sun to suit the scape current time.
- * @param  {THREE.DirectionalLight} [sun] the sun to act on.  If not
- * supplied, this method will act on the light in this scene's light
- * list that is called "sun".
- *
- * @private
- */
 ScapeScene.prototype._updateSun = function(sun) {
 
     if (typeof sun == 'undefined') {
@@ -274,14 +281,14 @@ ScapeScene.prototype._updateSun = function(sun) {
     var sunZ = sun.position.z;
 
     // switch the sun off when it's night time
-    if (sun.onlyShadow == false && sunZ <= this.f.center.z) {
+    if (sun.onlyShadow == false &amp;&amp; sunZ &lt;= this.f.center.z) {
         sun.onlyShadow = true;
-    } else if (sun.onlyShadow == true && sunZ > this.f.center.z) {
+    } else if (sun.onlyShadow == true &amp;&amp; sunZ > this.f.center.z) {
         sun.onlyShadow = false;
     }
 
     // fade out the shadow darkness when the sun is low
-    if (sunZ >= this.f.center.z && sunZ <= this.f.maxZ) {
+    if (sunZ >= this.f.center.z &amp;&amp; sunZ &lt;= this.f.maxZ) {
         var upness = Math.max(0, (sunZ - this.f.center.z) / this.f.wZ * 2);
         sun.shadowDarkness = 0.5 * upness;
         sun.intensity = upness;
@@ -289,7 +296,6 @@ ScapeScene.prototype._updateSun = function(sun) {
 
 }
 // ------------------------------------------------------------------
-/** @private */
 ScapeScene.prototype._makeLights = function(lightsToInclude) {
 
     var lights = {};
@@ -364,7 +370,9 @@ ScapeScene.prototype._makeLights = function(lightsToInclude) {
     return lights;
 }
 // ------------------------------------------------------------------
-/** @private */
+/**
+ * Create and return a THREE.Scene
+ */
 ScapeScene.prototype._makeScene = function() {
     var scene = new THREE.Scene();
     // add fog
@@ -372,18 +380,21 @@ ScapeScene.prototype._makeScene = function() {
     return scene;
 }
 // ------------------------------------------------------------------
-/** @private */
+/**
+ * [viewAngle description]
+ * @type {Number}
+ */
 ScapeScene.prototype._makeCamera = function(options) {
 
     // viewing angle
     // i think this is the vertical view angle.  horizontal angle is
     // derived from this and the aspect ratio.
     var viewAngle = 45;
-    viewAngle = (options && options.viewAngle) || viewAngle;
+    viewAngle = (options &amp;&amp; options.viewAngle) || viewAngle;
 
     // aspect
     var viewAspect = 16/9;
-    if (this.renderer && this.renderer.domElement) {
+    if (this.renderer &amp;&amp; this.renderer.domElement) {
         var $elem = $(this.renderer.domElement);
         viewAspect = $elem.width() / $elem.height();
     }
@@ -419,14 +430,13 @@ ScapeScene.prototype._makeCamera = function(options) {
     return camera;
 }
 // ------------------------------------------------------------------
-/** @private */
 ScapeScene.prototype._makeControls = function() {
 
     var center = new THREE.Vector3(0,0,0);
-    if (this.f && this.f.center) {
+    if (this.f &amp;&amp; this.f.center) {
         center = this.f.center.clone();
     }
-    if (this.camera && this.renderer && this.renderer.domElement) {
+    if (this.camera &amp;&amp; this.renderer &amp;&amp; this.renderer.domElement) {
         var controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         controls.center = center;
         return controls;
@@ -440,3 +450,106 @@ ScapeScene.prototype.print = function() {
 }
 // ------------------------------------------------------------------
 module.exports = ScapeScene;
+</pre>
+	</article>
+</section>
+
+
+
+
+
+		</div>
+	</div>
+
+	<div class="clearfix"></div>
+
+	
+
+</div>
+</div>
+
+
+<footer>
+
+
+	<span class="copyright">
+	ScapeJS copyright © 2014-2015 Daniel Baird
+	</span>
+	<br />
+
+<span class="jsdoc-message">
+	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-beta1</a>
+	on Mon 16th Feb 2015 using the <a
+	href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
+</span>
+</footer>
+
+<!--<script src="scripts/sunlight.js"></script>-->
+<script src="scripts/docstrap.lib.js"></script>
+<script src="scripts/bootstrap-dropdown.js"></script>
+<script src="scripts/toc.js"></script>
+
+<script>
+$( function () {
+	$( "[id*='$']" ).each( function () {
+		var $this = $( this );
+
+		$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
+	} );
+
+	$( "#toc" ).toc( {
+		anchorName  : function ( i, heading, prefix ) {
+			return $( heading ).attr( "id" ) || ( prefix + i );
+		},
+		selectors   : "h1,h2,h3,h4",
+		showAndHide : false,
+		scrollTo    : "100px"
+	} );
+
+	$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
+	$( "#main span[id^='toc']" ).addClass( "toc-shim" );
+	$( '.dropdown-toggle' ).dropdown();
+	//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
+
+	$( ".tutorial-section pre, .readme-section pre" ).each( function () {
+		var $this = $( this );
+
+		var example = $this.find( "code" );
+		exampleText = example.html();
+		var lang = /{@lang (.*?)}/.exec( exampleText );
+		if ( lang && lang[1] ) {
+			exampleText = exampleText.replace( lang[0], "" );
+			example.html( exampleText );
+			lang = lang[1];
+		} else {
+			lang = "javascript";
+		}
+
+		if ( lang ) {
+
+			$this
+			.addClass( "sunlight-highlight-" + lang )
+			.addClass( "linenums" )
+			.html( example.html() );
+
+		}
+	} );
+
+	Sunlight.highlightAll( {
+		lineNumbers : true,
+		showMenu : true,
+		enableDoclinks : true
+	} );
+} );
+</script>
+
+
+
+<!--Navigation and Symbol Display-->
+
+
+<!--Google Analytics-->
+
+
+</body>
+</html>

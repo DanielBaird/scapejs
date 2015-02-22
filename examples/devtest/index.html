@@ -37,7 +37,7 @@
             minZ: -100, maxZ: -60,
 
             blocksX: 11,
-            blocksY: 4,
+            blocksY: 20,
             blocksZ: 20
         });
 
@@ -74,6 +74,8 @@
         var timeStr = '';
 
         var s = new Scape.Scene(f, 'container', {
+            currentDate: 'now',  // either string 'now' or a Date object
+            timeRatio: 5000, // how many times faster than normal?
             dateUpdate: function(date) {
                 // update the time display
                 var hr = date.getHours();

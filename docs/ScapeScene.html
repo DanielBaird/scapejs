@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=yes, width=device-width">
-  <title>ScapeJS — Class: ScapeField</title>
+  <title>ScapeJS — Class: ScapeScene</title>
   <link rel="shortcut icon" href="/favicon.ico">
 
   <!--[if lt IE 9]>
@@ -76,12 +76,12 @@
           
 
 
-	<h1 class="page-title">Class: ScapeField</h1>
+	<h1 class="page-title">Class: ScapeScene</h1>
 <section>
 
 <header>
     <h2>
-    ScapeField
+    ScapeScene
     </h2>
     
 </header>
@@ -93,7 +93,7 @@
     
         
 <dt>
-    <h4 class="name" id="ScapeField"><span class="type-signature"></span>new ScapeField<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="ScapeScene"><span class="type-signature"></span>new ScapeScene<span class="signature">(field, dom, options)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -101,7 +101,7 @@
     
     
     <div class="description">
-        <p>The container for all information about an area.</p>
+        <p>Represents a rendering of a landscape / moonscape / whatever</p>
     </div>
     
 
@@ -135,6 +135,53 @@
   
           <tr>
               
+                  <td class="name"><code>field</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type"><a href="ScapeField.html">ScapeField</a></span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>the field being rendered</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>dom</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">string</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>DOM element the scape should be
+                           rendered into.</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
                   <td class="name"><code>options</code></td>
               
   
@@ -151,68 +198,185 @@
   
               
   
-              <td class="description last"><p>Various options for the ScapeField being created.</p>
+              <td class="description last"><p>collection of options.  All are optional.</p>
+                  <h6>Properties</h6>
+                  
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+      <th>Default</th>
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>lights</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Array.&lt;String></span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      'sun','sky'
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>array of strings
+naming lights to include in this scene.  Choose from:</p>
 <table>
 <thead>
 <tr>
-<th>option</th>
-<th style="text-align:right">default value</th>
-<th>description</th>
+<th>string</th>
+<th>light type</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>minX</code></td>
-<td style="text-align:right">0</td>
-<td>smallest X for this field</td>
+<td><code>topleft</code></td>
+<td>a light from above the camera's left shoulder</td>
 </tr>
 <tr>
-<td><code>maxX</code></td>
-<td style="text-align:right">100</td>
-<td>largest X for this field</td>
+<td><code>ambient</code></td>
+<td>a dim ambient light</td>
 </tr>
 <tr>
-<td><code>blocksX</code></td>
-<td style="text-align:right">10</td>
-<td>number of blocks to divide the X axis into</td>
+<td><code>sun</code></td>
+<td>a directional light that orbits the scene once per day</td>
 </tr>
 <tr>
-<td><code>minY</code></td>
-<td style="text-align:right">0</td>
-<td>smallest Y for this field</td>
-</tr>
-<tr>
-<td><code>maxY</code></td>
-<td style="text-align:right">100</td>
-<td>largest Y for this field</td>
-</tr>
-<tr>
-<td><code>blocksY</code></td>
-<td style="text-align:right">10</td>
-<td>number of blocks to divide the Y axis into</td>
-</tr>
-<tr>
-<td><code>minZ</code></td>
-<td style="text-align:right">0</td>
-<td>smallest Z (vertical dimension) for this field</td>
-</tr>
-<tr>
-<td><code>maxZ</code></td>
-<td style="text-align:right">40</td>
-<td>largest Z for this field</td>
-</tr>
-<tr>
-<td><code>blocksZ</code></td>
-<td style="text-align:right">80</td>
-<td>number of blocks to divide the Z axis into</td>
-</tr>
-<tr>
-<td><code>blockGap</code></td>
-<td style="text-align:right">0.04</td>
-<td>gap to leave between blocks along the X and Y axes</td>
+<td><code>sky</code></td>
+<td>a directional light that shines from above the scene</td>
 </tr>
 </tbody>
 </table></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>currentDate</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Date</span>
+|
+
+<span class="param-type">"now"</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      'now'
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>The time and date
+inside the scape.  The string &quot;now&quot; means set currentDate to the
+present.</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>timeRatio</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">number</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      1
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>The rate time should pass in
+the scape, relative to normal.  0.1 means ten times slower.  60
+means one minute real time = one hour scape time.</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>dateUpdate</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type"><a href="ScapeScene.html#~dateChange">ScapeScene~dateChange</a></span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>callback for
+when the scene time changes (which is a lot).</p></td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+              </td>
           </tr>
   
     
@@ -288,7 +452,7 @@
         <dl>
             
 <dt>
-    <h4 class="name" id="addGroundHeight"><span class="type-signature"></span>addGroundHeight<span class="signature">(x, y, z)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="addBlocks"><span class="type-signature"></span>addBlocks<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -296,331 +460,8 @@
     
     
     <div class="description">
-        <p>Add a claim that the ground height is <code>z</code> at point <code>x</code>,<code>y</code>.
-If you call this, remember to eventually call
-<a href="ScapeField.html#calcGroundHeights">calcGroundHeights</a> after so
-ground heights get extrapolated across the entire Field.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-<div class="params-table-container">
-  <table class="params table table-striped">
-      <thead>
-    <tr>
-      
-      <th>Name</th>
-      
-  
-      <th>Type</th>
-  
-      
-  
-      
-  
-      <th class="last">Description</th>
-    </tr>
-    </thead>
-  
-    <tbody>
-    
-  
-          <tr>
-              
-                  <td class="name"><code>x</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Number</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last"><p>X coordinate of this ground height record</p></td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>y</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Number</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last"><p>Y coordinate of this ground height record</p></td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>z</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Number</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last"><p>the height of the ground at position <code>x</code>,<code>y</code></p></td>
-          </tr>
-  
-    
-    </tbody>
-  </table>
-</div>
-
-    
-    
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="addGroundHeights"><span class="type-signature"></span>addGroundHeights<span class="signature">(heightList, replace)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Add a list of claims of the ground height at various points.
-Unlike <a href="ScapeField.html#addGroundHeight">addGroundHeight</a>, this
-method will re-extrapolate ground heights across the Field (so
-you don't need to call
-<a href="ScapeField.html#calcGroundHeights">calcGroundHeights</a> yourself).</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-<div class="params-table-container">
-  <table class="params table table-striped">
-      <thead>
-    <tr>
-      
-      <th>Name</th>
-      
-  
-      <th>Type</th>
-  
-      
-  
-      
-  
-      <th class="last">Description</th>
-    </tr>
-    </thead>
-  
-    <tbody>
-    
-  
-          <tr>
-              
-                  <td class="name"><code>heightList</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Array</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last"><p>A list of objects.  Each element must
-have <code>x</code>, <code>y</code>, and <code>z</code> properties.</p></td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>replace</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Boolean</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last"><p>If a truthy value is supplied, this
-method will discard existing height claims before adding these
-ones.  If false or unsupplied, these new claims will be added to
-the existing ones.</p></td>
-          </tr>
-  
-    
-    </tbody>
-  </table>
-</div>
-
-    
-    
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="addGroundStack"><span class="type-signature"></span>addGroundStack<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Add a ground stack at x,y, starting at height z.
-The stack is an array of two-element arrays with a Material
-and a depth number, like this:
-[
-    [Material.leafLitter, 0.3],
-    [Material.dirt, 3.5],
-    [Material.stone, 4]
-]
-That puts a leaflitter layer 0.3 units deep on a 3.5-unit
-deep dirt layer, which is on a stone layer.  If the final
-layer's depth is zero, that layer is assumed to go all the
-way to minZ.
-If you call this, remember to calcGround() after.</p>
+        <p>add blocks from the attached ScapeField into the scene.</p>
+<p>You will probably only need to call this once.</p>
     </div>
     
 
@@ -678,7 +519,7 @@ If you call this, remember to calcGround() after.</p>
         
             
 <dt>
-    <h4 class="name" id="addGroundStacks"><span class="type-signature"></span>addGroundStacks<span class="signature">(replace)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="addHelperCube"><span class="type-signature"></span>addHelperCube<span class="signature">(x, <span class="optional">y</span>, <span class="optional">z</span>, color)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -686,197 +527,9 @@ If you call this, remember to calcGround() after.</p>
     
     
     <div class="description">
-        <p>Add additional ground stacks to the field's ground stacks.
-The groundList is an array of data objects.  Each object needs x,
-y and z properties, and a 'stack' property, each matching the
-corresponding arg to addGroundStack.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        <h5>Parameters:</h5>
-        
-<div class="params-table-container">
-  <table class="params table table-striped">
-      <thead>
-    <tr>
-      
-      <th>Name</th>
-      
-  
-      <th>Type</th>
-  
-      
-  
-      
-  
-      <th class="last">Description</th>
-    </tr>
-    </thead>
-  
-    <tbody>
-    
-  
-          <tr>
-              
-                  <td class="name"><code>replace</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">boolean</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last"><p>if replace is truthy, discard existing
-                         ground points first.</p></td>
-          </tr>
-  
-    
-    </tbody>
-  </table>
-</div>
-
-    
-    
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="calcGroundHeights"><span class="type-signature"></span>calcGroundHeights<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>(re)calculate the ground height.  You need to call this if you
-add ground height claims one at a time using
-<a href="ScapeField.html#addGroundHeight">addGroundHeight</a>.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt>
-    <h4 class="name" id="calcGroundStacks"><span class="type-signature"></span>calcGroundStacks<span class="signature">(<span class="optional">someArg</span>, attendees)</span><span class="type-signature"></span></h4>
-    
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>(re)calculate the ground stacks.  You need to call this if you
-add ground stacks one at a time using
-<a href="ScapeField.html#addGroundStack">addGroundStack</a>.</p>
+        <p>add a cube at position <code>x</code>, <code>y</code>, <code>z</code> to confirm where that is,
+exactly.  Great for trying to work out if your scape is being
+rendered where you think it should be rendered.</p>
     </div>
     
 
@@ -902,6 +555,8 @@ add ground stacks one at a time using
       
   
       
+      <th>Default</th>
+      
   
       <th class="last">Description</th>
     </tr>
@@ -912,16 +567,51 @@ add ground stacks one at a time using
   
           <tr>
               
-                  <td class="name"><code>someArg</code></td>
+                  <td class="name"><code>x</code></td>
               
   
               <td class="type">
               
                   
-<span class="param-type">"asdf"</span>
+<span class="param-type">Number</span>
 |
 
-<span class="param-type">"dfdf"</span>
+<span class="param-type">Vector3</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>X coordinate, or a <a href="http://threejs.org/docs/#Reference/Math/Vector3">THREE.Vector3</a> containing x, y and z coords</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>y</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Number</span>
 
 
               
@@ -940,24 +630,68 @@ add ground stacks one at a time using
               
   
               
+                  <td class="default">
+                  
+                  </td>
+              
   
-              <td class="description last"><p>any number of names</p></td>
+              <td class="description last"><p>Y coordinate</p></td>
           </tr>
   
     
   
           <tr>
               
-                  <td class="name"><code>attendees</code></td>
+                  <td class="name"><code>z</code></td>
               
   
               <td class="type">
               
                   
-<span class="param-type">Person</span>
+<span class="param-type">Number</span>
+
+
+              
+              </td>
+  
+              
+                  <td class="attributes">
+                  
+                      &lt;optional><br>
+                  
+  
+                  
+  
+                  
+                  </td>
+              
+  
+              
+                  <td class="default">
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>Z coordinate</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>color</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Color</span>
 |
 
-<span class="param-type">string</span>
+<span class="param-type">String</span>
+|
+
+<span class="param-type">Integer</span>
 
 
               
@@ -974,8 +708,16 @@ add ground stacks one at a time using
               
   
               
+                  <td class="default">
+                  
+                      '#cccccc'
+                  
+                  </td>
+              
   
-              <td class="description last"><p>String names or Person objects representing meeting attendees</p></td>
+              <td class="description last"><p>Color of cube.
+Can be a <a href="http://threejs.org/docs/#Reference/Math/Color">THREE.Color</a>, a color-parseable string like
+<code>'#3366cc'</code>, or a number like <code>0x3366cc</code>.</p></td>
           </tr>
   
     
@@ -983,6 +725,73 @@ add ground stacks one at a time using
   </table>
 </div>
 
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="addHelperShapes"><span class="type-signature"></span>addHelperShapes<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>add helper cubes at some of the corners of your scape, so you can
+see where they are in space.</p>
+    </div>
+    
+
+    
+    
+    
+    
     
     
     
@@ -1033,6 +842,145 @@ add ground stacks one at a time using
         </dl>
     
 
+    
+        <h3 class="subsection-title">Type Definitions</h3>
+
+        <dl>
+                
+<dt>
+    <h4 class="name" id="~dateChange"><span class="type-signature"></span>dateChange<span class="signature">(error, date)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>error</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">string</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>Description of error, otherwise null</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>date</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">date</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>Date the scape is now displaying</p></td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+            </dl>
     
 
     

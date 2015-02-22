@@ -26,6 +26,7 @@
     "browserify": "^8.1.0",
     "browserify-shim": "^3.8.2",
     "jsdoc": "^3.3.0-alpha13",
+    "jsdoc-oblivion": "0.0.4",
     "watch": "^0.13.0",
     "watchify": "^2.2.1"
   },

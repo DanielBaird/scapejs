@@ -4,7 +4,23 @@ ScapeObject = require('./baseobject');
 ScapeStuff = require('./stuff');
 // ------------------------------------------------------------------
 /**
- * Holds information about an area.
+ * The container for all information about an area.
+ *
+ * @param {object} options Various options for the ScapeField being created.
+ *
+ * option | default value | description
+ * -------|--------------:|------------
+ * `minX`     |    0 | smallest X for this field
+ * `maxX`     |  100 | largest X for this field
+ * `blocksX`  |   10 | number of blocks to divide the X axis into
+ * `minY`     |    0 | smallest Y for this field
+ * `maxY`     |  100 | largest Y for this field
+ * `blocksY`  |   10 | number of blocks to divide the Y axis into
+ * `minZ`     |    0 | smallest Z (vertical dimension) for this field
+ * `maxZ`     |   40 | largest Z for this field
+ * `blocksZ`  |   80 | number of blocks to divide the Z axis into
+ * `blockGap` | 0.04 | gap to leave between blocks along the X and Y axes
+ *
  * @class
  */
 function ScapeField(options) {
@@ -13,7 +29,7 @@ function ScapeField(options) {
         minX: 0,        maxX: 100,          blocksX: 10,
         minY: 0,        maxY: 100,          blocksY: 10,
         minZ: 0,        maxZ: 40,           blocksZ: 80,
-        stackGap: 0.04
+        blockGap: 0.04
     };
 
     // invoke our super constructor
@@ -64,13 +80,14 @@ ScapeField.prototype.print = function() {
     );
 }
 // ------------------------------------------------------------------
+/** @private */
 ScapeField.prototype._makeGrid = function() {
     this._g = [];
     for (var gx = 0; gx < this.blocksX; gx++) {
         var col = [];
         for (var gy = 0; gy < this.blocksY; gy++) {
-            var xGap = this._bX * this._opts.stackGap / 2;
-            var yGap = this._bY * this._opts.stackGap / 2;
+            var xGap = this._bX * this._opts.blockGap / 2;
+            var yGap = this._bY * this._opts.blockGap / 2;
             var block = {
                 x: this.minX + (this._bX * gx) + xGap,
                 dx: this._bX - xGap - xGap,
@@ -90,11 +107,18 @@ ScapeField.prototype._makeGrid = function() {
 }
 // ------------------------------------------------------------------
 /**
- * Add additional ground heights to the field's ground heights.
- * The heightList is an array of data objects.  Each object needs x,
- * y and z properties.
- * @param {boolean} replace  if replace is truthy, discard existing
- *                           ground heights first.
+ * Add a list of claims of the ground height at various points.
+ * Unlike {@link ScapeField#addGroundHeight addGroundHeight}, this
+ * method will re-extrapolate ground heights across the Field (so
+ * you don't need to call
+ * {@link ScapeField#calcGroundHeights calcGroundHeights} yourself).
+ *
+ * @param {Array} heightList A list of objects.  Each element must
+ * have `x`, `y`, and `z` properties.
+ * @param {Boolean} replace If a truthy value is supplied, this
+ * method will discard existing height claims before adding these
+ * ones.  If false or unsupplied, these new claims will be added to
+ * the existing ones.
  */
 ScapeField.prototype.addGroundHeights = function(heightList, replace) {
     if (replace) {
@@ -109,8 +133,14 @@ ScapeField.prototype.addGroundHeights = function(heightList, replace) {
 }
 // ------------------------------------------------------------------
 /**
- * Add a ground height of z at x,y.
- * If you call this, remember to calcGround() after.
+ * Add a claim that the ground height is `z` at point `x`,`y`.
+ * If you call this, remember to eventually call
+ * {@link ScapeField#calcGroundHeights calcGroundHeights} after so
+ * ground heights get extrapolated across the entire Field.
+ *
+ * @param {Number} x X coordinate of this ground height record
+ * @param {Number} y Y coordinate of this ground height record
+ * @param {Number} z the height of the ground at position `x`,`y`
  */
 ScapeField.prototype.addGroundHeight = function(x, y, z) {
     this._groundHeights.push({ x: x, y: y, z: z });
@@ -157,7 +187,9 @@ ScapeField.prototype.addGroundStack = function(x, y, stack) {
 }
 // ------------------------------------------------------------------
 /**
- * (re)calculate the ground height.
+ * (re)calculate the ground height.  You need to call this if you
+ * add ground height claims one at a time using
+ * {@link ScapeField#addGroundHeight addGroundHeight}.
  */
 ScapeField.prototype.calcGroundHeights = function() {
 
@@ -193,7 +225,10 @@ ScapeField.prototype.calcGroundHeights = function() {
 }
 // ------------------------------------------------------------------
 /**
- * (re)calculate the ground stacks.
+ * (re)calculate the ground stacks.  You need to call this if you
+ * add ground stacks one at a time using
+ * {@link ScapeField#addGroundStack addGroundStack}.
+ *
  */
 ScapeField.prototype.calcGroundStacks = function() {
 
