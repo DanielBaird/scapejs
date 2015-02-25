@@ -22,6 +22,20 @@
       <ul class="nav">
         
         <li class="dropdown">
+          <a href="namespaces.list.html" class="dropdown-toggle" data-toggle="dropdown">Namespaces<b
+            class="caret"></b></a>
+
+          <ul class="dropdown-menu ">
+            
+            <li>
+              <a href="ScapeStuff.html">ScapeStuff</a>
+            </li>
+            
+
+          </ul>
+        </li>
+        
+        <li class="dropdown">
           <a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
             class="caret"></b></a>
 
@@ -33,6 +47,10 @@
             
             <li>
               <a href="ScapeField.html">ScapeField</a>
+            </li>
+            
+            <li>
+              <a href="ScapeItem.html">ScapeItem</a>
             </li>
             
             <li>
@@ -50,7 +68,7 @@
           <ul class="dropdown-menu ">
             
             <li>
-              <a href="global.html#ScapeStuff">ScapeStuff</a>
+              <a href="global.html#ScapeItems">ScapeItems</a>
             </li>
             
 
@@ -798,6 +816,152 @@ corresponding arg to addGroundStack.</p>
         
             
 <dt>
+    <h4 class="name" id="addItems"><span class="type-signature"></span>addItems<span class="signature">(itemList, replace)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Add a list of items to the scape at various points.
+Unlike addItem, this method will
+re-position items across the Field (so you don't need to call
+calcItems yourself).</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>itemList</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Array</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>A list of items.  Each element must
+have <code>x</code>, <code>y</code>, and <code>item</code> properties.</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>replace</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Boolean</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>If a truthy value is supplied, this
+method will discard existing height claims before adding these
+ones.  If false or unsupplied, these new claims will be added to
+the existing ones.</p></td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id="calcGroundHeights"><span class="type-signature"></span>calcGroundHeights<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
@@ -866,7 +1030,7 @@ add ground height claims one at a time using
         
             
 <dt>
-    <h4 class="name" id="calcGroundStacks"><span class="type-signature"></span>calcGroundStacks<span class="signature">(<span class="optional">someArg</span>, attendees)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="calcGroundStacks"><span class="type-signature"></span>calcGroundStacks<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -884,105 +1048,6 @@ add ground stacks one at a time using
     
     
     
-    
-        <h5>Parameters:</h5>
-        
-<div class="params-table-container">
-  <table class="params table table-striped">
-      <thead>
-    <tr>
-      
-      <th>Name</th>
-      
-  
-      <th>Type</th>
-  
-      
-      <th>Argument</th>
-      
-  
-      
-  
-      <th class="last">Description</th>
-    </tr>
-    </thead>
-  
-    <tbody>
-    
-  
-          <tr>
-              
-                  <td class="name"><code>someArg</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">"asdf"</span>
-|
-
-<span class="param-type">"dfdf"</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-                      &lt;optional><br>
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-  
-              <td class="description last"><p>any number of names</p></td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>attendees</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Person</span>
-|
-
-<span class="param-type">string</span>
-
-
-              
-              </td>
-  
-              
-                  <td class="attributes">
-                  
-  
-                  
-  
-                  
-                  </td>
-              
-  
-              
-  
-              <td class="description last"><p>String names or Person objects representing meeting attendees</p></td>
-          </tr>
-  
-    
-    </tbody>
-  </table>
-</div>
-
     
     
     
@@ -1056,7 +1121,7 @@ add ground stacks one at a time using
           
     <span class="jsdoc-message">
     Documentation generated by <a href="https://github.com/jsdoc3/jsdoc" target="_blank">JSDoc 3.3.0-beta1</a>
-    on 2015-02-16T16:55:48+10:00
+    on 2015-02-25T16:44:31+10:00
     </span>
         </footer>
       </div>

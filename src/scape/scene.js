@@ -2,6 +2,11 @@
 THREE = require('three');
 ScapeObject = require('./baseobject');
 ScapeChunk = require('./chunk');
+
+
+// DEBUG
+ScapeItems = require('./itemtypes');
+
 // ------------------------------------------------------------------
 /**
  * @callback ScapeScene~dateChange
@@ -84,7 +89,8 @@ function ScapeScene(field, dom, options) {
             lastLogAt = ts;
         }
 
-        this._updateTime();
+        // DEBUG disabled time updates..
+        // this._updateTime();
         requestAnimationFrame( render );
         this.renderer.render( this.scene, this.camera );
         this.controls.update();
@@ -169,7 +175,8 @@ ScapeScene.prototype.addHelperCube = function(x, y, z, color) {
     var size = (this.f.wX + this.f.wY + this.f.wZ) / 50;
 
     // okay.. ready to draw
-    var geom = new THREE.BoxGeometry( size, size, size );
+    var geom = ScapeItems.Cube(size);
+
     var material = new THREE.MeshLambertMaterial({ color: color });
     var cube = new THREE.Mesh(geom, material);
     cube.position.copy(pos);

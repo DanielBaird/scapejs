@@ -2,14 +2,14 @@
 THREE = require('three');
 // ------------------------------------------------------------------
 /**
- * A bag of stuff -- i.e. THREE.Material -- that things can be made out of.
- *
- * @enum
+ * Stuff (thiat is, THREE.Material) that things in scapes can be made out of.
+ * @namespace
  */
 var ScapeStuff = {};
 var Lambert = THREE.MeshLambertMaterial;
 
-/** generic stuff, for if nothing else is specified @memberof ScapeStuff */
+/** generic stuff, for if nothing else is specified
+  * @memberof ScapeStuff */
 ScapeStuff.generic = new Lambert({ color: 0x999999,
                      transparent: true, opacity: 0.50 });
 

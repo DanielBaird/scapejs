@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=yes, width=device-width">
-  <title>ScapeJS — Global</title>
+  <title>ScapeJS — Class: ScapeItem</title>
   <link rel="shortcut icon" href="/favicon.ico">
 
   <!--[if lt IE 9]>
@@ -94,12 +94,12 @@
           
 
 
-	<h1 class="page-title">Global</h1>
+	<h1 class="page-title">Class: ScapeItem</h1>
 <section>
 
 <header>
     <h2>
-    
+    ScapeItem
     </h2>
     
 </header>
@@ -110,123 +110,150 @@
 
     
         
-
-        
-<dl class="details">
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-
-
-  
-
-  
-
-  
-
-  
-</dl>
-
-
-        
+<dt>
+    <h4 class="name" id="ScapeItem"><span class="type-signature"></span>new ScapeItem<span class="signature">(scene, parentBlock, itemType, options)</span><span class="type-signature"></span></h4>
     
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
-
-        <dl>
-            
-<dt class="name" id="ScapeItems">
-    <h4><span class="type-signature"></span>ScapeItems<span class="type-signature"></span></h4>
-
     
 </dt>
 <dd>
     
+    
     <div class="description">
-        <p>A bag of item types -- i.e. THREE.Geometrys -- that scapes can have in them.</p>
+        <p>Represents an item that might appear in a Scape.</p>
+<p>This will create (and internally cache) a mesh based on the linked
+item information to make rendering in WebGL faster.</p>
     </div>
     
 
     
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>scene</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type"><a href="ScapeScene.html">ScapeScene</a></span>
 
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>The ScapeScene the item will be added into</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>parentBlock</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Object</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>The block that owns this item</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>itemType</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">ScapeItemType</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>Type of this item</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>options</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Object</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>Various options, not currently used</p></td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
     
 <dl class="details">
   
 
-  <h5 class="subsection-title">Properties:</h5>
-
-  <dl>
-
-<table class="props table table-striped">
-    <thead>
-  <tr>
-    
-    <th>Name</th>
-    
-
-    <th>Type</th>
-
-    
-
-    
-
-    <th class="last">Description</th>
-  </tr>
-  </thead>
-
-  <tbody>
-  
-
-        <tr>
-            
-                <td class="name"><code>Cube</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-  
-  </tbody>
-</table>
-</dl>
-
-  
-
   
 
   
@@ -254,13 +281,118 @@
   
 </dl>
 
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <h4 class="name" id="rebuild"><span class="type-signature"></span>rebuild<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Invoke a rebuild of this item.</p>
+<p>Discards existing cached mesh and builds a new mesh based on the
+item type information.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>none</p>
+</div>
+
+
+
+
+        
+    
     
 </dd>
 
         </dl>
-    
-
     
 
     

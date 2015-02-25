@@ -65,6 +65,8 @@ function ScapeField(options) {
     this._calcCenter();
     this._makeGrid();
 
+    this._items = [];
+
 };
 // ------------------------------------------------------------------
 // inheritance
@@ -104,6 +106,31 @@ ScapeField.prototype._makeGrid = function() {
         }
         this._g.push(col);
     }
+}
+// ------------------------------------------------------------------
+/**
+ * Add a list of items to the scape at various points.
+ * Unlike {@link ScapeField#addItem addItem}, this method will
+ * re-position items across the Field (so you don't need to call
+ * {@link ScapeField#calcItems calcItems} yourself).
+ *
+ * @param {Array} itemList A list of items.  Each element must
+ * have `x`, `y`, and `item` properties.
+ * @param {Boolean} replace If a truthy value is supplied, this
+ * method will discard existing height claims before adding these
+ * ones.  If false or unsupplied, these new claims will be added to
+ * the existing ones.
+ */
+ScapeField.prototype.addItems = function(itemList, replace) {
+    if (replace) {
+        this._items = [];
+    }
+    // loop through the list adding each one.
+    for (var s = 0; s < itemList.length; s++) {
+        var theItem = itemList[s];
+        this.addItem(theItem.x, theItem.y, theItem.item);
+    }
+    this.calcItems();
 }
 // ------------------------------------------------------------------
 /**
@@ -239,6 +266,7 @@ ScapeField.prototype.calcGroundStacks = function() {
         // nearest defined stack.
         var s, dx, dy, thisDist, bestStack;
         var bestDist = this.wX + this.wY + this.wZ;
+        bestDist = bestDist * bestDist;
         for (var gs=0; gs < this._groundStacks.length; gs++) {
             s = this._groundStacks[gs];
             dx = block.x + (0.5 * this._bX) - s.x;
@@ -251,7 +279,7 @@ ScapeField.prototype.calcGroundStacks = function() {
         }
 
         // okay we got a stack.
-        this.setGroundStack(block, s.stack);
+        this.setGroundStack(block, bestStack.stack);
 
     }, this);
 }
