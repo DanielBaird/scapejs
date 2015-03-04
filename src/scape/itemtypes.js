@@ -2,10 +2,12 @@
 /**
  * A bag of item types -- i.e. THREE.Geometrys -- that scapes can have in them.
  *
- * @enum
+ * @namespace
  */
 var ScapeItems = {
-    Cube: require('./itemtypes/cube')
+    // documentation for items are in the ./itemtypes/* files
+    cube: require('./itemtypes/cube'),
+    tree: require('./itemtypes/tree')
 };
 // ------------------------------------------------------------------
 module.exports = ScapeItems;

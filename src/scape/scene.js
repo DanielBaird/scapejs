@@ -5,6 +5,7 @@ ScapeChunk = require('./chunk');
 
 
 // DEBUG
+ScapeStuff = require('./stuff');
 ScapeItems = require('./itemtypes');
 
 // ------------------------------------------------------------------
@@ -76,12 +77,11 @@ function ScapeScene(field, dom, options) {
 
     // add grids and helper cubes
     // this.addHelperGrid();
-    // this.addHelperGrid('top');
+    this.addHelperGrid('top');
     this.addHelperShapes();
 
-
     var lastLogAt = 0; // DEBUG
-    render = (function unboundRender(ts) {
+    var render = (function unboundRender(ts) {
 
         // DEBUG
         if (lastLogAt + 2000 < ts) {
@@ -139,6 +139,12 @@ ScapeScene.prototype.addHelperShapes = function() {
     this.addHelperCube(this.f.minX, this.f.maxY, this.f.minZ, green);
     this.addHelperCube(this.f.minX, this.f.minY, this.f.maxZ, blue);
     this.addHelperCube(this.f.maxX, this.f.maxY, this.f.minZ, white);
+
+    var wood = ScapeStuff.leaflitter;
+    var tree = ScapeItems.tree(1,30,wood);
+    tree.position.copy(new THREE.Vector3(this.f.minX, this.f.minY, this.f.minZ));
+    this.scene.add(tree);
+
 }
 // ------------------------------------------------------------------
 /**
@@ -171,14 +177,14 @@ ScapeScene.prototype.addHelperCube = function(x, y, z, color) {
         pos = new THREE.Vector3(x, y, z);
         // we caught color already.
     }
+
     // about a fiftieth of the field's summed dimensions
     var size = (this.f.wX + this.f.wY + this.f.wZ) / 50;
-
-    // okay.. ready to draw
-    var geom = ScapeItems.Cube(size);
-
+    // use the colour we decided earlier
     var material = new THREE.MeshLambertMaterial({ color: color });
-    var cube = new THREE.Mesh(geom, material);
+
+    // okay.. make it, position it, and show it
+    var cube = ScapeItems.cube(size, material);
     cube.position.copy(pos);
     this.scene.add(cube);
 }

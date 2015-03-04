@@ -6071,3 +6071,16 @@ article dd h5 {
 .params-table-container {
   overflow: scroll;
 }
+
+
+/* this required because Markdown adds P tags everwhere */
+.params td.description > p:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+.params td.description > p:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+

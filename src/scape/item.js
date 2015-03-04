@@ -51,30 +51,8 @@ ScapeItem.prototype.rebuild = function() {
 // ------------------------------------------------------------------
 ScapeItem.prototype._createNewMesh = function() {
 
-    // TODO: all wrong
+    // TODO: write more code here.  Like, maybe a LOT more.
 
-    // the chunk will be as deep as the layer says
-    var depth = this._layer.dz;
-    if (depth == 0) {
-        // ..unless that's 0, in which case go to the bottom
-        depth = this._layer.z - this._minZ;
-    }
-    // make a geometry for the chunk
-    var geom = new THREE.BoxGeometry(
-        this._block.dx, this._block.dy, depth
-    );
-    var mesh = new THREE.Mesh(geom, this._layer.m);
-    mesh.position.set(
-        this._block.x + this._block.dx/2,
-        this._block.y + this._block.dy/2,
-        this._layer.z - depth/2
-    );
-    mesh.castShadow = true;
-    // only the surface chunks receive shadow
-    if (this._isSurface) {
-        mesh.receiveShadow = true;
-    }
-    return mesh;
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype._addMesh = function() {

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=yes, width=device-width">
-  <title>ScapeJS — Class: ScapeChunk</title>
+  <title>ScapeJS — Namespace: ScapeItems</title>
   <link rel="shortcut icon" href="/favicon.ico">
 
   <!--[if lt IE 9]>
@@ -84,12 +84,12 @@
           
 
 
-	<h1 class="page-title">Class: ScapeChunk</h1>
+	<h1 class="page-title">Namespace: ScapeItems</h1>
 <section>
 
 <header>
     <h2>
-    ScapeChunk
+    ScapeItems
     </h2>
     
 </header>
@@ -100,8 +100,64 @@
 
     
         
+            <div class="description"><p>A bag of item types -- i.e. THREE.Geometrys -- that scapes can have in them.</p></div>
+        
+
+        
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
 <dt>
-    <h4 class="name" id="ScapeChunk"><span class="type-signature"></span>new ScapeChunk<span class="signature">(scene, parentBlock, layerIndex, minZ, options)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".cube"><span class="type-signature">&lt;static> </span>cube<span class="signature">(size, material, options)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -109,10 +165,7 @@
     
     
     <div class="description">
-        <p>Represents a rectangular prism of material that the solid &quot;ground&quot;
-portion of a 'scape is make up of, e.g. dirt, leaf litter, water.</p>
-<p>This will create (and internally cache) a mesh based on the linked
-chunk information to make rendering in WebGL faster.</p>
+        <p>Returns a cube mesh of the specified size and material.</p>
     </div>
     
 
@@ -146,13 +199,13 @@ chunk information to make rendering in WebGL faster.</p>
   
           <tr>
               
-                  <td class="name"><code>scene</code></td>
+                  <td class="name"><code>size</code></td>
               
   
               <td class="type">
               
                   
-<span class="param-type"><a href="ScapeScene.html">ScapeScene</a></span>
+<span class="param-type">number</span>
 
 
               
@@ -162,20 +215,20 @@ chunk information to make rendering in WebGL faster.</p>
   
               
   
-              <td class="description last"><p>The ScapeScene the chunk will be added into</p></td>
+              <td class="description last"><p>The length of a side of the cube.  Defaults to 1.</p></td>
           </tr>
   
     
   
           <tr>
               
-                  <td class="name"><code>parentBlock</code></td>
+                  <td class="name"><code>material</code></td>
               
   
               <td class="type">
               
                   
-<span class="param-type">Object</span>
+<span class="param-type">THREE.Material</span>
 
 
               
@@ -185,54 +238,7 @@ chunk information to make rendering in WebGL faster.</p>
   
               
   
-              <td class="description last"><p>The block (vertical column within the
-                            scape) that owns this chunk</p></td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>layerIndex</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Integer</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last"><p>Index into parentBlock.g this chunk is at</p></td>
-          </tr>
-  
-    
-  
-          <tr>
-              
-                  <td class="name"><code>minZ</code></td>
-              
-  
-              <td class="type">
-              
-                  
-<span class="param-type">Number</span>
-
-
-              
-              </td>
-  
-              
-  
-              
-  
-              <td class="description last"><p>lowest Z value any chunk should have</p></td>
+              <td class="description last"><p>What the make the cube out of.  Defaults to <code>Scape.Stuff.generic</code></p></td>
           </tr>
   
     
@@ -255,7 +261,7 @@ chunk information to make rendering in WebGL faster.</p>
   
               
   
-              <td class="description last"><p>Various options, not currently used</p></td>
+              <td class="description last"><p>Not used.</p></td>
           </tr>
   
     
@@ -310,28 +316,10 @@ chunk information to make rendering in WebGL faster.</p>
     
 </dd>
 
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
+        
             
 <dt>
-    <h4 class="name" id="rebuild"><span class="type-signature"></span>rebuild<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id=".tree"><span class="type-signature">&lt;static> </span>tree<span class="signature">(trunkDiameter, height, trunkMaterial, leafMaterial, options)</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -339,9 +327,7 @@ chunk information to make rendering in WebGL faster.</p>
     
     
     <div class="description">
-        <p>Invoke a rebuild of this chunk.</p>
-<p>Discards existing cached mesh and builds a new mesh based on the
-currently linked chunk information.</p>
+        <p>Returns a tree mesh of the specified size and color.</p>
     </div>
     
 
@@ -349,6 +335,148 @@ currently linked chunk information.</p>
     
     
     
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>trunkDiameter</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">number</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>Diameter of trunk (a.k.a. DBH)</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>height</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">number</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>Height of tree</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>trunkMaterial</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">THREE.Material</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>What to make the trunk out of</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>leafMaterial</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">THREE.Material</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>What to make the foliage out of</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>options</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Object</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>Not used.</p></td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
     
     
     
@@ -392,17 +520,6 @@ currently linked chunk information.</p>
     
     
     
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    <p>none</p>
-</div>
-
-
-
-
-        
     
     
 </dd>
