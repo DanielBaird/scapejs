@@ -56,6 +56,15 @@ ScapeStuff.wood = new Lambert({ color: 0x774422 });
   * @memberof ScapeStuff */
 ScapeStuff.foliage = new Lambert({ color: 0x558833 });
 
+/** a generic greenish leaf material
+  * @memberof ScapeStuff */
+ScapeStuff.foliage = new Lambert({ color: 0x558833,
+                      transparent: true, opacity: 0.75 });
+
+/** a foliage material for use in point cloud objects
+  * @memberof ScapeStuff */
+ScapeStuff.pointFoliage = new THREE.PointCloudMaterial({ color: 0x558833, size: 0.5 });
+
 /** light wood for gumtrees etc, bit too light.  Complain to Marianne if it's wrong
   * @memberof ScapeStuff */
 ScapeStuff.lightwood = new Lambert({ color: 0xffeecc });

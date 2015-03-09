@@ -386,8 +386,8 @@ ScapeScene.prototype._makeScene = function() {
     // add fog
     // scene.fog = new THREE.Fog(
     //     '#f0f8ff',
-    //     this.f.maxX - this.f.minX / 4,
-    //     this.f.maxX - this.f.minX
+    //     this.f.maxX - this.f.minX,
+    //     this.f.maxX - this.f.minX * 3
     // );
     return scene;
 }

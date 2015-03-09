@@ -13,16 +13,16 @@ var ScapeStuff = require('../stuff');
  * @function
  * @name ScapeItems.tree
  */
-function ScapeCubeFactory(options) {
+function ScapeTreeFactory(options) {
 
 	var diam = options.diameter || 1;
 	var height = options.height || 10;
 	var trunkStuff = options.trunk || ScapeStuff.wood;
 	var canopyStuff = options.canopy || ScapeStuff.foliage;
 
-	var treeHeight = height * 0.99;
-	var treeRadius = diam / 2;
 	var canopyHeight = height / 4;
+	var treeHeight = height - canopyHeight;
+	var treeRadius = 2 * diam / 2;
 	var canopyRadius = treeRadius * 6;
 
 	var trunkGeom = new THREE.CylinderGeometry(treeRadius/2, treeRadius, treeHeight, 12);
@@ -33,7 +33,7 @@ function ScapeCubeFactory(options) {
 	var rotate = new THREE.Matrix4().makeRotationX(Math.PI/2);
 
 	// center on x = 0 and y = 0, but have the _bottom_ face sitting on z = 0
-	var trunkPosition = new THREE.Matrix4().makeTranslation(0, 0, height/2);
+	var trunkPosition = new THREE.Matrix4().makeTranslation(0, 0, treeHeight/2);
 
 	// center on x = 0, y = 0, but have the canopy at the top
 	var canopyPosition = new THREE.Matrix4().makeTranslation(0, 0, canopyHeight/2 + height - canopyHeight);
@@ -42,8 +42,9 @@ function ScapeCubeFactory(options) {
 	canopyGeom.applyMatrix(canopyPosition.multiply(rotate));
 
 	var trunk = new THREE.Mesh(trunkGeom, trunkStuff);
+	// var canopy = new THREE.PointCloud(canopyGeom, canopyStuff);
 	var canopy = new THREE.Mesh(canopyGeom, canopyStuff);
 	return [trunk, canopy];
 };
 // ------------------------------------------------------------------
-module.exports = ScapeCubeFactory;
+module.exports = ScapeTreeFactory;
