@@ -30,7 +30,7 @@ var wet = new THREE.Color(0x882200); // moist
 
 /** dirt at varying moisture levels: dirt0 is dry and light in
   * colour, dirt9 is moist and dark.
-  * @name "dirt0 to dirt9"
+  * @name dirt[0-9]
   * @memberof ScapeStuff */
 ScapeStuff.dirt0 = new Lambert({ color: dry });
 ScapeStuff.dirt1 = new Lambert({ color: dry.clone().lerp(wet, 1/9) });
@@ -46,11 +46,19 @@ ScapeStuff.dirt9 = new Lambert({ color: wet });
 /** leaf litter, which in reality is usually brownish, but this has
   * a greenish tone to distinguish it from plain dirt.
   * @memberof ScapeStuff */
-ScapeStuff.leaflitter = new Lambert({ color: 0x556b2f });
+ScapeStuff.leaflitter = new Lambert({ color: 0x666b2f });
 
 /** generic brown wood
   * @memberof ScapeStuff */
-ScapeStuff.wood = new Lambert({ color: 0x995533 });
+ScapeStuff.wood = new Lambert({ color: 0x774422 });
+
+/** a generic greenish leaf material
+  * @memberof ScapeStuff */
+ScapeStuff.foliage = new Lambert({ color: 0x558833 });
+
+/** light wood for gumtrees etc, bit too light.  Complain to Marianne if it's wrong
+  * @memberof ScapeStuff */
+ScapeStuff.lightwood = new Lambert({ color: 0xffeecc });
 
 // ------------------------------------------------------------------
 module.exports = ScapeStuff;

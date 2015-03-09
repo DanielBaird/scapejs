@@ -16,20 +16,21 @@ var ScapeObject = require('./baseobject');
  *
  * @class
  */
-function ScapeItem(scene, parentBlock, itemType, options) {
+function ScapeItem(itemType, x, y, options) {
 
     var defaultOptions = {};
     // invoke our super constructor
     ScapeObject.call(this, options, defaultOptions);
 
-    this._scene = scene;
-    this._block = parentBlock;
     this._type = itemType;
-    this._minZ = minZ;
+    this._scene = null;
+    this.x = x;
+    this.y = y;
+    this._pos = new THREE.Vector3(x, y, 0);
 
-    // TODO
-    // maybe we should track multiple meshes so an item can live in multiple scenes
-    this._mesh = this._createNewMesh();
+    // TODO: maybe have a set of meshes for each scene, so an item
+    // can be in multiple scenes?
+    this._createNewMeshes();
 
 };
 // ------------------------------------------------------------------
@@ -37,36 +38,46 @@ function ScapeItem(scene, parentBlock, itemType, options) {
 ScapeItem.prototype = Object.create(ScapeObject.prototype);
 ScapeItem.prototype.constructor = ScapeItem;
 // ------------------------------------------------------------------
-/**
- * Invoke a rebuild of this item.
- *
- * Discards existing cached mesh and builds a new mesh based on the
- * item type information.
- *
- * @return none
- */
-ScapeItem.prototype.rebuild = function() {
-    this._updateMesh();
+ScapeItem.prototype._createNewMeshes = function() {
+    this._meshes = this._type(this._opts);
+    this.eachMesh(function(m) {
+        m.position.copy(this._pos);
+    });
 }
 // ------------------------------------------------------------------
-ScapeItem.prototype._createNewMesh = function() {
-
-    // TODO: write more code here.  Like, maybe a LOT more.
-
+ScapeItem.prototype.setHeight = function(z) {
+    this._pos.setZ(z);
+    this.eachMesh(function(m) {
+        m.position.copy(this._pos);
+    });
 }
 // ------------------------------------------------------------------
-ScapeItem.prototype._addMesh = function() {
-    this._scene.add(this._mesh);
+ScapeItem.prototype.addToScene = function(scene) {
+    this.eachMesh(function(m) {
+        scene.add(m);
+    });
+    this._scene = scene;
 }
 // ------------------------------------------------------------------
-ScapeItem.prototype._removeMesh = function() {
-    this._scene.remove(this._mesh);
+ScapeItem.prototype.removeFromScene = function() {
+    this.eachMesh(function(m) {
+        this._scene.remove(m);
+    });
+    this._scene = null;
 }
 // ------------------------------------------------------------------
-ScapeItem.prototype._updateMesh = function() {
-    this._removeMesh();
-    this._mesh = this._createNewMesh();
-    this._addMesh();
+ScapeItem.prototype._updateMeshes = function() {
+    if (this._scene) { this.removeFromScene(this._scene); }
+    this._meshes = this._createNewMeshes();
+    if (this._scene) { this.addToScene(this._scene); }
+}
+// ------------------------------------------------------------------
+// do something to each mesh
+ScapeItem.prototype.eachMesh = function(callback, thisArg) {
+    thisArg = thisArg || this;
+    for (var m = 0; m < this._meshes.length; m++) {
+        callback.call(thisArg, this._meshes[m]);
+    }
 }
 // ------------------------------------------------------------------
 module.exports = ScapeItem;

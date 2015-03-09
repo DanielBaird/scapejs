@@ -7,6 +7,7 @@ ScapeChunk = require('./chunk');
 // DEBUG
 ScapeStuff = require('./stuff');
 ScapeItems = require('./itemtypes');
+ScapeItem = require('./item');
 
 // ------------------------------------------------------------------
 /**
@@ -73,12 +74,12 @@ function ScapeScene(field, dom, options) {
     this.controls = this._makeControls();
     this.lights = this._makeLights(this._opts.lights);
 
-    this.addBlocks();
+    this.connectField();
 
     // add grids and helper cubes
     // this.addHelperGrid();
-    this.addHelperGrid('top');
-    this.addHelperShapes();
+    // this.addHelperGrid('top');
+    // this.addHelperShapes();
 
     var lastLogAt = 0; // DEBUG
     var render = (function unboundRender(ts) {
@@ -90,7 +91,8 @@ function ScapeScene(field, dom, options) {
         }
 
         // DEBUG disabled time updates..
-        // this._updateTime();
+        this._updateTime();
+
         requestAnimationFrame( render );
         this.renderer.render( this.scene, this.camera );
         this.controls.update();
@@ -105,22 +107,27 @@ ScapeScene.prototype = Object.create(ScapeObject.prototype);
 ScapeScene.prototype.constructor = ScapeScene;
 // ------------------------------------------------------------------
 /**
+ * add a mesh to the THREE.Scene (a passthrough for THREE.Scene.add)
+ */
+ScapeScene.prototype.add = function(thing) {
+    this.scene.add(thing);
+}
+// ------------------------------------------------------------------
+/**
+ * remove a mesh to the THREE.Scene (a passthrough for THREE.Scene.remove)
+ */
+ScapeScene.prototype.remove = function(thing) {
+    this.scene.remove(thing);
+}
+// ------------------------------------------------------------------
+/**
  * add blocks from the attached ScapeField into the scene.
  *
  * You will probably only need to call this once.
  */
-ScapeScene.prototype.addBlocks = function() {
-    var theScene = this.scene;
-    var minZ = this.f.minZ;
-    var depth, layer;
-    this.f.eachBlock( function(err, b) {
-        for (var layerIndex = 0; layerIndex < b.g.length; layerIndex++) {
-            b.g[layerIndex].chunk = new ScapeChunk(
-                theScene, b, layerIndex, minZ
-            );
-        }
-    });
-    this.f.calcGroundHeights();
+ScapeScene.prototype.connectField = function() {
+    this.f.buildBlocks(this);
+    this.f.buildItems(this);
 }
 // ------------------------------------------------------------------
 /**
@@ -132,18 +139,14 @@ ScapeScene.prototype.addHelperShapes = function() {
     var red   = 0xff0000;
     var green = 0x00ff00;
     var blue  = 0x0000ff;
+    var f = this.f;
 
-    this.addHelperCube(this.f.minX, this.f.minY, this.f.minZ, white);
-    this.addHelperCube(this.f.maxX, this.f.minY, this.f.minZ, red);
-    this.addHelperCube((this.f.minX + this.f.maxX) / 2, this.f.minY, this.f.minZ, red);
-    this.addHelperCube(this.f.minX, this.f.maxY, this.f.minZ, green);
-    this.addHelperCube(this.f.minX, this.f.minY, this.f.maxZ, blue);
-    this.addHelperCube(this.f.maxX, this.f.maxY, this.f.minZ, white);
-
-    var wood = ScapeStuff.leaflitter;
-    var tree = ScapeItems.tree(1,30,wood);
-    tree.position.copy(new THREE.Vector3(this.f.minX, this.f.minY, this.f.minZ));
-    this.scene.add(tree);
+    this.addHelperCube(f.minX, f.minY, f.minZ, white);
+    this.addHelperCube(f.maxX, f.minY, f.minZ, red);
+    this.addHelperCube((f.minX + f.maxX) / 2, f.minY, f.minZ, red);
+    this.addHelperCube(f.minX, f.maxY, f.minZ, green);
+    this.addHelperCube(f.minX, f.minY, f.maxZ, blue);
+    this.addHelperCube(f.maxX, f.maxY, f.minZ, white);
 
 }
 // ------------------------------------------------------------------
@@ -381,7 +384,11 @@ ScapeScene.prototype._makeLights = function(lightsToInclude) {
 ScapeScene.prototype._makeScene = function() {
     var scene = new THREE.Scene();
     // add fog
-    // scene.fog = new THREE.Fog('#f0f8ff', 100, 150);
+    // scene.fog = new THREE.Fog(
+    //     '#f0f8ff',
+    //     this.f.maxX - this.f.minX / 4,
+    //     this.f.maxX - this.f.minX
+    // );
     return scene;
 }
 // ------------------------------------------------------------------

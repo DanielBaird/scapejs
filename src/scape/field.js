@@ -2,6 +2,7 @@
 THREE = require('three');
 ScapeObject = require('./baseobject');
 ScapeStuff = require('./stuff');
+ScapeItem = require('./item');
 // ------------------------------------------------------------------
 /**
  * The container for all information about an area.
@@ -65,8 +66,6 @@ function ScapeField(options) {
     this._calcCenter();
     this._makeGrid();
 
-    this._items = [];
-
 };
 // ------------------------------------------------------------------
 // inheritance
@@ -101,11 +100,48 @@ ScapeField.prototype._makeGrid = function() {
                     m: ScapeStuff.generic,
                     chunk: null
                 }],
+                i: []
             }
             col.push(block);
         }
         this._g.push(col);
     }
+}
+// ------------------------------------------------------------------
+/**
+ * builds block meshes for display in the provided scene.  This is
+ * generally called by the ScapeScene object when you give it a
+ * ScapeField, so you won't need to call it yourself.
+ * @param {ScapeScene} scene the ScapeScene that will be displaying
+ * this ScapeField.
+ */
+ScapeField.prototype.buildBlocks = function(scene) {
+    var minZ = this.minZ;
+    this.eachBlock( function(err, b) {
+        for (var layerIndex = 0; layerIndex < b.g.length; layerIndex++) {
+            b.g[layerIndex].chunk = new ScapeChunk(
+                scene, b, layerIndex, minZ
+            );
+        }
+    });
+    // do this to adjust all the chunk heights
+    this.calcGroundHeights();
+}
+// ------------------------------------------------------------------
+/**
+ * builds item meshes for display in the provided scene.  This is
+ * generally called by the ScapeScene object when you give it a
+ * ScapeField, so you won't need to call it yourself.
+ * @param {ScapeScene} scene the ScapeScene that will be displaying
+ * this ScapeField.
+ */
+ScapeField.prototype.buildItems = function(scene) {
+    var minZ = this.minZ;
+    this.eachBlock( function(err, b) {
+        for (var itemIndex = 0; itemIndex < b.i.length; itemIndex++) {
+            b.i[itemIndex].addToScene(scene);
+        }
+    });
 }
 // ------------------------------------------------------------------
 /**
@@ -128,9 +164,21 @@ ScapeField.prototype.addItems = function(itemList, replace) {
     // loop through the list adding each one.
     for (var s = 0; s < itemList.length; s++) {
         var theItem = itemList[s];
-        this.addItem(theItem.x, theItem.y, theItem.item);
+        this.addItem(theItem.type, theItem.x, theItem.y, theItem);
     }
-    this.calcItems();
+}
+// ------------------------------------------------------------------
+ScapeField.prototype.addItem = function(itemType, x, y, options) {
+
+    // make the item
+    var item = new ScapeItem(itemType, x, y, options);
+
+    // add to the parent block
+    var parentBlock = this.getBlock(x, y);
+    parentBlock.i.push(item);
+
+    // set item height to the parent block's ground height
+    item.setHeight(parentBlock.g[0].z);
 }
 // ------------------------------------------------------------------
 /**
@@ -330,8 +378,8 @@ ScapeField.prototype.setBlockHeight = function(block, z) {
 // ------------------------------------------------------------------
 ScapeField.prototype.getBlock = function(x, y) {
     // return the block that includes  x,y
-    var gx = (x - this.minX) / this._bX;
-    var gy = (y - this.minY) / this._bY;
+    var gx = Math.floor( (x - this.minX) / this._bX );
+    var gy = Math.floor( (y - this.minY) / this._bY );
     return (this._g[gx][gy]);
 }
 // ------------------------------------------------------------------
