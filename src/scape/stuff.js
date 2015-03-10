@@ -1,12 +1,14 @@
 // ------------------------------------------------------------------
-THREE = require('three');
+var THREE = require('three');
+
+var Lambert = THREE.MeshLambertMaterial;
+var Phong = THREE.MeshPhongMaterial;
 // ------------------------------------------------------------------
 /**
  * Stuff (that is, THREE.Material) that things in scapes can be made out of.
  * @namespace
  */
 var ScapeStuff = {};
-var Lambert = THREE.MeshLambertMaterial;
 
 /** generic stuff, for if nothing else is specified
   * @memberof ScapeStuff */
@@ -65,9 +67,25 @@ ScapeStuff.foliage = new Lambert({ color: 0x558833,
   * @memberof ScapeStuff */
 ScapeStuff.pointFoliage = new THREE.PointCloudMaterial({ color: 0x558833, size: 0.5 });
 
-/** light wood for gumtrees etc, bit too light.  Complain to Marianne if it's wrong
+/** light wood for gumtrees etc.  Maybe it's a bit too light?
   * @memberof ScapeStuff */
 ScapeStuff.lightwood = new Lambert({ color: 0xffeecc });
+
+/** silvery metal
+  * @memberOf ScapeStuff */
+ScapeStuff.metal = new Phong({ color: 0x8899aa, specular: 0xffffff, shininess: 100, reflectivity: 0.8 });
+
+/** gloss black, for shiny black painted surfaces
+  * @memberOf ScapeStuff */
+ScapeStuff.glossBlack = new Phong({ color: 0x000000, specular: 0x666666 });
+
+/** concrete in a sort of mid-grey
+  * @memberOf ScapeStuff */
+ScapeStuff.concrete = new Lambert({ color: 0x999999 });
+
+/** plastic, a generic whitish plastic with a bit of shininess
+  * @memberOf ScapeStuff */
+ScapeStuff.plastic = new Phong({ color: 0x999999, emissive: 0x999999, specular: 0xcccccc });
 
 // ------------------------------------------------------------------
 module.exports = ScapeStuff;

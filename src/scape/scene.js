@@ -78,8 +78,8 @@ function ScapeScene(field, dom, options) {
 
     // add grids and helper cubes
     // this.addHelperGrid();
-    // this.addHelperGrid('top');
-    // this.addHelperShapes();
+    this.addHelperGrid('top');
+    this.addHelperShapes();
 
     var lastLogAt = 0; // DEBUG
     var render = (function unboundRender(ts) {

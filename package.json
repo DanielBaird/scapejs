@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "jsdoc --configure ./devconfig/jsdoc.conf.json",
-    "watch": "watch 'npm run build' src",
+    "watch": "watch 'npm run build; date +\"built at %I:%M %p and %S seconds.\"; echo \"\\a\"' src",
     "build": "browserify --debug src/scape.js -o dist/scape.js && cp dist/scape.js examples/lib",
     "build:prod": "browserify src/scape.js -o dist/scape.js",
     "xpostbuild": "cp dist/scape.js examples/lib/scape.js",
