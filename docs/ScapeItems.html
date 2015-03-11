@@ -157,6 +157,445 @@
         <dl>
             
 <dt>
+    <h4 class="name" id=".crane"><span class="type-signature">&lt;static> </span>crane<span class="signature">(options)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Returns a mesh array for a tower crane.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>options</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">Object</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+  
+              <td class="description last"><p>used to specify properties of the crane.</p>
+                  <h6>Properties</h6>
+                  
+<div class="params-table-container">
+  <table class="params table table-striped">
+      <thead>
+    <tr>
+      
+      <th>Name</th>
+      
+  
+      <th>Type</th>
+  
+      
+  
+      
+      <th>Default</th>
+      
+  
+      <th class="last">Description</th>
+    </tr>
+    </thead>
+  
+    <tbody>
+    
+  
+          <tr>
+              
+                  <td class="name"><code>width</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">width</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      2
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>Width of crane tower</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>height</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">height</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      50
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>Height of crane tower</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>length</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">length</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      40
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>Length of crane boom, from the
+       crane's centre axis to the tip</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>rotation</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">rotation</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      0
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>Degrees of boom rotation,
+       counted clockwise from the +ve Y direction (away from
+       the camera)</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>counterweightLength</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">counterweightLength</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      length/4
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>Length of the counterweight boom, from the crane's centre
+       axis to the end of the counterweight</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>struts</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">THREE.Material</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      ScapeStuff.glossBlack
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>What to make the struts in the tower and boom out of</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>base</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">THREE.Material</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      ScapeStuff.concrete
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>What to make the base out of</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>ring</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">THREE.Material</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      ScapeStuff.plastic
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>What to make the ring at the top of the tower out of</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>cabin</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">THREE.Material</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      ScapeStuff.plastic
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>What to make the cabin out of</p></td>
+          </tr>
+  
+    
+  
+          <tr>
+              
+                  <td class="name"><code>counterweight</code></td>
+              
+  
+              <td class="type">
+              
+                  
+<span class="param-type">THREE.Material</span>
+
+
+              
+              </td>
+  
+              
+  
+              
+                  <td class="default">
+                  
+                      ScapeStuff.concrete
+                  
+                  </td>
+              
+  
+              <td class="description last"><p>What to make the counterweight out of</p></td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+              </td>
+          </tr>
+  
+    
+    </tbody>
+  </table>
+</div>
+
+    
+    
+    
+<dl class="details">
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+  
+
+  
+
+  
+
+  
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
     <h4 class="name" id=".cube"><span class="type-signature">&lt;static> </span>cube<span class="signature">(size, material, options)</span><span class="type-signature"></span></h4>
     
     
@@ -405,7 +844,7 @@
   
           <tr>
               
-                  <td class="name"><code>trunkDiameter</code></td>
+                  <td class="name"><code>diameter</code></td>
               
   
               <td class="type">
@@ -480,7 +919,7 @@
               
                   <td class="default">
                   
-                      ScapeStuff.generic
+                      ScapeStuff.wood
                   
                   </td>
               
@@ -509,7 +948,7 @@
               
                   <td class="default">
                   
-                      ScapeStuff.generic
+                      ScapeStuff.foliage
                   
                   </td>
               
@@ -603,7 +1042,7 @@
           
     <span class="jsdoc-message">
     Documentation generated by <a href="https://github.com/jsdoc3/jsdoc" target="_blank">JSDoc 3.3.0-beta1</a>
-    on 2015-03-04T16:05:10+10:00
+    on 2015-03-11T11:56:08+10:00
     </span>
         </footer>
       </div>

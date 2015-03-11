@@ -26,6 +26,8 @@ var M4 = THREE.Matrix4;
  *        What to make the ring at the top of the tower out of
  * @param {THREE.Material} options.cabin=ScapeStuff.plastic
  *        What to make the cabin out of
+ * @param {THREE.Material} options.window=ScapeStuff.glass
+ *        What to make the cabin window out of
  * @param {THREE.Material} options.counterweight=ScapeStuff.concrete
  *        What to make the counterweight out of
  *
@@ -44,6 +46,7 @@ function ScapeCraneFactory(options) {
 	var baseStuff = options.base || ScapeStuff.concrete;
 	var ringStuff = options.ring || ScapeStuff.plastic;
 	var cabinStuff = options.cabin || ScapeStuff.plastic;
+	var windowStuff = options.window || ScapeStuff.glass;
 	var counterweightStuff = options.counterweight || ScapeStuff.concrete;
 	var rotation = -1 * (options.rotation || 0) * Math.PI / 180;
 
@@ -145,7 +148,7 @@ function ScapeCraneFactory(options) {
 	cabinGeom.applyMatrix(rotate);
 	windowGeom.applyMatrix(rotate);
 	craneParts.push(new THREE.Mesh(cabinGeom, cabinStuff));
-	craneParts.push(new THREE.Mesh(windowGeom, ScapeStuff.water));
+	craneParts.push(new THREE.Mesh(windowGeom, windowStuff));
 
 	// return all the crane bits.
 	return craneParts;

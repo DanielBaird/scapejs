@@ -4,6 +4,7 @@
 // options and whatnot
 //
 
+// -----------------------------------------------------------------
 function ScapeObject(options, defaults) {
     this._opts = Object.create(defaults);
     this.mergeOptions(options);
@@ -15,5 +16,6 @@ ScapeObject.prototype.mergeOptions = function(extraOpts) {
         this._opts[opt] = extraOpts[opt];
     }
 }
+// -----------------------------------------------------------------
 
 module.exports = ScapeObject;

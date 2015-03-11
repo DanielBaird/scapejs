@@ -60,8 +60,9 @@ ScapeStuff.foliage = new Lambert({ color: 0x558833 });
 
 /** a generic greenish leaf material
   * @memberof ScapeStuff */
-ScapeStuff.foliage = new Lambert({ color: 0x558833,
-                      transparent: true, opacity: 0.75 });
+ScapeStuff.foliage = new Lambert(
+  { color: 0x558833, transparent: true, opacity: 0.75 }
+);
 
 /** a foliage material for use in point cloud objects
   * @memberof ScapeStuff */
@@ -86,6 +87,12 @@ ScapeStuff.concrete = new Lambert({ color: 0x999999 });
 /** plastic, a generic whitish plastic with a bit of shininess
   * @memberOf ScapeStuff */
 ScapeStuff.plastic = new Phong({ color: 0x999999, emissive: 0x999999, specular: 0xcccccc });
+
+/** glass is shiny, fairly transparent, and a little bluish
+  * @memberof ScapeStuff */
+ScapeStuff.glass = new Phong(
+  { color: 0x66aaff, specular: 0xffffff, transparent: true, opacity: 0.5 }
+);
 
 // ------------------------------------------------------------------
 module.exports = ScapeStuff;

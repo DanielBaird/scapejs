@@ -226,7 +226,7 @@ ScapeScene.prototype.addHelperGrid = function(topOrBottom) {
  * @private
  */
 ScapeScene.prototype._makeRenderer = function(options) {
-    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, precision: "highp" });
     renderer.setClearColor( 0x000000, 0);
     renderer.shadowMapEnabled = true;
     if (options && options.dom) {

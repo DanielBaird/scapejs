@@ -146,9 +146,6 @@ ScapeField.prototype.buildItems = function(scene) {
 // ------------------------------------------------------------------
 /**
  * Add a list of items to the scape at various points.
- * Unlike {@link ScapeField#addItem addItem}, this method will
- * re-position items across the Field (so you don't need to call
- * {@link ScapeField#calcItems calcItems} yourself).
  *
  * @param {Array} itemList A list of items.  Each element must
  * have `x`, `y`, and `item` properties.
@@ -164,11 +161,42 @@ ScapeField.prototype.addItems = function(itemList, replace) {
     // loop through the list adding each one.
     for (var s = 0; s < itemList.length; s++) {
         var theItem = itemList[s];
-        this.addItem(theItem.type, theItem.x, theItem.y, theItem);
+        this.addItem(theItem);
     }
 }
 // ------------------------------------------------------------------
-ScapeField.prototype.addItem = function(itemType, x, y, options) {
+ScapeField.prototype.addItem = function(item) {
+
+    // add to the parent block
+    var parentBlock = this.getBlock(item.x, item.y);
+    parentBlock.i.push(item);
+
+    // set item height to the parent block's ground height
+    item.setHeight(parentBlock.g[0].z);
+}
+// ------------------------------------------------------------------
+/**
+ * Add a list of items to the scape at various points.
+ *
+ * @param {Array} itemList A list of items.  Each element must
+ * have `x`, `y`, and `item` properties.
+ * @param {Boolean} replace If a truthy value is supplied, this
+ * method will discard existing height claims before adding these
+ * ones.  If false or unsupplied, these new claims will be added to
+ * the existing ones.
+ */
+ScapeField.prototype.addItemsOfType = function(itemList, replace) {
+    if (replace) {
+        this._items = [];
+    }
+    // loop through the list adding each one.
+    for (var s = 0; s < itemList.length; s++) {
+        var theItem = itemList[s];
+        this.addItemOfType(theItem.type, theItem.x, theItem.y, theItem);
+    }
+}
+// ------------------------------------------------------------------
+ScapeField.prototype.addItemOfType = function(itemType, x, y, options) {
 
     // make the item
     var item = new ScapeItem(itemType, x, y, options);

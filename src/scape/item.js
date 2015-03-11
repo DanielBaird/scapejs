@@ -2,6 +2,10 @@
 // ------------------------------------------------------------------
 var THREE = require('three');
 var ScapeObject = require('./baseobject');
+
+
+// DEBUG
+var ScapeItems = require('./itemtypes');
 // ------------------------------------------------------------------
 /**
  * Represents an item that might appear in a Scape.
@@ -42,14 +46,19 @@ ScapeItem.prototype._createNewMeshes = function() {
     this._meshes = this._type(this._opts);
     this.eachMesh(function(m) {
         m.position.copy(this._pos);
-    });
+    }, this);
+}
+// ------------------------------------------------------------------
+ScapeItem.prototype.update = function(updatedOptions) {
+    this.mergeOptions(updatedOptions);
+    this._updateMeshes();
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype.setHeight = function(z) {
     this._pos.setZ(z);
     this.eachMesh(function(m) {
         m.position.copy(this._pos);
-    });
+    }, this);
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype.addToScene = function(scene) {
@@ -60,23 +69,28 @@ ScapeItem.prototype.addToScene = function(scene) {
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype.removeFromScene = function() {
-    this.eachMesh(function(m) {
-        this._scene.remove(m);
-    });
-    this._scene = null;
+    if (this._scene) {
+        this.eachMesh(function(m) {
+            this._scene.remove(m);
+        }, this);
+        this._scene = null;
+    }
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype._updateMeshes = function() {
+    var scene = this._scene; // remember this because removeFromScene
+                             // will delete this._scene
     if (this._scene) { this.removeFromScene(this._scene); }
-    this._meshes = this._createNewMeshes();
-    if (this._scene) { this.addToScene(this._scene); }
+    this._createNewMeshes();
+    if (scene) { this.addToScene(scene); }
 }
 // ------------------------------------------------------------------
 // do something to each mesh
 ScapeItem.prototype.eachMesh = function(callback, thisArg) {
-    thisArg = thisArg || this;
-    for (var m = 0; m < this._meshes.length; m++) {
-        callback.call(thisArg, this._meshes[m]);
+    if (this._meshes) {
+        for (var m = 0; m < this._meshes.length; m++) {
+            callback.call(thisArg, this._meshes[m]);
+        }
     }
 }
 // ------------------------------------------------------------------
