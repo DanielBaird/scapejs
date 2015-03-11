@@ -5,13 +5,29 @@ var ScapeStuff = require('../stuff');
 var M4 = THREE.Matrix4;
 // ------------------------------------------------------------------
 /**
- * Returns a crane mesh array.
+ * Returns a mesh array for a tower crane.
  * @param {Object} options used to specify properties of the crane.
 
- * @param {number} options.diameter=1 Diameter of trunk (a.k.a. DBH)
- * @param {number} options.height=10 Height of tree
- * @param {THREE.Material} options.trunkMaterial=ScapeStuff.wood What to make the trunk out of
- * @param {THREE.Material} options.leafMaterial=ScapeStuff.foliage What to make the foliage out of
+ * @param {width} options.width=2 Width of crane tower
+ * @param {height} options.height=50 Height of crane tower
+ * @param {length} options.length=40 Length of crane boom, from the
+ *        crane's centre axis to the tip
+ * @param {rotation} options.rotation=0 Degrees of boom rotation,
+ *        counted clockwise from the +ve Y direction (away from
+ *        the camera)
+ * @param {counterweightLength} options.counterweightLength=length/4
+ *        Length of the counterweight boom, from the crane's centre
+ *        axis to the end of the counterweight
+ * @param {THREE.Material} options.struts=ScapeStuff.glossBlack
+ *        What to make the struts in the tower and boom out of
+  * @param {THREE.Material} options.base=ScapeStuff.concrete
+ *        What to make the base out of
+ * @param {THREE.Material} options.ring=ScapeStuff.plastic
+ *        What to make the ring at the top of the tower out of
+ * @param {THREE.Material} options.cabin=ScapeStuff.plastic
+ *        What to make the cabin out of
+ * @param {THREE.Material} options.counterweight=ScapeStuff.concrete
+ *        What to make the counterweight out of
  *
  * @function
  * @name ScapeItems.crane
@@ -28,7 +44,8 @@ function ScapeCraneFactory(options) {
 	var baseStuff = options.base || ScapeStuff.concrete;
 	var ringStuff = options.ring || ScapeStuff.plastic;
 	var cabinStuff = options.cabin || ScapeStuff.plastic;
-	var rotation = ((options.rotation || 0) - 90) * Math.PI / 180;
+	var counterweightStuff = options.counterweight || ScapeStuff.concrete;
+	var rotation = -1 * (options.rotation || 0) * Math.PI / 180;
 
 	var towerHeight = height;
 	var baseW = towerWidth * 3;
@@ -42,7 +59,7 @@ function ScapeCraneFactory(options) {
 	var boomL = length; // length of crane boom
 	var cwbL = counterweightLength; // length of counterweight boom
 	var rodL = boomL + cwbL;
-	var cwW = towerWidth;
+	var cwW = towerWidth - 3*poleR;
 	var cwH = towerWidth * 1.5;
 	var cwL = towerWidth * 1.5;
 
@@ -77,7 +94,7 @@ function ScapeCraneFactory(options) {
 	}
 
 
-	////////// the ring at the top
+	////////// the ring at the top of the tower
 	var ringGeom = new THREE.CylinderGeometry(ringR, ringR, ringH, 12, 1, true);
 	ringGeom.applyMatrix(new M4().makeTranslation(0, 0, towerHeight - ringH/2).multiply(cylinderRotate));
 	ringStuff.side = THREE.DoubleSide;
@@ -86,26 +103,30 @@ function ScapeCraneFactory(options) {
 
 	////////// the horizontal boom
 	// make one rod to start with
-	var rodGeom = new THREE.CylinderGeometry(poleR, poleR, rodL);
-	rodGeom.applyMatrix(rotate);
+	var topRodGeom = new THREE.CylinderGeometry(poleR, poleR, rodL);
 
 	// top rod
-	rodGeom.applyMatrix(new M4().makeTranslation(0, (rodL/2) - cwbL, towerHeight + poleR + towerWidth/2));
-	craneParts.push(new THREE.Mesh(rodGeom, strutStuff));
+	topRodGeom.applyMatrix(new M4().makeTranslation(0, (rodL/2) - cwbL, towerHeight + poleR + 0.5 * towerWidth));
+	leftRodGeom = topRodGeom.clone();
+	rightRodGeom = topRodGeom.clone();
+
+	topRodGeom.applyMatrix(rotate);
+	craneParts.push(new THREE.Mesh(topRodGeom, strutStuff));
 
 	// bottom left rod
-	rodGeom = rodGeom.clone();
-	rodGeom.applyMatrix(new M4().makeTranslation(-0.5 * towerWidth, 0, -0.5 * towerWidth));
-	craneParts.push(new THREE.Mesh(rodGeom, strutStuff));
+	leftRodGeom.applyMatrix(new M4().makeTranslation(-0.5 * towerWidth + poleR, 0, -0.5 * towerWidth));
+	leftRodGeom.applyMatrix(rotate);
+	craneParts.push(new THREE.Mesh(leftRodGeom, strutStuff));
 
 	// bottom right rod
-	rodGeom = rodGeom.clone();
-	rodGeom.applyMatrix(new M4().makeTranslation(towerWidth, 0, 0));
-	craneParts.push(new THREE.Mesh(rodGeom, strutStuff));
+	rightRodGeom.applyMatrix(new M4().makeTranslation(0.5 * towerWidth - poleR, 0, -0.5 * towerWidth));
+	rightRodGeom.applyMatrix(rotate);
+	craneParts.push(new THREE.Mesh(rightRodGeom, strutStuff));
 
 	// end of the boom
-	var endGeom = new THREE.BoxGeometry(towerWidth + poleR + poleR, 2 * poleR, towerWidth/2 + poleR + poleR);
-	endGeom.applyMatrix(new M4().makeTranslation(0, boomL, towerHeight + towerWidth/4 + poleR));
+	var endGeom = new THREE.BoxGeometry(towerWidth, poleR, 0.5 * towerWidth + poleR + poleR);
+	endGeom.applyMatrix(new M4().makeTranslation(0, boomL, towerHeight + 0.25 * towerWidth + poleR));
+	endGeom.applyMatrix(rotate);
 	craneParts.push(new THREE.Mesh(endGeom, strutStuff));
 
 
@@ -113,14 +134,14 @@ function ScapeCraneFactory(options) {
 	var cwGeom = new THREE.BoxGeometry(cwW, cwL, cwH);
 	cwGeom.applyMatrix(new M4().makeTranslation(0, 1.001 * (cwL/2 - cwbL), towerHeight));
 	cwGeom.applyMatrix(rotate);
-	craneParts.push(new THREE.Mesh(cwGeom, baseStuff));
+	craneParts.push(new THREE.Mesh(cwGeom, counterweightStuff));
 
 
 	////////// cabin
 	var cabinGeom = new THREE.BoxGeometry(cabinW, cabinL, cabinH);
 	var windowGeom = new THREE.BoxGeometry(cabinW * 1.1, cabinL * 0.6, cabinH * 0.6);
-	cabinGeom.applyMatrix(new M4().makeTranslation(cabinW/2, 0, cabinH/2 + towerHeight + poleR + poleR));
-	windowGeom.applyMatrix(new M4().makeTranslation(cabinW/2, cabinL * 0.25, cabinH * 0.6 + towerHeight + poleR + poleR));
+	cabinGeom.applyMatrix(new M4().makeTranslation(cabinW/2 + poleR, 0, cabinH/2 + towerHeight + poleR + poleR));
+	windowGeom.applyMatrix(new M4().makeTranslation(cabinW/2 + poleR, cabinL * 0.25, cabinH * 0.6 + towerHeight + poleR + poleR));
 	cabinGeom.applyMatrix(rotate);
 	windowGeom.applyMatrix(rotate);
 	craneParts.push(new THREE.Mesh(cabinGeom, cabinStuff));
