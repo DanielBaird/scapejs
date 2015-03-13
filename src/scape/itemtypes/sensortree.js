@@ -21,6 +21,9 @@ function ScapeSensorTreeFactory(options) {
 	// start with standard tree meshes
 	var treeParts = ScapeTreeFactory(options);
 
+	// extract some tree info
+	var diam = options.diameter || 1;
+
 	// now add the extra sensors
 
 	////////// dendro
@@ -29,6 +32,12 @@ function ScapeSensorTreeFactory(options) {
 		var bandStuff = options.dendrometer.band || ScapeStuff.metal;
 		var mountStuff = options.dendrometer.mount || ScapeStuff.black;
 		var meterStuff = options.dendrometer.meter || ScapeStuff.plastic;
+
+		var bandGeom = new THREE.CylinderGeometry(diam/2, ringR, ringH, 12, 1, true);
+		ringGeom.applyMatrix(new M4().makeTranslation(0, 0, towerHeight - ringH/2).multiply(cylinderRotate));
+		ringStuff.side = THREE.DoubleSide;
+		craneParts.push(new THREE.Mesh(ringGeom, ringStuff));
+
 	}
 
 	return treeParts;
