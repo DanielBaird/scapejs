@@ -10,8 +10,9 @@ var ScapeItems = require('./itemtypes');
 /**
  * Represents an item that might appear in a Scape.
  *
- * This will create (and internally cache) a mesh based on the linked
- * item information to make rendering in WebGL faster.
+ * This will create (and internally cache) a set of meshes using
+ * the linked item type, and position them according to the specified
+ * x,y location.
  *
  * @param {ScapeScene} scene The ScapeScene the item will be added into
  * @param {Object} parentBlock The block that owns this item
@@ -43,6 +44,9 @@ ScapeItem.prototype = Object.create(ScapeObject.prototype);
 ScapeItem.prototype.constructor = ScapeItem;
 // ------------------------------------------------------------------
 ScapeItem.prototype._createNewMeshes = function() {
+    if (this._meshes && this._meshes.length > 0) {
+        this._disposeOfMeshes();
+    }
     this._meshes = this._type(this._opts);
     this.eachMesh(function(m) {
         m.position.copy(this._pos);
@@ -68,6 +72,13 @@ ScapeItem.prototype.addToScene = function(scene) {
     this._scene = scene;
 }
 // ------------------------------------------------------------------
+ScapeItem.prototype._disposeOfMeshes = function() {
+    this.eachMesh(function(m) {
+        if (m.geometry) m.geometry.dispose();
+        m.dispatchEvent({type: 'dispose'});
+    });
+}
+// ------------------------------------------------------------------
 ScapeItem.prototype.removeFromScene = function() {
     if (this._scene) {
         this.eachMesh(function(m) {
@@ -80,7 +91,8 @@ ScapeItem.prototype.removeFromScene = function() {
 ScapeItem.prototype._updateMeshes = function() {
     var scene = this._scene; // remember this because removeFromScene
                              // will delete this._scene
-    if (this._scene) { this.removeFromScene(this._scene); }
+    if (this._scene) { this.removeFromScene(); }
+    this._disposeOfMeshes();
     this._createNewMeshes();
     if (scene) { this.addToScene(scene); }
 }

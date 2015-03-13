@@ -276,7 +276,7 @@ ScapeScene.prototype._updateSun = function(sun) {
     }
 
     if (typeof sun == 'undefined') {
-        return; // bail if there's no sun ARRRH WHAT DID YOU DO
+        return; // bail if there's no sun WHAT DID YOU DO YOU MONSTER
     }
 
     var sunAngle = (this.date.getHours()*60 + this.date.getMinutes()) / 1440 * 2 * Math.PI;

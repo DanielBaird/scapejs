@@ -852,20 +852,21 @@
         this.f.addItems([crane]);
 
         // update the time div when the hour changes
+        var hr;
         var currentHour = '';
         var timeStr = '';
 
-        setInterval(function() {
-            craneAngle = craneAngle + 3;
-            crane.update({ rotation: craneAngle });
-        }, 500);
+        // setInterval(function() {
+        //     craneAngle = craneAngle + 3;
+        //     crane.update({ rotation: craneAngle });
+        // }, 500);
 
         var s = new Scape.Scene(f, 'container', {
             currentDate: 'now',  // either string 'now' or a Date object
-            timeRatio: 1, // how many times faster than normal?
+            timeRatio: 1000, // how many times faster than normal?
             dateUpdate: function(date) {
                 // update the time display
-                var hr = date.getHours();
+                hr = date.getHours();
                 if (hr != currentHour) {
                     timeStr = ((hr - 1) % 12 + 1) + (hr > 12 ? 'pm' : 'am');
                     if (timeStr == '0am') timeStr = 'midnight'
@@ -873,6 +874,9 @@
                     $('#time').text(timeStr);
                     currentHour = hr;
                 }
+                // // update the crane rotation
+                craneAngle = craneAngle + 0.1;
+                crane.update({ rotation: craneAngle });
             }
         });
 

@@ -20,6 +20,11 @@ ScapeStuff.generic = new Lambert({ color: 0x999999,
 ScapeStuff.water = new Lambert({ color: 0x3399ff,
                      transparent: true, opacity: 0.75 });
 
+
+/////////////////////////////////////////////////////////////////////
+// stone, dirt, and ground materials
+/////////////////////////////////////////////////////////////////////
+
 /** dirt for general use
   * @memberof ScapeStuff */
 ScapeStuff.dirt = new Lambert({ color: 0xa0522d });
@@ -50,9 +55,17 @@ ScapeStuff.dirt9 = new Lambert({ color: wet });
   * @memberof ScapeStuff */
 ScapeStuff.leaflitter = new Lambert({ color: 0x666b2f });
 
+/////////////////////////////////////////////////////////////////////
+// flora - wood, leaves, etc
+/////////////////////////////////////////////////////////////////////
+
 /** generic brown wood
   * @memberof ScapeStuff */
 ScapeStuff.wood = new Lambert({ color: 0x774422 });
+
+/** light wood for gumtrees etc.  Maybe it's a bit too light?
+  * @memberof ScapeStuff */
+ScapeStuff.lightwood = new Lambert({ color: 0xffeecc });
 
 /** a generic greenish leaf material
   * @memberof ScapeStuff */
@@ -68,17 +81,13 @@ ScapeStuff.foliage = new Lambert(
   * @memberof ScapeStuff */
 ScapeStuff.pointFoliage = new THREE.PointCloudMaterial({ color: 0x558833, size: 0.5 });
 
-/** light wood for gumtrees etc.  Maybe it's a bit too light?
-  * @memberof ScapeStuff */
-ScapeStuff.lightwood = new Lambert({ color: 0xffeecc });
+/////////////////////////////////////////////////////////////////////
+// built materials
+/////////////////////////////////////////////////////////////////////
 
 /** silvery metal
   * @memberOf ScapeStuff */
 ScapeStuff.metal = new Phong({ color: 0x8899aa, specular: 0xffffff, shininess: 100, reflectivity: 0.8 });
-
-/** gloss black, for shiny black painted surfaces
-  * @memberOf ScapeStuff */
-ScapeStuff.glossBlack = new Phong({ color: 0x000000, specular: 0x666666 });
 
 /** concrete in a sort of mid-grey
   * @memberOf ScapeStuff */
@@ -93,6 +102,18 @@ ScapeStuff.plastic = new Phong({ color: 0x999999, emissive: 0x999999, specular: 
 ScapeStuff.glass = new Phong(
   { color: 0x66aaff, specular: 0xffffff, transparent: true, opacity: 0.5 }
 );
+
+/////////////////////////////////////////////////////////////////////
+// general colours
+/////////////////////////////////////////////////////////////////////
+
+/** matt black, for black surfaces (actually it's #111111)
+  * @memberOf ScapeStuff */
+ScapeStuff.black = new Lambert({ color: 0x111111 });
+
+/** gloss black, for shiny black painted surfaces
+  * @memberOf ScapeStuff */
+ScapeStuff.glossBlack = new Phong({ color: 0x000000, specular: 0x666666 });
 
 // ------------------------------------------------------------------
 module.exports = ScapeStuff;
