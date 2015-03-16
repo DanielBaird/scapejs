@@ -151,7 +151,7 @@ function ScapeCraneFactory(options) {
 	craneParts.push(new THREE.Mesh(windowGeom, windowStuff));
 
 	// return all the crane bits.
-	return craneParts;
+	return { meshes: craneParts, clickPoints: [] };
 };
 // ------------------------------------------------------------------
 module.exports = ScapeCraneFactory;

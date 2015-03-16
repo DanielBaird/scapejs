@@ -187,7 +187,7 @@ ScapeScene.prototype.addHelperCube = function(x, y, z, color) {
     var material = new THREE.MeshLambertMaterial({ color: color });
 
     // okay.. make it, position it, and show it
-    var cube = ScapeItems.cube(size, material);
+    var cube = ScapeItems.cube({ size: size, material: material }).meshes[0];
     cube.position.copy(pos);
     this.scene.add(cube);
 }

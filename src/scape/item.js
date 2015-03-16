@@ -33,9 +33,17 @@ function ScapeItem(itemType, x, y, options) {
     this.y = y;
     this._pos = new THREE.Vector3(x, y, 0);
 
+    if (typeof this._opts.clickId !== 'undefined') {
+        this.clickId = this._opts.clickId;
+    }
+
     // TODO: maybe have a set of meshes for each scene, so an item
     // can be in multiple scenes?
-    this._createNewMeshes();
+    this._createNew();
+
+    if (this._clickPoints.length > 0) {
+        console.log(this._clickPoints);
+    }
 
 };
 // ------------------------------------------------------------------
@@ -43,24 +51,36 @@ function ScapeItem(itemType, x, y, options) {
 ScapeItem.prototype = Object.create(ScapeObject.prototype);
 ScapeItem.prototype.constructor = ScapeItem;
 // ------------------------------------------------------------------
-ScapeItem.prototype._createNewMeshes = function() {
+ScapeItem.prototype._createNew = function() {
     if (this._meshes && this._meshes.length > 0) {
         this._disposeOfMeshes();
     }
-    this._meshes = this._type(this._opts);
+    if (this._clickPoints && this._clickPoints.length > 0) {
+        this._disposeOfClickPoints();
+    }
+
+    var things = this._type(this._opts);
+
+    this._meshes = things.meshes;
     this.eachMesh(function(m) {
         m.position.copy(this._pos);
+    }, this);
+
+    this._clickPoints = things.clickPoints;
+    this.eachClickPoint(function(cp) {
+        cp.position.copy(this._pos);
     }, this);
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype.dispose = function() {
     this.removeFromScene();
     this._disposeOfMeshes();
+    this._disposeOfClickPoints();
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype.update = function(updatedOptions) {
     this.mergeOptions(updatedOptions);
-    this._updateMeshes();
+    this._update();
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype.setHeight = function(z) {
@@ -68,11 +88,17 @@ ScapeItem.prototype.setHeight = function(z) {
     this.eachMesh(function(m) {
         m.position.copy(this._pos);
     }, this);
+    this.eachClickPoint(function(cp) {
+        cp.position.copy(this._pos);
+    }, this);
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype.addToScene = function(scene) {
     this.eachMesh(function(m) {
         scene.add(m);
+    });
+    this.eachClickPoint(function(cp) {
+        scene.add(cp);
     });
     this._scene = scene;
 }
@@ -84,22 +110,43 @@ ScapeItem.prototype._disposeOfMeshes = function() {
     });
 }
 // ------------------------------------------------------------------
+ScapeItem.prototype._disposeOfClickPoints = function() {
+    this.eachClickPoint(function(cp) {
+        if (cp.geometry) cp.geometry.dispose();
+        cp.dispatchEvent({type: 'dispose'});
+    });
+}
+// ------------------------------------------------------------------
 ScapeItem.prototype.removeFromScene = function() {
     if (this._scene) {
         this.eachMesh(function(m) {
             this._scene.remove(m);
         }, this);
+        this.eachClickPoint(function(cp) {
+            this._scene.remove(cp);
+        }, this);
         this._scene = null;
     }
 }
 // ------------------------------------------------------------------
-ScapeItem.prototype._updateMeshes = function() {
+ScapeItem.prototype._update = function() {
     var scene = this._scene; // remember this because removeFromScene
                              // will delete this._scene
     if (this._scene) { this.removeFromScene(); }
     this._disposeOfMeshes();
-    this._createNewMeshes();
+    this._disposeOfClickPoints();
+
+    this._createNew();
     if (scene) { this.addToScene(scene); }
+}
+// ------------------------------------------------------------------
+// do something to each clickPoint
+ScapeItem.prototype.eachClickPoint = function(callback, thisArg) {
+    if (this._clickPoints) {
+        for (var cp = 0; cp < this._clickPoints.length; cp++) {
+            callback.call(thisArg, this._clickPoints[cp]);
+        }
+    }
 }
 // ------------------------------------------------------------------
 // do something to each mesh

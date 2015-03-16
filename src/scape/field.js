@@ -20,7 +20,7 @@ ScapeItem = require('./item');
  * `minZ`     |    0 | smallest Z (vertical dimension) for this field
  * `maxZ`     |   40 | largest Z for this field
  * `blocksZ`  |   80 | number of blocks to divide the Z axis into
- * `blockGap` | 0.04 | gap to leave between blocks along the X and Y axes
+ * `blockGap` | 0.01 | gap to leave between blocks along the X and Y axes
  *
  * @class
  */
@@ -30,7 +30,7 @@ function ScapeField(options) {
         minX: 0,        maxX: 100,          blocksX: 10,
         minY: 0,        maxY: 100,          blocksY: 10,
         minZ: 0,        maxZ: 40,           blocksZ: 80,
-        blockGap: 0.04
+        blockGap: 0.01
     };
 
     // invoke our super constructor
