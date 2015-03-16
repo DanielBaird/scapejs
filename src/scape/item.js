@@ -53,6 +53,11 @@ ScapeItem.prototype._createNewMeshes = function() {
     }, this);
 }
 // ------------------------------------------------------------------
+ScapeItem.prototype.dispose = function() {
+    this.removeFromScene();
+    this._disposeOfMeshes();
+}
+// ------------------------------------------------------------------
 ScapeItem.prototype.update = function(updatedOptions) {
     this.mergeOptions(updatedOptions);
     this._updateMeshes();

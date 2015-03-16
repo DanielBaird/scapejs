@@ -156,13 +156,22 @@ ScapeField.prototype.buildItems = function(scene) {
  */
 ScapeField.prototype.addItems = function(itemList, replace) {
     if (replace) {
-        this._items = [];
+        this.removeAllItems();
     }
     // loop through the list adding each one.
     for (var s = 0; s < itemList.length; s++) {
         var theItem = itemList[s];
         this.addItem(theItem);
     }
+}
+// ------------------------------------------------------------------
+ScapeField.prototype.removeAllItems = function() {
+    this.eachBlock(function(err, block) {
+        for (var index=0; index < block.i.length; index++) {
+            block.i[index].dispose();
+        }
+        block.i = [];
+    }, this);
 }
 // ------------------------------------------------------------------
 ScapeField.prototype.addItem = function(item) {

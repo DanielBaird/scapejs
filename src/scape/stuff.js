@@ -87,7 +87,7 @@ ScapeStuff.pointFoliage = new THREE.PointCloudMaterial({ color: 0x558833, size: 
 
 /** silvery metal
   * @memberOf ScapeStuff */
-ScapeStuff.metal = new Phong({ color: 0x8899aa, specular: 0xffffff, shininess: 100, reflectivity: 0.8 });
+ScapeStuff.metal = new Phong({ color: 0xaabbee, specular: 0xffffff, shininess: 100, reflectivity: 0.8 });
 
 /** concrete in a sort of mid-grey
   * @memberOf ScapeStuff */
@@ -111,9 +111,9 @@ ScapeStuff.glass = new Phong(
   * @memberOf ScapeStuff */
 ScapeStuff.black = new Lambert({ color: 0x111111 });
 
-/** gloss black, for shiny black painted surfaces
+/** gloss black, for shiny black painted surfaces (actually it's #111111)
   * @memberOf ScapeStuff */
-ScapeStuff.glossBlack = new Phong({ color: 0x000000, specular: 0x666666 });
+ScapeStuff.glossBlack = new Phong({ color: 0x111111, specular: 0x666666 });
 
 // ------------------------------------------------------------------
 module.exports = ScapeStuff;
