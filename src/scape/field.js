@@ -66,6 +66,8 @@ function ScapeField(options) {
     this._calcCenter();
     this._makeGrid();
 
+    this.clickables = [];
+
 };
 // ------------------------------------------------------------------
 // inheritance
@@ -172,6 +174,7 @@ ScapeField.prototype.removeAllItems = function() {
         }
         block.i = [];
     }, this);
+    this.clickables = [];
 }
 // ------------------------------------------------------------------
 ScapeField.prototype.addItem = function(item) {
@@ -179,6 +182,10 @@ ScapeField.prototype.addItem = function(item) {
     // add to the parent block
     var parentBlock = this.getBlock(item.x, item.y);
     parentBlock.i.push(item);
+
+    item.eachClickPoint(function(cp) {
+        this.clickables.push(cp);
+    }, this);
 
     // set item height to the parent block's ground height
     item.setHeight(parentBlock.g[0].z);
@@ -200,22 +207,9 @@ ScapeField.prototype.addItemsOfType = function(itemList, replace) {
     }
     // loop through the list adding each one.
     for (var s = 0; s < itemList.length; s++) {
-        var theItem = itemList[s];
-        this.addItemOfType(theItem.type, theItem.x, theItem.y, theItem);
+        var itemInfo = itemList[s];
+        this.addItem(new ScapeItem(itemInfo.type, itemInfo.x, itemInfo.y, itemInfo));
     }
-}
-// ------------------------------------------------------------------
-ScapeField.prototype.addItemOfType = function(itemType, x, y, options) {
-
-    // make the item
-    var item = new ScapeItem(itemType, x, y, options);
-
-    // add to the parent block
-    var parentBlock = this.getBlock(x, y);
-    parentBlock.i.push(item);
-
-    // set item height to the parent block's ground height
-    item.setHeight(parentBlock.g[0].z);
 }
 // ------------------------------------------------------------------
 /**

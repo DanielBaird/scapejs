@@ -4,7 +4,8 @@ var ScapeStuff = require('../stuff');
 
 var M4 = THREE.Matrix4;
 
-var ScapeTreeFactory = require('./tree.js');
+var ScapeTreeFactory = require('./tree');
+var ScapeClickable = require('./interactive/clickable');
 // ------------------------------------------------------------------
 /**
  * Returns a tree mesh of the specified size and color, with added
@@ -49,6 +50,8 @@ function ScapeSensorTreeFactory(options, internals) {
 		d.mountStuff = options.dendrometer.mount || ScapeStuff.black;
 		d.meterStuff = options.dendrometer.meter || ScapeStuff.metal;
 
+		d.url = options.dendrometer.url || 'http://scapejs.rocks/unattached';
+
 		// the steel band
 		var bandGeom = new THREE.CylinderGeometry(d.bandRadius, d.bandRadius, d.bandWidth, 12, 1);
 		bandGeom.applyMatrix(new M4().makeTranslation(0, 0, d.bandHeight).multiply(rotate));
@@ -83,9 +86,7 @@ function ScapeSensorTreeFactory(options, internals) {
 		treeParts.meshes.push(mount);
 
 		// the dendro should be clickable
-		var dendroClick = new THREE.Object3D();
-		dendroClick.visible = false;
-		dendroClick.applyMatrix(new M4().makeTranslation(d.bandRadius + d.meterRadius, 0, d.bandHeight + d.meterHeight/6));
+		var dendroClick = ScapeClickable(d.url, d.bandRadius + d.meterRadius, 0, d.bandHeight + d.meterHeight/6);
 		treeParts.clickPoints.push(dendroClick);
 
 		i.dendrometer = d;

@@ -57,6 +57,7 @@ function ScapeTreeFactory(options, internals) {
 	var canopy = new THREE.Mesh(i.canopyGeom, i.canopyStuff);
 	i.meshNames = ['trunk','canopy'];
 
+	// return { meshes: [trunk], clickPoints: [] };
 	return { meshes: [trunk, canopy], clickPoints: [] };
 };
 // ------------------------------------------------------------------

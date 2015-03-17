@@ -41,10 +41,6 @@ function ScapeItem(itemType, x, y, options) {
     // can be in multiple scenes?
     this._createNew();
 
-    if (this._clickPoints.length > 0) {
-        console.log(this._clickPoints);
-    }
-
 };
 // ------------------------------------------------------------------
 // inheritance
@@ -108,6 +104,7 @@ ScapeItem.prototype._disposeOfMeshes = function() {
         if (m.geometry) m.geometry.dispose();
         m.dispatchEvent({type: 'dispose'});
     });
+    // TODO: dispose of clickPoints
 }
 // ------------------------------------------------------------------
 ScapeItem.prototype._disposeOfClickPoints = function() {

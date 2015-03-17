@@ -60,6 +60,20 @@ function ScapeScene(field, dom, options) {
     // discover DOM container
     this.element = document.getElementById(dom);
 
+    // attach the mouse handlers..
+    var bounds = this.element.getBoundingClientRect();
+
+    // ..move handler
+    this.element.onmousemove = function(event) {
+        this.mouseHover(event.clientX - bounds.left, event.clientY - bounds.top);
+    }.bind(this);
+
+    // ..click handler
+    this.element.onclick = function(event) {
+        console.log('click at ', event.clientX - bounds.left, event.clientY - bounds.top);
+        this.mouseClick(event.clientX - bounds.left, event.clientY - bounds.top);
+    }.bind(this);
+
     this.date = this._opts.currentDate;
     if (this.date === 'now') {
         this.date = new Date();
@@ -78,19 +92,18 @@ function ScapeScene(field, dom, options) {
 
     // add grids and helper cubes
     // this.addHelperGrid();
-    this.addHelperGrid('top');
-    this.addHelperShapes();
+    // this.addHelperGrid('top');
+    // this.addHelperShapes();
 
     var lastLogAt = 0; // DEBUG
     var render = (function unboundRender(ts) {
 
         // DEBUG
         if (lastLogAt + 2000 < ts) {
-            // console.log('rendering...');
             lastLogAt = ts;
         }
 
-        // DEBUG disabled time updates..
+        // DEBUG maybe the updateTime is disabled
         this._updateTime();
 
         requestAnimationFrame( render );
@@ -148,6 +161,57 @@ ScapeScene.prototype.addHelperShapes = function() {
     this.addHelperCube(f.minX, f.minY, f.maxZ, blue);
     this.addHelperCube(f.maxX, f.maxY, f.minZ, white);
 
+}
+// ------------------------------------------------------------------
+ScapeScene.prototype.mouseHover = function(mouseX, mouseY) {
+
+    var raycaster = new THREE.Raycaster();
+    mousePos = new THREE.Vector2();
+    mousePos.x =   (mouseX / this.renderer.domElement.width)  * 2 - 1;
+    mousePos.y = - (mouseY / this.renderer.domElement.height) * 2 + 1;
+
+    // set all the clickables to hidden
+    for (var c=0; c < this.f.clickables.length; c++) {
+        this.f.clickables[c].visible = false;
+    }
+
+    // now unhide just the ones in the mouse area
+    raycaster.setFromCamera(mousePos, this.camera);
+    var intersects = raycaster.intersectObjects(this.f.clickables, true);
+
+window.countUrls(intersects, function(t){ return t.object.userData && t.object.userData.url });
+
+
+    var clickable;
+    for (var i=0; i < intersects.length; i++) {
+        clickable = intersects[i].object.parent;
+        clickable.visible = true;
+    }
+}
+// ------------------------------------------------------------------
+ScapeScene.prototype.mouseClick = function(mouseX, mouseY) {
+
+    var raycaster = new THREE.Raycaster();
+    mousePos = new THREE.Vector2();
+    mousePos.x =   (mouseX / this.renderer.domElement.width)  * 2 - 1;
+    mousePos.y = - (mouseY / this.renderer.domElement.height) * 2 + 1;
+
+    // find the intersecting clickables
+    raycaster.setFromCamera(mousePos, this.camera);
+    var intersects = raycaster.intersectObjects(this.f.clickables, true);
+
+    var clicked;
+    console.log(intersects);
+    for (var i=0; i < intersects.length; i++) {
+        // the first one with a url in the userData is the winner
+        clicked = intersects[i].object;
+        if (clicked.children.length > 0) console.log('children:', clicked.children);
+        if (clicked.userData && clicked.userData.url) {
+            console.log(clicked.userData);
+            alert(clicked.userData.url);
+            break;
+        }
+    }
 }
 // ------------------------------------------------------------------
 /**
@@ -421,7 +485,7 @@ ScapeScene.prototype._makeCamera = function(options) {
     var camPos = new THREE.Vector3(0, -10, 5);
     if (this.f) {
         lookHere = this.f.center;
-        camPos = lookHere.clone().add(new THREE.Vector3(0, -1.1 * this.f.wY, 3 * this.f.wZ));
+        camPos = lookHere.clone().add(new THREE.Vector3(0, -1.1 * this.f.wY, 2 * this.f.wZ));
     }
 
     // set up camera

@@ -36,6 +36,21 @@
     <script src="../lib/OrbitControls.js"></script>
     <script src="../lib/scape.js"></script>
     <script>
+
+window.countUrls = function(list, urlTest) {
+    var hasUrl=0;
+    var noUrl=0;
+    $.each(list, function(index, thing) {
+        if (urlTest(thing)) hasUrl++;
+        else noUrl++;
+    });
+    console.log('hasUrl: ' + hasUrl + ', noUrl: ' + noUrl);
+}
+
+
+
+
+
         var f = new Scape.Field({
             minX:  -10, maxX: 110,
             minY:  -10, maxY: 110,
@@ -841,9 +856,11 @@
             var t = Math.floor(Math.random() * treeList.length);
             treeList[t].type = ScapeItems.sensorTree;
             treeList[t].dendrometer = {
-                clickId: 'asdf'
+                url: 'http://scapejs.rocks/unattached.html?id=' + t
             };
         }
+
+window.countUrls(treeList, function(tree){ return tree.dendrometer && tree.dendrometer.url });
 
         this.f.addItemsOfType(treeList);
 
