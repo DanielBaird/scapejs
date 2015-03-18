@@ -35,7 +35,16 @@ function ScapeSensorTreeFactory(options, internals) {
 
 	////////// dendro
 	if (typeof options.dendrometer !== 'undefined') {
+
+		// special convenience: if options.dendrometer is a string,
+		// use that string as the clickData and use defaults for
+		// everything else.
+		if (typeof options.dendrometer === 'string') {
+			options.dendrometer = { clickData: options.dendrometer };
+		}
+
 		var d = {};
+
 		d.bandWidth = options.dendrometer.width || 0.5;
 		d.bandRadius = i.trunkRadius + 0.2 * d.bandWidth;
 		d.bandHeight = Math.min(options.dendrometer.height || 1.5, i.trunkHeight - d.bandWidth/2);
@@ -50,7 +59,7 @@ function ScapeSensorTreeFactory(options, internals) {
 		d.mountStuff = options.dendrometer.mount || ScapeStuff.black;
 		d.meterStuff = options.dendrometer.meter || ScapeStuff.metal;
 
-		d.url = options.dendrometer.url || 'http://scapejs.rocks/unattached';
+		d.clickData = options.dendrometer.clickData || null;
 
 		// the steel band
 		var bandGeom = new THREE.CylinderGeometry(d.bandRadius, d.bandRadius, d.bandWidth, 12, 1);
@@ -86,8 +95,10 @@ function ScapeSensorTreeFactory(options, internals) {
 		treeParts.meshes.push(mount);
 
 		// the dendro should be clickable
-		var dendroClick = ScapeClickable(d.url, d.bandRadius + d.meterRadius, 0, d.bandHeight + d.meterHeight/6);
-		treeParts.clickPoints.push(dendroClick);
+		if (d.clickData) {
+			var dendroClick = ScapeClickable(d.clickData, d.bandRadius + d.meterRadius, 0, d.bandHeight + d.meterHeight/6);
+			treeParts.clickPoints.push(dendroClick);
+		}
 
 		i.dendrometer = d;
 	}

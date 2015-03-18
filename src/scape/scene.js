@@ -70,7 +70,6 @@ function ScapeScene(field, dom, options) {
 
     // ..click handler
     this.element.onclick = function(event) {
-        console.log('click at ', event.clientX - bounds.left, event.clientY - bounds.top);
         this.mouseClick(event.clientX - bounds.left, event.clientY - bounds.top);
     }.bind(this);
 
@@ -179,9 +178,6 @@ ScapeScene.prototype.mouseHover = function(mouseX, mouseY) {
     raycaster.setFromCamera(mousePos, this.camera);
     var intersects = raycaster.intersectObjects(this.f.clickables, true);
 
-window.countUrls(intersects, function(t){ return t.object.userData && t.object.userData.url });
-
-
     var clickable;
     for (var i=0; i < intersects.length; i++) {
         clickable = intersects[i].object.parent;
@@ -201,14 +197,16 @@ ScapeScene.prototype.mouseClick = function(mouseX, mouseY) {
     var intersects = raycaster.intersectObjects(this.f.clickables, true);
 
     var clicked;
-    console.log(intersects);
     for (var i=0; i < intersects.length; i++) {
-        // the first one with a url in the userData is the winner
+        // the first one with userData.clickData defined is the winner
         clicked = intersects[i].object;
-        if (clicked.children.length > 0) console.log('children:', clicked.children);
-        if (clicked.userData && clicked.userData.url) {
-            console.log(clicked.userData);
-            alert(clicked.userData.url);
+        if (clicked.userData && clicked.userData.clickData) {
+            // if there is a callback, invoke it
+            if (this._opts.click) {
+                var callback = this._opts.click;
+                var data = clicked.userData.clickData;
+                setTimeout( function(){ callback.call(window, data); }, 0 );
+            }
             break;
         }
     }

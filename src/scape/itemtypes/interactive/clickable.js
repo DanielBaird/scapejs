@@ -13,7 +13,7 @@ var THREE = require('three');
  * @function
  * @name ScapeItems.tree
  */
-function ScapeClickable(url, x, y, z) {
+function ScapeClickable(clickData, x, y, z) {
 	var clicker = new THREE.Object3D();
 
 	var translate = new THREE.Matrix4().makeTranslation(x, y, z);
@@ -31,7 +31,7 @@ function ScapeClickable(url, x, y, z) {
 	var clickGeom = new THREE.SphereGeometry(2);
 	clickGeom.applyMatrix(translate);
 	var clickBubble = new THREE.Mesh(clickGeom, clickMaterial);
-	clickBubble.userData.url = url;
+	clickBubble.userData.clickData = clickData;
 	clicker.add(clickBubble);
 
 	clicker.visible = false;
