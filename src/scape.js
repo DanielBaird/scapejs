@@ -1,20 +1,15 @@
 
 // THREE = require('three');
 
-// get the various bits
-base  = require('./scape/baseobject');
-stuff = require('./scape/stuff');
-field = require('./scape/field');
-scene = require('./scape/scene');
-chunk = require('./scape/chunk');
-
 // make an object out of the various bits
 Scape = {
-    BaseObject: base,
-    Stuff: stuff,
-    Chunk: chunk,
-    Field: field,
-    Scene: scene
+    BaseObject: require('./scape/baseobject'),
+    Chunk:      require('./scape/chunk'),
+    Field:      require('./scape/field'),
+    Item:       require('./scape/item'),
+    ItemTypes:  require('./scape/itemtypes'),
+    Scene:      require('./scape/scene'),
+    Stuff:      require('./scape/stuff')
 }
 
 // return the object if we're being browserified; otherwise attach

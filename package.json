@@ -1,10 +1,10 @@
 {
   "name": "scape",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Scape JS makes landscapes / seascapes / spacescapes in browser using three.js.",
   "main": "dist/scape.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "echo \"Please add tests\" && exit 1",
     "docs": "jsdoc --configure ./devconfig/jsdoc.conf.json",
     "watch": "watch 'npm run build; date +\"built at %I:%M %p and %S seconds.\"; echo \"\\a\"' src",
     "build": "browserify --debug src/scape.js -o dist/scape.js && cp dist/scape.js examples/lib",

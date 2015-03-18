@@ -143,6 +143,13 @@ ScapeScene.prototype.connectField = function() {
 }
 // ------------------------------------------------------------------
 /**
+ * tell this scene that it's field's items have updated
+ */
+ScapeScene.prototype.refreshItems = function() {
+    this.f.buildItems(this);
+}
+// ------------------------------------------------------------------
+/**
  * add helper cubes at some of the corners of your scape, so you can
  * see where they are in space.
  */

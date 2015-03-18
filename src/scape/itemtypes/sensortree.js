@@ -5,7 +5,7 @@ var ScapeStuff = require('../stuff');
 var M4 = THREE.Matrix4;
 
 var ScapeTreeFactory = require('./tree');
-var ScapeClickable = require('./interactive/clickable');
+var ScapeClickable = require('./addons/clickable');
 // ------------------------------------------------------------------
 /**
  * Returns a tree mesh of the specified size and color, with added

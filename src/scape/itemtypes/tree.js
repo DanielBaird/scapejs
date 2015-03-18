@@ -1,6 +1,8 @@
 
 var THREE = require('three');
 var ScapeStuff = require('../stuff');
+
+var ScapeDendrometerAddon = require('./addons/dendrometer');
 // ------------------------------------------------------------------
 /**
  * Returns a tree mesh of the specified size and color.
@@ -25,7 +27,10 @@ var ScapeStuff = require('../stuff');
  */
 function ScapeTreeFactory(options, internals) {
 
+	var tree = { meshes: [], clickPoints: [] };
+
 	var i = internals || {};
+	i.meshNames = i.meshNames || [];
 
 	i.diam = options.diameter || 1;
 	i.height = options.height || 10;
@@ -37,28 +42,32 @@ function ScapeTreeFactory(options, internals) {
 	i.trunkRadius = 2 * i.diam / 2;
 	i.canopyRadius = i.trunkRadius * 6;
 
-	i.trunkGeom = new THREE.CylinderGeometry(i.trunkRadius/2, i.trunkRadius, i.trunkHeight, 12);
-	i.canopyGeom = new THREE.CylinderGeometry(i.canopyRadius, i.canopyRadius, i.canopyHeight, 12);
-
 	// transforms we need:
 	// rotate so it's height is along the Z axis (CylinderGeometry starts lying along the Y axis)
 	var rotate = new THREE.Matrix4().makeRotationX(Math.PI/2);
 
+	i.trunkGeom = new THREE.CylinderGeometry(i.trunkRadius/2, i.trunkRadius, i.trunkHeight, 12);
 	// center on x = 0 and y = 0, but have the _bottom_ face sitting on z = 0
 	var trunkPosition = new THREE.Matrix4().makeTranslation(0, 0, i.trunkHeight/2);
+	i.trunkGeom.applyMatrix(trunkPosition.multiply(rotate));
+	var trunk = new THREE.Mesh(i.trunkGeom, i.trunkStuff);
+	i.meshNames.push('trunk');
+	tree.meshes.push(trunk);
 
+	i.canopyGeom = new THREE.CylinderGeometry(i.canopyRadius, i.canopyRadius, i.canopyHeight, 12);
 	// center on x = 0, y = 0, but have the canopy at the top
 	var canopyPosition = new THREE.Matrix4().makeTranslation(0, 0, i.canopyHeight/2 + i.height - i.canopyHeight);
-
-	i.trunkGeom.applyMatrix(trunkPosition.multiply(rotate));
 	i.canopyGeom.applyMatrix(canopyPosition.multiply(rotate));
-
-	var trunk = new THREE.Mesh(i.trunkGeom, i.trunkStuff);
 	var canopy = new THREE.Mesh(i.canopyGeom, i.canopyStuff);
-	i.meshNames = ['trunk','canopy'];
+	i.meshNames.push('canopy');
+	tree.meshes.push(canopy);
 
-	// return { meshes: [trunk], clickPoints: [] };
-	return { meshes: [trunk, canopy], clickPoints: [] };
+	////////// dendro
+	if (typeof options.dendrometer !== 'undefined') {
+		tree = ScapeDendrometerAddon(tree, options, internals);
+	}
+
+	return tree;
 };
 // ------------------------------------------------------------------
 module.exports = ScapeTreeFactory;

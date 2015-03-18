@@ -60,6 +60,8 @@ function ScapeField(options) {
     this._bY = this.wY / this.blocksY;
     this._bZ = this.wZ / this.blocksZ;
 
+    this._scene = null;
+
     // housekeeping
     this._groundStacks = [];
     this._groundHeights = [];
@@ -138,12 +140,20 @@ ScapeField.prototype.buildBlocks = function(scene) {
  * this ScapeField.
  */
 ScapeField.prototype.buildItems = function(scene) {
+    this._scene = scene;
     var minZ = this.minZ;
     this.eachBlock( function(err, b) {
         for (var itemIndex = 0; itemIndex < b.i.length; itemIndex++) {
             b.i[itemIndex].addToScene(scene);
         }
     });
+}
+// ------------------------------------------------------------------
+// advise the scene, if we have one, that there are new items.
+ScapeField.prototype.updateItems = function() {
+    if (this._scene) {
+        this._scene.refreshItems();
+    }
 }
 // ------------------------------------------------------------------
 /**
@@ -165,6 +175,7 @@ ScapeField.prototype.addItems = function(itemList, replace) {
         var theItem = itemList[s];
         this.addItem(theItem);
     }
+    this.updateItems();
 }
 // ------------------------------------------------------------------
 ScapeField.prototype.removeAllItems = function() {
