@@ -163,7 +163,6 @@ ScapeField.prototype.updateItem = function(item, updates) {
     item.eachClickPoint(function(cp) {
         var ci = this.clickables.indexOf(cp);
         if (ci != -1) {
-            console.log('removing cp');
             this.clickables.splice(ci, 1);
         }
     }, this);
@@ -173,7 +172,6 @@ ScapeField.prototype.updateItem = function(item, updates) {
 
     // add new clickables
     item.eachClickPoint(function(cp) {
-            console.log('adding cp');
         this.clickables.push(cp);
     }, this);
 }

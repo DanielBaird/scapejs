@@ -94,7 +94,6 @@ function ScapeCameraAddon(parentParts, options, internals) {
 
 	// the camera should be clickable
 	if (c.clickData) {
-		console.log('camera has clickdata');
 		var camClick = ScapeClickable(c.clickData, c.x, c.y, c.height + c.bodyHeight/2);
 		parentParts.clickPoints.push(camClick);
 	}
