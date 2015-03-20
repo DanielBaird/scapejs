@@ -1,4 +1,8 @@
 scape.js
 ========
 
-render landscapes from real data
+Render landscapes from real data.
+
+[Documentation](docs.scapejs.rocks)
+
+[Examples](examples.scapejs.rocks)
