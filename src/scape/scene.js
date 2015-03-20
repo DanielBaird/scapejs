@@ -297,7 +297,7 @@ ScapeScene.prototype.addHelperGrid = function(topOrBottom) {
 ScapeScene.prototype._makeRenderer = function(options) {
     var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, precision: "highp" });
     renderer.setClearColor( 0x000000, 0);
-    renderer.shadowMapEnabled = true;
+    // renderer.shadowMapEnabled = true;
     if (options && options.dom) {
         var $dom = $(options.dom);
         renderer.setSize($dom.width(), $dom.height());

@@ -18,15 +18,16 @@ function ScapeClickable(clickData, x, y, z) {
 
 	var translate = new THREE.Matrix4().makeTranslation(x, y, z);
 
-	var hoverMaterial = new THREE.Material();
+	// var hoverMaterial = new THREE.Material();
 	// hoverMaterial = new THREE.MeshLambertMaterial({ color: 0xffff00, transparent: true, opacity: 0.33 })
+	hoverMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0.3 })
 	var hoverGeom = new THREE.SphereGeometry(10);
 	hoverGeom.applyMatrix(translate);
 	var hoverBubble = new THREE.Mesh(hoverGeom, hoverMaterial);
-	hoverBubble.visible = false;
+	// hoverBubble.visible = false;
 	clicker.add(hoverBubble);
 
-	var clickMaterial = new THREE.MeshBasicMaterial();
+	var clickMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 })
 	clickMaterial.depthTest = false;
 	var clickGeom = new THREE.SphereGeometry(2);
 	clickGeom.applyMatrix(translate);

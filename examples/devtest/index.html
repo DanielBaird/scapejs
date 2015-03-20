@@ -855,33 +855,31 @@ window.countUrls = function(list, urlTest) {
         // make some of the trees sensorTrees with dendros.
         for (var s = 0; s < 40; s++) {
             var t = Math.floor(Math.random() * treeList.length);
-            treeList[t].type = ScapeItems.sensorTree;
             treeList[t].dendrometer = {
                 clickData: 'http://scapejs.rocks/unattached.html?id=' + t
             };
         }
 
-        this.f.addItemsOfType(treeList);
+        f.addItemsOfType(treeList);
 
         var craneAngle = 100;
         var crane = new ScapeItem(ScapeItems.crane, 50, 50, {
                 height: 47,     width: 2,
                 length: 55,     rotation: craneAngle,
-                camera: ''
+                camera: { size: 5, clickData: 'asdf' }
         });
 
-        var stree = new ScapeItem(ScapeItems.sensorTree, 50,0, {
+        var stree = new ScapeItem(ScapeItems.tree, 50,0, {
                 height: 20,     diameter: 3,
                 dendrometer: "some clickdata"
         });
 
-        this.f.addItems([stree, crane]);
-        // this.f.addItems([crane]);
+        f.addItems([stree, crane]);
+        // f.addItems([crane]);
 
-        // setInterval(function() {
-        //     craneAngle = craneAngle + 3;
-        //     crane.update({ rotation: craneAngle });
-        // }, 500);
+        setInterval(function() {
+            f.updateItem(crane, { rotation: craneAngle });
+        }, 500);
 
 
         // update the time div when the hour changes
@@ -904,7 +902,6 @@ window.countUrls = function(list, urlTest) {
                 }
                 // // update the crane rotation
                 craneAngle = craneAngle + 0.1;
-                crane.update({ rotation: craneAngle });
             },
             click: function(data) {
                 alert(data);

@@ -14,7 +14,6 @@ var ScapeItems = {
     // documentation for items are in the ./itemtypes/* files
     cube:        require('./itemtypes/cube'),
     tree:        require('./itemtypes/tree'),
-    sensorTree:  require('./itemtypes/sensortree'),
     crane:       require('./itemtypes/crane')
 };
 // ------------------------------------------------------------------

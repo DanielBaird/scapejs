@@ -35,7 +35,7 @@ function ScapeTreeFactory(options, internals) {
 	i.diam = options.diameter || 1;
 	i.height = options.height || 10;
 	i.trunkStuff = options.trunk || ScapeStuff.wood;
-	i.canopyStuff = options.canopy || ScapeStuff.foliage;
+	i.canopyStuff = options.canopy || ScapeStuff.transparentFoliage;
 
 	i.canopyHeight = i.height / 4;
 	i.trunkHeight = i.height - i.canopyHeight;
@@ -64,7 +64,7 @@ function ScapeTreeFactory(options, internals) {
 
 	////////// dendro
 	if (typeof options.dendrometer !== 'undefined') {
-		tree = ScapeDendrometerAddon(tree, options, internals);
+		tree = ScapeDendrometerAddon(tree, options, i);
 	}
 
 	return tree;

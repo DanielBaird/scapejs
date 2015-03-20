@@ -1,8 +1,4 @@
 
-// ..
-// TODO: move the dendro making code here instead of in sensortree
-
-
 var THREE = require('three');
 var ScapeStuff = require('../../stuff');
 
@@ -18,7 +14,7 @@ var ScapeClickable = require('./clickable');
 function ScapeDendrometerAddon(treeParts, options, internals) {
 
 	// start with standard tree meshes
-	var i = internals || {};
+	var i = internals || { meshNames: [] };
 
 	i.diam = i.diam || 1;
 

@@ -156,6 +156,28 @@ ScapeField.prototype.updateItems = function() {
     }
 }
 // ------------------------------------------------------------------
+// update an item.
+ScapeField.prototype.updateItem = function(item, updates) {
+
+    // remove old clickables
+    item.eachClickPoint(function(cp) {
+        var ci = this.clickables.indexOf(cp);
+        if (ci != -1) {
+            console.log('removing cp');
+            this.clickables.splice(ci, 1);
+        }
+    }, this);
+
+    item.update(updates);
+    // TODO: what if (x,y) position is updated?
+
+    // add new clickables
+    item.eachClickPoint(function(cp) {
+            console.log('adding cp');
+        this.clickables.push(cp);
+    }, this);
+}
+// ------------------------------------------------------------------
 /**
  * Add a list of items to the scape at various points.
  *

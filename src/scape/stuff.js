@@ -74,7 +74,13 @@ ScapeStuff.foliage = new Lambert({ color: 0x558833 });
 /** a generic greenish leaf material
   * @memberof ScapeStuff */
 ScapeStuff.foliage = new Lambert(
-  { color: 0x558833, transparent: true, opacity: 0.75 }
+  { color: 0x558833, transparent: true, opacity: 0.9 }
+);
+
+/** a greenish leaf material that's mostly see-through
+  * @memberof ScapeStuff */
+ScapeStuff.transparentFoliage = new Lambert(
+  { color: 0x558833, transparent: true, opacity: 0.33 }
 );
 
 /** a foliage material for use in point cloud objects
