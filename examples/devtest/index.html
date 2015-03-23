@@ -35,6 +35,7 @@
     <script src="../lib/three.js"></script>
     <script src="../lib/OrbitControls.js"></script>
     <script src="../lib/scape.js"></script>
+    <script src="../lib/helvetiker_regular.typeface.js"></script>
     <script>
 
 // DEBUG
@@ -852,11 +853,19 @@ window.countUrls = function(list, urlTest) {
 { type: ScapeItems.tree, x:102.6,  y:75.5,  diameter:0,  height:28.6 },
         ];
 
-        // make some of the trees sensorTrees with dendros.
+        // make some of the trees have dendros.
         for (var s = 0; s < 40; s++) {
             var t = Math.floor(Math.random() * treeList.length);
             treeList[t].dendrometer = {
-                clickData: 'http://scapejs.rocks/unattached.html?id=' + t
+                clickData: 'http://scapejs.rocks/unattached.html?id=' + t + '&name=dendro'
+            };
+        }
+
+        // make some of the trees have sap flow meters.
+        for (var s = 0; s < 40; s++) {
+            var t = Math.floor(Math.random() * treeList.length);
+            treeList[t].sapflowmeter = {
+                clickData: 'http://scapejs.rocks/unattached.html?id=' + t + '&name=sapflow'
             };
         }
 
@@ -866,14 +875,21 @@ window.countUrls = function(list, urlTest) {
         var crane = new ScapeItem(ScapeItems.crane, 50, 50, {
                 height: 47,     width: 2,
                 length: 55,     rotation: craneAngle,
-                camera: { size: 5, clickData: 'asdf' }
+                camera: { size: 3, clickData: 'camera' }
         });
 
-        var soilpit = new ScapeItem(ScapeItems.soilPit, 10,0, {
-        });
+        thingsList = [crane];
 
-        f.addItems([crane, soilpit]);
-        // f.addItems([crane]);
+        for (var p=0; p < 15; p++) {
+            thingsList.push(new ScapeItem(
+                ScapeItems.soilPit,
+                Math.random() * 100,
+                Math.random() * 100,
+                { clickData: 'http://scapejs.rocks/unattached.html?id=' + p + '&name=soilpit' }
+            ));
+        }
+
+        f.addItems(thingsList);
 
         setInterval(function() {
             f.updateItem(crane, { rotation: craneAngle });

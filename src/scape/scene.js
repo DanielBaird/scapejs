@@ -179,15 +179,20 @@ ScapeScene.prototype.mouseHover = function(mouseX, mouseY) {
     // set all the clickables to hidden
     for (var c=0; c < this.f.clickables.length; c++) {
         this.f.clickables[c].visible = false;
+        this.f.clickables[c].children[2].visible = false;
     }
 
     // now unhide just the ones in the mouse area
     raycaster.setFromCamera(mousePos, this.camera);
     var intersects = raycaster.intersectObjects(this.f.clickables, true);
 
-    var clickable;
+    var clickable, taggedFirstClickable = false;
     for (var i=0; i < intersects.length; i++) {
         clickable = intersects[i].object.parent;
+        if (!taggedFirstClickable && intersects[i].userData && intersect[i].userData.clickData) {
+            intersects.parent.children[2].visible = true;
+            taggedFirstClickable = true;
+        }
         clickable.visible = true;
     }
 }

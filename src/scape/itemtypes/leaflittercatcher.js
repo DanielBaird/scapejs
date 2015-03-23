@@ -6,11 +6,11 @@ var ScapeClickable = require('./addons/clickable');
 // ------------------------------------------------------------------
 /**
  * @function
- * @name ScapeItems.soilPit
+ * @name ScapeItems.leafLitterCatcher
  */
-function ScapeSoilPitFactory(options, internals) {
+function ScapeLeafLitterCatcherFactory(options, internals) {
 
-	var pit = { meshes: [], clickPoints: [] };
+	var catcher = { meshes: [], clickPoints: [] };
 
 	var i = internals || {};
 	i.meshNames = i.meshNames || [];
@@ -56,4 +56,4 @@ function ScapeSoilPitFactory(options, internals) {
 	return pit;
 };
 // ------------------------------------------------------------------
-module.exports = ScapeSoilPitFactory;
+module.exports = ScapeLeafLitterCatcherFactory;

@@ -3,6 +3,7 @@ var THREE = require('three');
 var ScapeStuff = require('../stuff');
 
 var ScapeDendrometerAddon = require('./addons/dendrometer');
+var ScapeSapFlowMeterAddon = require('./addons/sapflowmeter');
 // ------------------------------------------------------------------
 /**
  * Returns a tree mesh of the specified size and color.
@@ -65,6 +66,11 @@ function ScapeTreeFactory(options, internals) {
 	////////// dendro
 	if (typeof options.dendrometer !== 'undefined') {
 		tree = ScapeDendrometerAddon(tree, options, i);
+	}
+
+	////////// sap flow meter
+	if (typeof options.sapflowmeter !== 'undefined') {
+		tree = ScapeSapFlowMeterAddon(tree, options, i);
 	}
 
 	return tree;

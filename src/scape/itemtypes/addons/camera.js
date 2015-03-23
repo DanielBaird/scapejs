@@ -1,10 +1,10 @@
 
 var THREE = require('three');
 var ScapeStuff = require('../../stuff');
+var ScapeClickable = require('./clickable');
 
 var M4 = THREE.Matrix4;
 
-var ScapeClickable = require('./clickable');
 // ------------------------------------------------------------------
 /** TODO: work out how to doc these addons
   * @param {object} parentParts the mesh and clickPoint collection

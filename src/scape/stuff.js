@@ -117,9 +117,24 @@ ScapeStuff.glass = new Phong(
   * @memberOf ScapeStuff */
 ScapeStuff.black = new Lambert({ color: 0x111111 });
 
+/** matt white, for white surfaces (actually it's #eeeeee)
+  * @memberOf ScapeStuff */
+ScapeStuff.white = new Lambert({ color: 0xeeeeee });
+
 /** gloss black, for shiny black painted surfaces (actually it's #111111)
   * @memberOf ScapeStuff */
 ScapeStuff.glossBlack = new Phong({ color: 0x111111, specular: 0x666666 });
+
+/////////////////////////////////////////////////////////////////////
+// UI utility things
+/////////////////////////////////////////////////////////////////////
+
+/** hard white
+  * @memberOf ScapeStuff */
+ScapeStuff.uiWhite = new THREE.MeshBasicMaterial({ color: 0xffffff });
+ScapeStuff.uiWhite.depthTest = false;
+
+
 
 // ------------------------------------------------------------------
 module.exports = ScapeStuff;
