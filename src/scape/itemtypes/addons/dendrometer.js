@@ -31,6 +31,8 @@ function ScapeDendrometerAddon(treeParts, options, internals) {
 
 	var d = {};
 
+	d.name = options.dendrometer.name || 'dendrometer';
+
 	d.bandWidth = options.dendrometer.width || 0.5;
 	d.bandRadius = i.trunkRadius + 0.2 * d.bandWidth;
 	d.bandHeight = Math.min(options.dendrometer.height || 1.5, i.trunkHeight - d.bandWidth/2);
@@ -82,7 +84,7 @@ function ScapeDendrometerAddon(treeParts, options, internals) {
 
 	// the dendro should be clickable
 	if (d.clickData) {
-		var dendroClick = ScapeClickable(d.clickData, d.bandRadius + d.meterRadius, 0, d.bandHeight + d.meterHeight/6);
+		var dendroClick = ScapeClickable(d.name, d.clickData, d.bandRadius + d.meterRadius, 0, d.bandHeight + d.meterHeight/6);
 		treeParts.clickPoints.push(dendroClick);
 	}
 

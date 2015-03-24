@@ -15,6 +15,8 @@ function ScapeSoilPitFactory(options, internals) {
 	var i = internals || {};
 	i.meshNames = i.meshNames || [];
 
+	i.name = options.name || 'soil pit';
+
 	i.boxS = options.size || 2;
 	i.boxD = i.boxS/2;
 	i.boxH = i.boxS; // height off ground
@@ -49,7 +51,7 @@ function ScapeSoilPitFactory(options, internals) {
 
 	// make the pit clickable
 	if (options.clickData) {
-		var click = ScapeClickable(options.clickData, i.boxS/3, 0, i.boxH + i.boxS/2);
+		var click = ScapeClickable(i.name, options.clickData, i.boxS/3, 0, i.boxH + i.boxS/2);
 		pit.clickPoints.push(click);
 	}
 

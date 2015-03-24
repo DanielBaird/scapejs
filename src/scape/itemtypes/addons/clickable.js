@@ -14,7 +14,7 @@ var ScapeStuff = require('../../stuff');
  * @function
  * @name ScapeItems.tree
  */
-function ScapeClickable(clickData, x, y, z) {
+function ScapeClickable(name, clickData, x, y, z) {
 	var clicker = new THREE.Object3D();
 
 	var hoverRadius = 12;
@@ -23,13 +23,12 @@ function ScapeClickable(clickData, x, y, z) {
 
 	var translate = new THREE.Matrix4().makeTranslation(x, y, z);
 
-	// var hoverMaterial = new THREE.Material();
-	// hoverMaterial = new THREE.MeshLambertMaterial({ color: 0xffff00, transparent: true, opacity: 0.33 })
 	hoverMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0.3 })
 	var hoverGeom = new THREE.SphereGeometry(hoverRadius, 32, 24);
 	hoverGeom.applyMatrix(translate);
 	var hoverBubble = new THREE.Mesh(hoverGeom, hoverMaterial);
 	hoverBubble.visible = false;
+	// hoverBubble.userData.type = 'hoverbubble';
 	clicker.add(hoverBubble);
 
 	var clickMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 })
@@ -37,6 +36,7 @@ function ScapeClickable(clickData, x, y, z) {
 	var clickGeom = new THREE.SphereGeometry(clickRadius, 32, 24);
 	clickGeom.applyMatrix(translate);
 	var clickBubble = new THREE.Mesh(clickGeom, clickMaterial);
+	// clickBubble.userData.type = 'clickbubble';
 	clickBubble.userData.clickData = clickData;
 	clicker.add(clickBubble);
 
@@ -44,7 +44,7 @@ function ScapeClickable(clickData, x, y, z) {
 	var ident = new THREE.Object3D();
 
 	// name text
-	var nameGeom = new THREE.TextGeometry('clicktest', {
+	var nameGeom = new THREE.TextGeometry(name, {
 		font: 'helvetiker',
 		size: clickRadius,
 		height: 0.1
@@ -55,6 +55,7 @@ function ScapeClickable(clickData, x, y, z) {
 		.multiply(new THREE.Matrix4().makeRotationX(Math.PI/2))
 	);
 	var name = new THREE.Mesh(nameGeom, ScapeStuff.uiWhite);
+	// name.userData.type = 'name';
 	ident.add(name);
 
 
@@ -67,9 +68,11 @@ function ScapeClickable(clickData, x, y, z) {
 	);
 
 	var line = new THREE.Mesh(lineGeom, ScapeStuff.uiWhite);
+	// line.userData.type = 'nameline';
 	ident.add(line);
 
 	ident.visible = false;
+	// ident.userData.type = 'nameassembly';
 	clicker.add(ident);
 
 	clicker.visible = false;

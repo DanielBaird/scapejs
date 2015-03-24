@@ -30,6 +30,8 @@ function ScapeCameraAddon(parentParts, options, internals) {
 
 	var c = {};
 
+	c.name = options.name || 'camera';
+
 	c.height = options.camera.height || 3;
 	c.x = 0;
 	c.y = 0;
@@ -94,7 +96,7 @@ function ScapeCameraAddon(parentParts, options, internals) {
 
 	// the camera should be clickable
 	if (c.clickData) {
-		var camClick = ScapeClickable(c.clickData, c.x, c.y, c.height + c.bodyHeight/2);
+		var camClick = ScapeClickable(c.name, c.clickData, c.x, c.y, c.height + c.bodyHeight/2);
 		parentParts.clickPoints.push(camClick);
 	}
 

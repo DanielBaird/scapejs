@@ -27,6 +27,8 @@ function ScapeSapFlowMeterAddon(treeParts, options, internals) {
 
 	var s = {};
 
+	s.name = options.sapflowmeter.name || 'sap flow meter';
+
 	s.baseW = options.sapflowmeter.size || 1;
 	s.capW = s.baseW * 1.2;
 	s.baseThick = s.baseW / 2;
@@ -67,7 +69,7 @@ function ScapeSapFlowMeterAddon(treeParts, options, internals) {
 
 	// clickable
 	if (s.clickData) {
-		var click = ScapeClickable(s.clickData, 0, -1 * (i.trunkRadius + s.baseThick/2), s.height + s.baseL/2);
+		var click = ScapeClickable(s.name, s.clickData, 0, -1 * (i.trunkRadius + s.baseThick/2), s.height + s.baseL/2);
 		treeParts.clickPoints.push(click);
 	}
 

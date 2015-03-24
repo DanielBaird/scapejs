@@ -189,8 +189,8 @@ ScapeScene.prototype.mouseHover = function(mouseX, mouseY) {
     var clickable, taggedFirstClickable = false;
     for (var i=0; i < intersects.length; i++) {
         clickable = intersects[i].object.parent;
-        if (!taggedFirstClickable && intersects[i].userData && intersect[i].userData.clickData) {
-            intersects.parent.children[2].visible = true;
+        if (!taggedFirstClickable && intersects[i].object.userData.clickData) {
+            clickable.children[2].visible = true;
             taggedFirstClickable = true;
         }
         clickable.visible = true;
@@ -212,7 +212,7 @@ ScapeScene.prototype.mouseClick = function(mouseX, mouseY) {
     for (var i=0; i < intersects.length; i++) {
         // the first one with userData.clickData defined is the winner
         clicked = intersects[i].object;
-        if (clicked.userData && clicked.userData.clickData) {
+        if (clicked.userData.clickData) {
             // if there is a callback, invoke it
             if (this._opts.click) {
                 var callback = this._opts.click;
@@ -495,7 +495,7 @@ ScapeScene.prototype._makeCamera = function(options) {
     var camPos = new THREE.Vector3(0, -10, 5);
     if (this.f) {
         lookHere = this.f.center;
-        camPos = lookHere.clone().add(new THREE.Vector3(0, -1.1 * this.f.wY, 2 * this.f.wZ));
+        camPos = lookHere.clone().add(new THREE.Vector3(0, -1.1 * this.f.wY, 1 * this.f.wZ));
     }
 
     // set up camera
