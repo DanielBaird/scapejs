@@ -17,8 +17,8 @@ var ScapeStuff = require('../../stuff');
 function ScapeClickable(name, clickData, x, y, z) {
 	var clicker = new THREE.Object3D();
 
-	var hoverRadius = 12;
-	var clickRadius = 2;
+	var hoverRadius = 4;
+	var clickRadius = 3;
 	var lineLength = 8;
 
 	var translate = new THREE.Matrix4().makeTranslation(x, y, z);
@@ -50,7 +50,7 @@ function ScapeClickable(name, clickData, x, y, z) {
 		height: 0.1
 	});
 	nameGeom.applyMatrix( new THREE.Matrix4()
-		.makeTranslation(-1 * clickRadius/2, 0, lineLength + clickRadius/2)
+		.makeTranslation(-1 * clickRadius/3, 0, lineLength + clickRadius/2)
 		.multiply(translate)
 		.multiply(new THREE.Matrix4().makeRotationX(Math.PI/2))
 	);
