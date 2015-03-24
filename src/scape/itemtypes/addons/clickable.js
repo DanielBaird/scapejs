@@ -17,14 +17,14 @@ var ScapeStuff = require('../../stuff');
 function ScapeClickable(name, clickData, x, y, z) {
 	var clicker = new THREE.Object3D();
 
-	var hoverRadius = 4;
+	var hoverRadius = 5;
 	var clickRadius = 3;
 	var lineLength = 8;
 
 	var translate = new THREE.Matrix4().makeTranslation(x, y, z);
 
 	hoverMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0.3 })
-	var hoverGeom = new THREE.SphereGeometry(hoverRadius, 32, 24);
+	var hoverGeom = new THREE.SphereGeometry(hoverRadius);
 	hoverGeom.applyMatrix(translate);
 	var hoverBubble = new THREE.Mesh(hoverGeom, hoverMaterial);
 	hoverBubble.visible = false;
@@ -40,40 +40,49 @@ function ScapeClickable(name, clickData, x, y, z) {
 	clickBubble.userData.clickData = clickData;
 	clicker.add(clickBubble);
 
-	////////// identifier flag
-	var ident = new THREE.Object3D();
+	// // add the name stuff to clickBubble instead
+	clickBubble.userData.name = name;
+	clickBubble.userData.offset = translate;
+	// clickBubble.userData.namePosition = ( new THREE.Matrix4()
+	// 	.makeTranslation(-1 * clickRadius/3, 0, lineLength + clickRadius/2)
+	// 	.multiply(translate)
+	// 	.multiply(new THREE.Matrix4().makeRotationX(Math.PI/2))
+	// );
 
-	// name text
-	var nameGeom = new THREE.TextGeometry(name, {
-		font: 'helvetiker',
-		size: clickRadius,
-		height: 0.1
-	});
-	nameGeom.applyMatrix( new THREE.Matrix4()
-		.makeTranslation(-1 * clickRadius/3, 0, lineLength + clickRadius/2)
-		.multiply(translate)
-		.multiply(new THREE.Matrix4().makeRotationX(Math.PI/2))
-	);
-	var name = new THREE.Mesh(nameGeom, ScapeStuff.uiWhite);
-	// name.userData.type = 'name';
-	ident.add(name);
+	// ////////// identifier flag
+	// var ident = new THREE.Object3D();
+
+	// /////////// having text always there but usually invisible was MURDERING ram usage.
+	// // // name text
+	// // var nameGeom = new THREE.TextGeometry(name, {
+	// // 	font: 'helvetiker',
+	// // 	size: clickRadius,
+	// // 	height: 0.1
+	// // });
+	// // nameGeom.applyMatrix( new THREE.Matrix4()
+	// // 	.makeTranslation(-1 * clickRadius/3, 0, lineLength + clickRadius/2)
+	// // 	.multiply(translate)
+	// // 	.multiply(new THREE.Matrix4().makeRotationX(Math.PI/2))
+	// // );
+	// // var name = new THREE.Mesh(nameGeom, ScapeStuff.uiWhite);
+	// // ident.add(name);
 
 
-	// pointer
-	var lineGeom = new THREE.CylinderGeometry(0.1, 0.1, lineLength);
-	lineGeom.applyMatrix( new THREE.Matrix4()
-		.makeTranslation(0, 0, lineLength / 2)
-		.multiply(translate)
-		.multiply(new THREE.Matrix4().makeRotationX(Math.PI/2))
-	);
+	// // pointer
+	// var lineGeom = new THREE.CylinderGeometry(0.1, 0.1, lineLength);
+	// lineGeom.applyMatrix( new THREE.Matrix4()
+	// 	.makeTranslation(0, 0, lineLength / 2)
+	// 	.multiply(translate)
+	// 	.multiply(new THREE.Matrix4().makeRotationX(Math.PI/2))
+	// );
 
-	var line = new THREE.Mesh(lineGeom, ScapeStuff.uiWhite);
-	// line.userData.type = 'nameline';
-	ident.add(line);
+	// var line = new THREE.Mesh(lineGeom, ScapeStuff.uiWhite);
+	// // line.userData.type = 'nameline';
+	// ident.add(line);
 
-	ident.visible = false;
-	// ident.userData.type = 'nameassembly';
-	clicker.add(ident);
+	// ident.visible = false;
+	// // ident.userData.type = 'nameassembly';
+	// clicker.add(ident);
 
 	clicker.visible = false;
 	return clicker;

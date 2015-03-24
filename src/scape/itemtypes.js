@@ -15,7 +15,9 @@ var ScapeItems = {
     cube:        require('./itemtypes/cube'),
     tree:        require('./itemtypes/tree'),
     crane:       require('./itemtypes/crane'),
-    soilPit:     require('./itemtypes/soilpit')
+    soilPit:     require('./itemtypes/soilpit'),
+
+    label:       require('./itemtypes/label')
 };
 // ------------------------------------------------------------------
 module.exports = ScapeItems;

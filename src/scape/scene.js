@@ -87,6 +87,8 @@ function ScapeScene(field, dom, options) {
     this.controls = this._makeControls();
     this.lights = this._makeLights(this._opts.lights);
 
+    this.uiPointer = new ScapeItem(ScapeItems.label, 0, 0, {text: 'unnamed'});
+
     this.connectField();
 
     // add grids and helper cubes
@@ -176,22 +178,35 @@ ScapeScene.prototype.mouseHover = function(mouseX, mouseY) {
     mousePos.x =   (mouseX / this.renderer.domElement.width)  * 2 - 1;
     mousePos.y = - (mouseY / this.renderer.domElement.height) * 2 + 1;
 
+    // remove the ui pointer
+    this.uiPointer.removeFromScene();
+
     // set all the clickables to hidden
     for (var c=0; c < this.f.clickables.length; c++) {
         this.f.clickables[c].visible = false;
-        this.f.clickables[c].children[2].visible = false;
     }
 
     // now unhide just the ones in the mouse area
     raycaster.setFromCamera(mousePos, this.camera);
     var intersects = raycaster.intersectObjects(this.f.clickables, true);
 
-    var clickable, taggedFirstClickable = false;
+    var intersect, clickable, firstClickable = null;
     for (var i=0; i < intersects.length; i++) {
-        clickable = intersects[i].object.parent;
-        if (!taggedFirstClickable && intersects[i].object.userData.clickData) {
-            clickable.children[2].visible = true;
-            taggedFirstClickable = true;
+        intersect = intersects[i].object;
+        clickable = intersect.parent;
+        if (!firstClickable && intersect.userData.clickData) {
+            firstClickable = intersect;
+            if (firstClickable.userData.name) {
+                // first clickable has a name, make it into a label
+                this.uiPointer.update({
+                    text: firstClickable.userData.name,
+                    x: clickable.position.x,
+                    y: clickable.position.y,
+                    z: clickable.position.z,
+                    offset: firstClickable.userData.offset
+                });
+                this.uiPointer.addToScene(this);
+            }
         }
         clickable.visible = true;
     }

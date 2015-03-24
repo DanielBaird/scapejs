@@ -101,7 +101,7 @@ ScapeStuff.concrete = new Lambert({ color: 0x999999 });
 
 /** plastic, a generic whitish plastic with a bit of shininess
   * @memberOf ScapeStuff */
-ScapeStuff.plastic = new Phong({ color: 0x999999, emissive: 0x999999, specular: 0xcccccc });
+ScapeStuff.plastic = new Phong({ color: 0xcccccc, specular: 0xcccccc });
 
 /** glass is shiny, fairly transparent, and a little bluish
   * @memberof ScapeStuff */

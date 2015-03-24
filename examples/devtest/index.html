@@ -871,14 +871,21 @@ window.countUrls = function(list, urlTest) {
 
         f.addItemsOfType(treeList);
 
+        thingsList = [];
+
         var craneAngle = 100;
         var crane = new ScapeItem(ScapeItems.crane, 50, 50, {
                 height: 47,     width: 2,
                 length: 55,     rotation: craneAngle,
                 camera: { size: 3, clickData: 'camera' }
         });
+        thingsList.push(crane);
 
-        thingsList = [crane];
+        // thingsList.push(
+        //     new ScapeItem(ScapeItems.label, 10, 10, {
+        //         text: 'test label'
+        //     })
+        // );
 
         for (var p=0; p < 15; p++) {
             thingsList.push(new ScapeItem(
@@ -903,7 +910,7 @@ window.countUrls = function(list, urlTest) {
 
         var s = new Scape.Scene(f, 'container', {
             currentDate: 'now',  // either string 'now' or a Date object
-            timeRatio: 1000, // how many times faster than normal?
+            timeRatio: 10, // how many times faster than normal?
             dateUpdate: function(date) {
                 // update the time display
                 hr = date.getHours();
