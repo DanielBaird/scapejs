@@ -1,6 +1,6 @@
 {
   "name": "scape",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Scape JS makes landscapes / seascapes / spacescapes in browser using three.js.",
   "main": "dist/scape.js",
   "scripts": {
