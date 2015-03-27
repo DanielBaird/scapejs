@@ -205,6 +205,11 @@ ScapeScene.prototype.mouseHover = function(mouseX, mouseY) {
                     z: clickable.position.z,
                     offset: firstClickable.userData.offset
                 });
+                // // rotate to show text to camera?
+                // this.uiPointer.eachMesh(function(m) {
+                //     m.up.copy(this.camera.up);
+                //     m.lookAt(this.camera.position);
+                // }, this);
                 this.uiPointer.addToScene(this);
             }
         }

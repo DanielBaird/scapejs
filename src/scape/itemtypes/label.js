@@ -26,10 +26,19 @@ function ScapeLabelFactory(options, internals) {
 	i.lineRadius = i.textWidth / 2;
 	i.lineLength = options.height || Math.max(8, i.textSize);
 
-	i.textStuff = options.letters || ScapeStuff.uiWhite;
+	i.dotRadius = i.lineRadius * 1.5;
+
+	i.glowStuff = options.glow || ScapeStuff.uiHighlight;
+	i.textStuff = options.letters || ScapeStuff.uiShow;
 	i.lineStuff = options.pointer || i.textStuff;
 
 	var translate = new THREE.Matrix4().makeTranslation(i.x, i.y, i.z).multiply(i.offset);
+
+	// glowing ball
+	var glowGeom = new THREE.SphereGeometry(1.5, 32, 24);
+	glowGeom.applyMatrix(translate);
+	i.meshNames.push('glowbubble');
+	label.meshes.push(new THREE.Mesh(glowGeom, i.glowStuff));
 
 	// text for the label
 	var nameGeom = new THREE.TextGeometry(i.labelText, {
@@ -44,6 +53,12 @@ function ScapeLabelFactory(options, internals) {
 	);
 	i.meshNames.push('labeltext');
 	label.meshes.push(new THREE.Mesh(nameGeom, i.textStuff));
+
+	// dot
+	var dotGeom = new THREE.SphereGeometry(0.25, 16, 12);
+	dotGeom.applyMatrix(translate);
+	i.meshNames.push('dot');
+	label.meshes.push(new THREE.Mesh(dotGeom, i.lineStuff));
 
 	// pointer
 	var lineGeom = new THREE.CylinderGeometry(i.lineRadius, i.lineRadius, i.lineLength);

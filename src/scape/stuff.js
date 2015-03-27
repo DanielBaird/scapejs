@@ -103,6 +103,12 @@ ScapeStuff.concrete = new Lambert({ color: 0x999999 });
   * @memberOf ScapeStuff */
 ScapeStuff.plastic = new Phong({ color: 0xcccccc, specular: 0xcccccc });
 
+/** black shadecloth, slightly see through black
+  * @memberOf ScapeStuff */
+ScapeStuff.shadecloth = new Lambert(
+  { color: 0x111111, transparent: true, opacity: 0.8 }
+);
+
 /** glass is shiny, fairly transparent, and a little bluish
   * @memberof ScapeStuff */
 ScapeStuff.glass = new Phong(
@@ -129,10 +135,20 @@ ScapeStuff.glossBlack = new Phong({ color: 0x111111, specular: 0x666666 });
 // UI utility things
 /////////////////////////////////////////////////////////////////////
 
-/** hard white
+/** solid color for rendering UI elements
   * @memberOf ScapeStuff */
-ScapeStuff.uiWhite = new THREE.MeshBasicMaterial({ color: 0xffffff });
-ScapeStuff.uiWhite.depthTest = false;
+ScapeStuff.uiShow = new THREE.MeshBasicMaterial({ color: 0xffffff });
+ScapeStuff.uiShow.depthTest = false;
+
+/** mostly transparent, slightly yellowish color for hinting at UI elements
+  * @memberOf ScapeStuff */
+ScapeStuff.uiSuggest = new THREE.MeshBasicMaterial({ color: 0xffff66, transparent: true, opacity: 0.2 })
+ScapeStuff.uiSuggest.depthTest = false;
+
+/** bright glowing color for highlighting UI elements
+  * @memberOf ScapeStuff */
+ScapeStuff.uiHighlight = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.45 })
+ScapeStuff.uiHighlight.depthTest = false;
 
 
 

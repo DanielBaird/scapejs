@@ -15,45 +15,76 @@ function ScapeLeafLitterCatcherFactory(options, internals) {
 	var i = internals || {};
 	i.meshNames = i.meshNames || [];
 
-	i.boxS = options.size || 2;
-	i.boxD = i.boxS/2;
-	i.boxH = i.boxS; // height off ground
+	i.name = options.name || 'leaf litter trap';
 
-	i.pipeR = i.boxD/3;
-	i.pipeD = options.depth || 2; // pipe depth into ground
-	i.pipeL = i.pipeD + i.boxH;
-	i.pipeL = i.pipeL;
+	i.height = options.height || 2;
+	i.width = options.width || 0.8 * i.height;
+	i.ringW = i.height / 6;
+	i.poleR = i.width / 20;
+	i.poleH = i.height - i.ringW/2;
+	i.netR = i.width/2 - i.poleR;
+	i.netL = 0.7 * i.height;
 
-	i.boxStuff = options.box || ScapeStuff.plastic;
-	i.pipeStuff = options.pipe || ScapeStuff.plastic;
+	i.poleStuff = options.poles || ScapeStuff.metal;
+	i.ringStuff = options.ring || i.poleStuff;
+	i.netStuff = options.net || ScapeStuff.shadecloth;
 
 	// cylinder-upright rotation
 	var rotate = new THREE.Matrix4().makeRotationX(Math.PI/2);
 
-	// the box
-	i.boxG = new THREE.BoxGeometry(i.boxS, i.boxD, i.boxS);
-	i.boxG.applyMatrix( new THREE.Matrix4()
-		.makeTranslation(i.boxS/3, 0, i.boxH + i.boxS/2)
-	);
-	i.meshNames.push('box');
-	pit.meshes.push(new THREE.Mesh(i.boxG, i.boxStuff));
-
-	// the pipe
-	i.pipeG = new THREE.CylinderGeometry(i.pipeR, i.pipeR, i.pipeL);
-	i.pipeG.applyMatrix( new THREE.Matrix4()
-		.makeTranslation(0, 0, (i.boxH - i.pipeD)/2)
+	// net
+	i.netG = new THREE.CylinderGeometry(i.netR, i.netR/20, i.netL, 13, 1, true); // true = open ended
+	i.netG.applyMatrix( new THREE.Matrix4()
+		.makeTranslation(0, 0, i.height - i.netL/2)
 		.multiply(rotate)
 	);
-	i.meshNames.push('pipe');
-	pit.meshes.push(new THREE.Mesh(i.pipeG, i.pipeStuff));
+	i.meshNames.push('net');
+	i.netStuff.side = THREE.DoubleSide;
+	catcher.meshes.push(new THREE.Mesh(i.netG, i.netStuff));
 
-	// make the pit clickable
+	// net above ring
+	i.netRingG = new THREE.CylinderGeometry(i.netR * 1.01, i.netR * 1.01, i.ringW/2, 13, 1, true); // true = open ended
+	i.netRingG.applyMatrix( new THREE.Matrix4()
+		.makeTranslation(0, 0, i.height - i.ringW/4)
+		.multiply(rotate)
+	);
+	i.meshNames.push('netring');
+	catcher.meshes.push(new THREE.Mesh(i.netRingG, i.netStuff));
+
+	// ring
+	i.ringG = new THREE.CylinderGeometry(i.netR, i.netR, i.ringW, 13, 1, true); // true = open ended
+	i.ringG.applyMatrix( new THREE.Matrix4()
+		.makeTranslation(0, 0, i.height - i.ringW/2)
+		.multiply(rotate)
+	);
+	i.meshNames.push('ring');
+	catcher.meshes.push(new THREE.Mesh(i.ringG, i.ringStuff));
+
+	// left pole
+	i.leftPoleG = new THREE.CylinderGeometry(i.poleR, i.poleR, i.poleH, 5);
+	i.leftPoleG.applyMatrix( new THREE.Matrix4()
+		.makeTranslation(i.width/-2, 0, i.poleH/2)
+		.multiply(rotate)
+	);
+	i.meshNames.push('leftPole');
+	catcher.meshes.push(new THREE.Mesh(i.leftPoleG, i.poleStuff));
+
+	// right pole
+	i.rightPoleG = new THREE.CylinderGeometry(i.poleR, i.poleR, i.poleH, 5);
+	i.rightPoleG.applyMatrix( new THREE.Matrix4()
+		.makeTranslation(i.width/2, 0, i.poleH/2)
+		.multiply(rotate)
+	);
+	i.meshNames.push('rightPole');
+	catcher.meshes.push(new THREE.Mesh(i.rightPoleG, i.poleStuff));
+
+	// make the catcher clickable
 	if (options.clickData) {
-		var click = ScapeClickable(options.clickData, i.boxS/3, 0, i.boxH + i.boxS/2);
-		pit.clickPoints.push(click);
+		var click = ScapeClickable(i.name, options.clickData, 0, 0, i.poleH);
+		catcher.clickPoints.push(click);
 	}
 
-	return pit;
+	return catcher;
 };
 // ------------------------------------------------------------------
 module.exports = ScapeLeafLitterCatcherFactory;

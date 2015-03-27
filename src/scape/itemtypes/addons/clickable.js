@@ -17,8 +17,8 @@ var ScapeStuff = require('../../stuff');
 function ScapeClickable(name, clickData, x, y, z) {
 	var clicker = new THREE.Object3D();
 
-	var hoverRadius = 5;
-	var clickRadius = 3;
+	var hoverRadius = 8;
+	var clickRadius = 3.5;
 	var lineLength = 8;
 
 	var translate = new THREE.Matrix4().makeTranslation(x, y, z);
@@ -28,15 +28,11 @@ function ScapeClickable(name, clickData, x, y, z) {
 	hoverGeom.applyMatrix(translate);
 	var hoverBubble = new THREE.Mesh(hoverGeom, hoverMaterial);
 	hoverBubble.visible = false;
-	// hoverBubble.userData.type = 'hoverbubble';
 	clicker.add(hoverBubble);
 
-	var clickMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 })
-	clickMaterial.depthTest = false;
 	var clickGeom = new THREE.SphereGeometry(clickRadius, 32, 24);
 	clickGeom.applyMatrix(translate);
-	var clickBubble = new THREE.Mesh(clickGeom, clickMaterial);
-	// clickBubble.userData.type = 'clickbubble';
+	var clickBubble = new THREE.Mesh(clickGeom, ScapeStuff.uiSuggest);
 	clickBubble.userData.clickData = clickData;
 	clicker.add(clickBubble);
 

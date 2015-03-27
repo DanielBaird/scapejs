@@ -877,15 +877,15 @@ window.countUrls = function(list, urlTest) {
         var crane = new ScapeItem(ScapeItems.crane, 50, 50, {
                 height: 47,     width: 2,
                 length: 55,     rotation: craneAngle,
-                camera: { size: 3, clickData: 'camera' }
+                camera: { size: 3, name: 'cranecam', clickData: 'camera url here' }
         });
         thingsList.push(crane);
 
-        // thingsList.push(
-        //     new ScapeItem(ScapeItems.label, 10, 10, {
-        //         text: 'test label'
-        //     })
-        // );
+        thingsList.push(
+            new ScapeItem(ScapeItems.leafLitterCatcher, 50, 10, {
+                clickData: 'sadf'
+            })
+        );
 
         for (var p=0; p < 15; p++) {
             thingsList.push(new ScapeItem(

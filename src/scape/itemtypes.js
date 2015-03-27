@@ -12,12 +12,13 @@
  */
 var ScapeItems = {
     // documentation for items are in the ./itemtypes/* files
-    cube:        require('./itemtypes/cube'),
-    tree:        require('./itemtypes/tree'),
-    crane:       require('./itemtypes/crane'),
-    soilPit:     require('./itemtypes/soilpit'),
+    cube:       require('./itemtypes/cube'),
+    tree:       require('./itemtypes/tree'),
+    crane:      require('./itemtypes/crane'),
+    soilPit:    require('./itemtypes/soilpit'),
+    leafLitterCatcher:  require('./itemtypes/leaflittercatcher'),
 
-    label:       require('./itemtypes/label')
+    label:      require('./itemtypes/label')
 };
 // ------------------------------------------------------------------
 module.exports = ScapeItems;
