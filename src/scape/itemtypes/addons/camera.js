@@ -30,7 +30,7 @@ function ScapeCameraAddon(parentParts, options, internals) {
 
 	var c = {};
 
-	c.name = options.name || 'camera';
+	c.name = options.camera.name || 'camera';
 
 	c.height = options.camera.height || 3;
 	c.x = 0;
