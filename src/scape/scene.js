@@ -60,17 +60,18 @@ function ScapeScene(field, dom, options) {
     // discover DOM container
     this.element = document.getElementById(dom);
 
-    // attach the mouse handlers..
-    var bounds = this.element.getBoundingClientRect();
+    this.bounds = this.element.getBoundingClientRect();
 
     // ..move handler
     this.element.onmousemove = function(event) {
-        this.mouseHover(event.clientX - bounds.left, event.clientY - bounds.top);
+        this.bounds = this.element.getBoundingClientRect();
+        this.mouseHover(event.clientX - this.bounds.left, event.clientY - this.bounds.top);
     }.bind(this);
 
     // ..click handler
     this.element.onclick = function(event) {
-        this.mouseClick(event.clientX - bounds.left, event.clientY - bounds.top);
+        this.bounds = this.element.getBoundingClientRect();
+        this.mouseClick(event.clientX - this.bounds.left, event.clientY - this.bounds.top);
     }.bind(this);
 
     this.date = this._opts.currentDate;
