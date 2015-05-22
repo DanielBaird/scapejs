@@ -910,7 +910,7 @@ window.countUrls = function(list, urlTest) {
 
         var s = new Scape.Scene(f, 'container', {
             currentDate: new Date(2000, 1, 1, 9, 0), // either string 'now' or a Date object
-            timeRatio: 0, // how many times faster than normal?
+            timeRatio: 1000, // how many times faster than normal?
             dateUpdate: function(date) {
                 // update the time display
                 hr = date.getHours();

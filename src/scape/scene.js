@@ -107,12 +107,13 @@ function ScapeScene(field, dom, options) {
             lastLogAt = ts;
         }
 
-        // DEBUG maybe the updateTime is disabled
-        this._updateTime();
-
         requestAnimationFrame( render );
         this.renderer.render( this.scene, this.camera );
         this.controls.update();
+
+        // DEBUG maybe the updateTime is disabled
+        this._updateTime();
+
     }).bind(this);
 
     render(0);
@@ -346,7 +347,9 @@ ScapeScene.prototype._makeRenderer = function(options) {
 ScapeScene.prototype._updateTime = function() {
     var now = new Date();
     var elapsed = now.getTime() - this.firstRender;
-    this.date = new Date(this.startDate + (elapsed * this._opts.timeRatio));
+
+    this.date = new Date(this.startDate.getTime() + (elapsed * this._opts.timeRatio));
+
     var callback = this._opts.dateUpdate;
     if (typeof callback === 'function') {
         var callbackDate = new Date(this.date);
