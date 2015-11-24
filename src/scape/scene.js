@@ -1,5 +1,6 @@
 // ------------------------------------------------------------------
 THREE = require('three');
+// also requires OrbitControls
 ScapeObject = require('./baseobject');
 ScapeChunk = require('./chunk');
 
@@ -35,7 +36,8 @@ ScapeItem = require('./item');
  * present.
  * @param {number} options.timeRatio=1 The rate time should pass in
  * the scape, relative to normal.  0.1 means ten times slower.  60
- * means one minute real time = one hour scape time.
+ * means one minute real time = one hour scape time.  Use 0 to freeze
+ * time.
  * @param {ScapeScene~dateChange} options.dateUpdate callback for
  * when the scene time changes (which is a lot).
  *
@@ -60,17 +62,18 @@ function ScapeScene(field, dom, options) {
     // discover DOM container
     this.element = document.getElementById(dom);
 
-    // attach the mouse handlers..
-    var bounds = this.element.getBoundingClientRect();
+    this.bounds = this.element.getBoundingClientRect();
 
     // ..move handler
     this.element.onmousemove = function(event) {
-        this.mouseHover(event.clientX - bounds.left, event.clientY - bounds.top);
+        this.bounds = this.element.getBoundingClientRect();
+        this.mouseHover(event.clientX - this.bounds.left, event.clientY - this.bounds.top);
     }.bind(this);
 
     // ..click handler
     this.element.onclick = function(event) {
-        this.mouseClick(event.clientX - bounds.left, event.clientY - bounds.top);
+        this.bounds = this.element.getBoundingClientRect();
+        this.mouseClick(event.clientX - this.bounds.left, event.clientY - this.bounds.top);
     }.bind(this);
 
     this.date = this._opts.currentDate;
@@ -104,12 +107,13 @@ function ScapeScene(field, dom, options) {
             lastLogAt = ts;
         }
 
-        // DEBUG maybe the updateTime is disabled
-        this._updateTime();
-
         requestAnimationFrame( render );
         this.renderer.render( this.scene, this.camera );
         this.controls.update();
+
+        // DEBUG maybe the updateTime is disabled
+        this._updateTime();
+
     }).bind(this);
 
     render(0);
@@ -345,7 +349,9 @@ ScapeScene.prototype._makeRenderer = function(options) {
 ScapeScene.prototype._updateTime = function() {
     var now = new Date();
     var elapsed = now.getTime() - this.firstRender;
-    this.date = new Date(this.firstRender + (elapsed * this._opts.timeRatio));
+
+    this.date = new Date(this.startDate.getTime() + (elapsed * this._opts.timeRatio));
+
     var callback = this._opts.dateUpdate;
     if (typeof callback === 'function') {
         var callbackDate = new Date(this.date);
@@ -517,11 +523,24 @@ ScapeScene.prototype._makeCamera = function(options) {
     var camPos = new THREE.Vector3(0, -10, 5);
     if (this.f) {
         lookHere = this.f.center;
-        camPos = lookHere.clone().add(new THREE.Vector3(0, -1.1 * this.f.wY, 1 * this.f.wZ));
+        camPos = lookHere.clone().add(new THREE.Vector3(0, -1.7 * this.f.wY, 1 * this.f.wZ));
     }
 
     // set up camera
+    // TODO work out which camera to use
+
     var camera = new THREE.PerspectiveCamera( viewAngle, viewAspect, nearClip, farClip);
+
+    // var camera = new THREE.OrthographicCamera(
+    //     0 - this.f.wX,    // left
+    //     0 + this.f.wX,    // right
+    //     0 + this.f.wZ,    // top
+    //     0 - this.f.wZ,    // bottom
+    //     nearClip,    // near
+    //     farClip     // far
+    // );
+
+
     // "up" is positive Z
     camera.up.set(0,0,1);
     camera.position.copy(camPos);
@@ -544,7 +563,7 @@ ScapeScene.prototype._makeControls = function() {
     }
     if (this.camera && this.renderer && this.renderer.domElement) {
         var controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
-        controls.center = center;
+        controls.target = center;
         return controls;
     }
 }
