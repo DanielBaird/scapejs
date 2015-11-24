@@ -911,19 +911,19 @@ window.countUrls = function(list, urlTest) {
         var s = new Scape.Scene(f, 'container', {
             currentDate: 'now',  // either string 'now' or a Date object
             timeRatio: 10, // how many times faster than normal?
-            dateUpdate: function(date) {
-                // update the time display
-                hr = date.getHours();
-                if (hr != currentHour) {
-                    timeStr = ((hr - 1) % 12 + 1) + (hr > 12 ? 'pm' : 'am');
-                    if (timeStr == '0am') timeStr = 'midnight'
-                    if (timeStr == '12am') timeStr = 'noon'
-                    $('#time').text(timeStr);
-                    currentHour = hr;
-                }
-                // // update the crane rotation
-                craneAngle = craneAngle + 0.1;
-            },
+            // dateUpdate: function(date) {
+            //     // update the time display
+            //     hr = date.getHours();
+            //     if (hr != currentHour) {
+            //         timeStr = ((hr - 1) % 12 + 1) + (hr > 12 ? 'pm' : 'am');
+            //         if (timeStr == '0am') timeStr = 'midnight'
+            //         if (timeStr == '12am') timeStr = 'noon'
+            //         $('#time').text(timeStr);
+            //         currentHour = hr;
+            //     }
+            //     // // update the crane rotation
+            //     craneAngle = craneAngle + 0.1;
+            // },
             click: function(data) {
                 alert(data);
             }

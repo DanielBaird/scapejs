@@ -87,7 +87,7 @@ function ScapeScene(field, dom, options) {
     this.controls = this._makeControls();
     this.lights = this._makeLights(this._opts.lights);
 
-    this.uiPointer = new ScapeItem(ScapeItems.label, 0, 0, {text: 'unnamed'});
+    this.uiPointer = new ScapeItem(ScapeItems.camLabel, 0, 0, {text: 'unnamed'});
 
     this.connectField();
 
@@ -203,6 +203,8 @@ ScapeScene.prototype.mouseHover = function(mouseX, mouseY) {
                     x: clickable.position.x,
                     y: clickable.position.y,
                     z: clickable.position.z,
+                    camPos: this.camera.position.clone(),
+                    camDir: this.camera.getWorldDirection(),
                     offset: firstClickable.userData.offset
                 });
                 // // rotate to show text to camera?
@@ -390,7 +392,7 @@ ScapeScene.prototype._updateSun = function(sun) {
         sun.onlyShadow = false;
     }
 
-    // fade out the shadow darkness when the sun is low
+    //  out the shadow darkness when the sun is low
     if (sunZ >= this.f.center.z && sunZ <= this.f.maxZ) {
         var upness = Math.max(0, (sunZ - this.f.center.z) / this.f.wZ * 2);
         sun.shadowDarkness = 0.5 * upness;

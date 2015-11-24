@@ -18,7 +18,8 @@ var ScapeItems = {
     soilPit:    require('./itemtypes/soilpit'),
     leafLitterCatcher:  require('./itemtypes/leaflittercatcher'),
 
-    label:      require('./itemtypes/label')
+    // label:      require('./itemtypes/label'),
+    camLabel:   require('./itemtypes/camlabel')
 };
 // ------------------------------------------------------------------
 module.exports = ScapeItems;

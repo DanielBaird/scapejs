@@ -47,7 +47,7 @@ function ScapeTreeFactory(options, internals) {
 	// rotate so it's height is along the Z axis (CylinderGeometry starts lying along the Y axis)
 	var rotate = new THREE.Matrix4().makeRotationX(Math.PI/2);
 
-	i.trunkGeom = new THREE.CylinderGeometry(i.trunkRadius/2, i.trunkRadius, i.trunkHeight, 12);
+	i.trunkGeom = new THREE.CylinderGeometry(i.trunkRadius/2, i.trunkRadius, i.trunkHeight, 7);
 	// center on x = 0 and y = 0, but have the _bottom_ face sitting on z = 0
 	var trunkPosition = new THREE.Matrix4().makeTranslation(0, 0, i.trunkHeight/2);
 	i.trunkGeom.applyMatrix(trunkPosition.multiply(rotate));
@@ -55,7 +55,7 @@ function ScapeTreeFactory(options, internals) {
 	i.meshNames.push('trunk');
 	tree.meshes.push(trunk);
 
-	i.canopyGeom = new THREE.CylinderGeometry(i.canopyRadius, i.canopyRadius, i.canopyHeight, 12);
+	i.canopyGeom = new THREE.CylinderGeometry(i.canopyRadius, i.canopyRadius, i.canopyHeight, 7);
 	// center on x = 0, y = 0, but have the canopy at the top
 	var canopyPosition = new THREE.Matrix4().makeTranslation(0, 0, i.canopyHeight/2 + i.height - i.canopyHeight);
 	i.canopyGeom.applyMatrix(canopyPosition.multiply(rotate));

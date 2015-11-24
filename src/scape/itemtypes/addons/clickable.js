@@ -30,7 +30,7 @@ function ScapeClickable(name, clickData, x, y, z) {
 	hoverBubble.visible = false;
 	clicker.add(hoverBubble);
 
-	var clickGeom = new THREE.SphereGeometry(clickRadius, 32, 24);
+	var clickGeom = new THREE.SphereGeometry(clickRadius, 16, 12);
 	clickGeom.applyMatrix(translate);
 	var clickBubble = new THREE.Mesh(clickGeom, ScapeStuff.uiSuggest);
 	clickBubble.userData.clickData = clickData;
